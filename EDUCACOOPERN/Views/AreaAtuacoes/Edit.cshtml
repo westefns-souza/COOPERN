@@ -1,0 +1,52 @@
+﻿@model EDUCACOOPERN.Models.AreaAtuacao
+
+@{
+    ViewData["Title"] = "Área de atuações";
+}
+
+<div class="row">
+    <div class="col-10">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+    
+    <div class="col text-end">
+        <h4 class="mt-2">Edição</h4>
+    </div>
+</div>
+
+<hr />
+
+<form asp-action="Edit">
+    <div class="row">
+        <div class="col-10">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Nome" class="control-label"></label>
+                <input asp-for="Nome" class="form-control" />
+                <span asp-validation-for="Nome" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-2">
+            <div class="form-group form-check">
+                <label class="form-check-label mt-4">
+                    <input class="form-check-input" asp-for="Ativo" /> @Html.DisplayNameFor(model => model.Ativo)
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col">
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-floppy me-1"></i>Editar</button>
+                <a asp-action="Index" class="btn btn-light"><i class="bi bi-arrow-left-circle me-1"></i>Voltar</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

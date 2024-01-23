@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using EDUCACOOPERN.Models;
 
 namespace EDUCACOOPERN.Data
 {
@@ -9,5 +10,6 @@ namespace EDUCACOOPERN.Data
             : base(options)
         {
         }
+        public DbSet<EDUCACOOPERN.Models.AreaAtuacao> AreaAtuacao { get; set; } = default!;
     }
 }
