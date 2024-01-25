@@ -1,10 +1,12 @@
 ﻿using EDUCACOOPERN.Data;
 using EDUCACOOPERN.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace EDUCACOOPERN.Controllers;
 
+[Authorize(Roles = "Coordenador")]
 public class AreaAtuacoesController : Controller
 {
     private readonly ApplicationDbContext _context;
