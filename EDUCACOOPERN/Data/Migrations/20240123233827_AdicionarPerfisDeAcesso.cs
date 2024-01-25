@@ -13,17 +13,17 @@ namespace EDUCACOOPERN.Data.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "Name", "NormalizedName", "ConcurrencyStamp" },
-                values: new object[] { "1", "COORDENADOR", "Coordenador", Guid.NewGuid().ToString() });
+                values: new object[] { "1", "Coordenador", "COORDENADOR", Guid.NewGuid().ToString() });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "Name", "NormalizedName", "ConcurrencyStamp" },
-                values: new object[] { "2", "PROFESSOR", "Professor", Guid.NewGuid().ToString() });
+                values: new object[] { "2", "Professor", "PROFESSOR", Guid.NewGuid().ToString() });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "Name", "NormalizedName", "ConcurrencyStamp" },
-                values: new object[] { "3", "COOPERADO", "Cooperado", Guid.NewGuid().ToString() });
+                values: new object[] { "3", "Cooperado", "COOPERADO", Guid.NewGuid().ToString() });
         }
 
         /// <inheritdoc />
