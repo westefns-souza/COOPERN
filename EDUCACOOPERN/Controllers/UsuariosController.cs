@@ -1,7 +1,10 @@
 ﻿using EDUCACOOPERN.Data;
+using EDUCACOOPERN.Models;
+using EDUCACOOPERN.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace EDUCACOOPERN.Controllers;
@@ -18,6 +21,7 @@ public class UsuariosController : Controller
         _userManager = userManager;
     }
 
+    [HttpGet]
     public async Task<IActionResult> Index()
     {
         var usuarios = await _userManager.Users
@@ -26,6 +30,46 @@ public class UsuariosController : Controller
 
         return View(usuarios);
     }
+
+    [HttpGet]
+    public IActionResult CreateCooperado()
+    {
+        var viewModel = new CooperadoViewModel()
+        {
+            Ativo = true,
+            AreasAtuacao = [],
+        };
+        
+        PreencherAreasDeAtuacao();
+        return View(viewModel);
+    }
+
+    [HttpPost]
+    public IActionResult CreateCooperado(CooperadoViewModel viewModel)
+    {
+        if (!ModelState.IsValid)
+        {
+            PreencherAreasDeAtuacao();
+            return View(viewModel);
+        }
+
+        return View(viewModel);
+    }
+
+    #region ViewBag
+    
+    private void PreencherAreasDeAtuacao()
+    {
+        var areasDeAtuacao = _context.AreaAtuacao
+            .Where(x => x.Ativo)
+            .OrderBy(x => x.Nome)
+            .Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Nome })
+            .ToList();
+
+        ViewBag.AreaAtuacao = areasDeAtuacao;
+    }
+
+    #endregion
 
     //public async Task<IActionResult> Post(string returnUrl = null)
     //{
