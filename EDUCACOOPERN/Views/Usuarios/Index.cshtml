@@ -1,5 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@model IEnumerable<IdentityUser>
+@model IEnumerable<ApplicationUser>
 
 @{
     ViewData["Title"] = "Usuários";
@@ -32,7 +32,7 @@
         <thead>
             <tr class="row">
                 <th class="col-5">
-                    @Html.DisplayNameFor(model => model.UserName)
+                    @Html.DisplayNameFor(model => model.FullName)
                 </th>
                 <th class="col-5">
                     @Html.DisplayNameFor(model => model.Email)
@@ -45,7 +45,7 @@
             {
                 <tr class="row">
                     <td class="col-5">
-                        @Html.DisplayFor(modelItem => item.UserName)
+                        @Html.DisplayFor(modelItem => item.FullName)
                     </td>
                     <td class="col-5">
                         @Html.DisplayFor(modelItem => item.Email)
@@ -65,7 +65,7 @@ else
     <div class="row">
         <div class="col">
             <div class="alert alert-info text-center">
-                Ainda não há nenhuma Área de atuação cadastrada!
+                Ainda não há nenhum usuário cadastrado!
             </div>
         </div>
     </div>

@@ -108,8 +108,8 @@
 
                             <tr class="row item-area-atuacao" >
                                 <td class="col-10">
-                                    <input type="hidden" name="AreasAtuacao[@index].Id" value="@area.Id" />
-                                    <input type="hidden" name="AreasAtuacao[@index].Nome" value="@area.Nome" />
+                                    <input type="hidden" class="dados-item-area-atuacao" name="AreasAtuacao[@index].Id" value="@area.Id" />
+                                    <input type="hidden" class="dados-item-area-atuacao" name="AreasAtuacao[@index].Nome" value="@area.Nome" />
                                     
                                     @area.Nome
                                 </td>
@@ -152,8 +152,8 @@
                 $("#lista-areas-atuacao").append(`
                     <tr class="row item-area-atuacao">
                         <td class="col-10">
-                            <input type="hidden" name="AreasAtuacao[0].Id" value="${idAreaAtuacao}" />
-                            <input type="hidden" name="AreasAtuacao[0].Nome" value="${textAreaAtuacao}" />
+                            <input type="hidden" class="dados-item-area-atuacao" name="AreasAtuacao[0].Id" value="${idAreaAtuacao}" />
+                            <input type="hidden" class="dados-item-area-atuacao" name="AreasAtuacao[0].Nome" value="${textAreaAtuacao}" />
 
                             ${textAreaAtuacao}
                         </td>
@@ -164,22 +164,39 @@
                     </tr>
                 `)
 
+                enumeracao();
                 mostrarAreasAtuacao();
             }
 
             function removerAreasAtuacao() {
-                console.log('teste')
                 var linha = $(this).closest("tr");
-                console.log(linha);
+                
                 $(linha).remove();
+                
+                enumeracao();
                 mostrarAreasAtuacao();
+            }
 
+            function enumeracao() {
+                var linhas = $(".item-area-atuacao");
+
+                $.each(linhas, function (i, linha) {
+                    var inputs = $(linha).find('.dados-item-area-atuacao');
+
+                    $.each(inputs, function (j, input) {
+                        var name = $(input).attr("name");
+                        var prop = name.split('.')[1];
+                        name = "AreasAtuacao[" + i + "]." + prop;
+
+                        $(input).attr("name", name);
+                    });
+                });
             }
 
             function mostrarAreasAtuacao(){
                 var itensAreaAtuacao = $(".item-area-atuacao");
-
-                if(itensAreaAtuacao) {
+                
+                if (itensAreaAtuacao.length != 0) {
                     $(".cooperado-sem-area-atuacao").addClass("d-none");
                     $(".cooperado-com-area-atuacao").removeClass("d-none");
                 } else {

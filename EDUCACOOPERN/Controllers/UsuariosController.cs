@@ -13,12 +13,18 @@ namespace EDUCACOOPERN.Controllers;
 public class UsuariosController : Controller
 {
     private readonly ApplicationDbContext _context;
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IUserStore<ApplicationUser> _userStore;
 
-    public UsuariosController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+    public UsuariosController(
+        ApplicationDbContext context, 
+        UserManager<ApplicationUser> userManager, 
+        IUserStore<ApplicationUser> userStore
+    )
     {
         _context = context;
         _userManager = userManager;
+        _userStore = userStore;
     }
 
     [HttpGet]
@@ -45,12 +51,35 @@ public class UsuariosController : Controller
     }
 
     [HttpPost]
-    public IActionResult CreateCooperado(CooperadoViewModel viewModel)
+    public async Task<IActionResult> CreateCooperadoAsync(CooperadoViewModel viewModel)
     {
         if (!ModelState.IsValid)
         {
             PreencherAreasDeAtuacao();
+            viewModel.AreasAtuacao ??= [];
             return View(viewModel);
+        }
+
+        var user = Activator.CreateInstance<ApplicationUser>();
+        
+        user.PhoneNumber = viewModel.Celular;
+        user.Email = viewModel.Email;
+        user.UserName = viewModel.Email;
+        user.EmailConfirmed = true;
+        user.LockoutEnabled = false;
+        user.FullName = viewModel.Nome;
+        user.Registro = viewModel.Registro;
+
+        var result = await _userManager.CreateAsync(user, "EducaCOOPERN$2024");
+
+        if (result.Succeeded)
+        {
+            await _userManager.AddToRoleAsync(user, "Cooperado");
+
+            await _context.AddRangeAsync(viewModel.AreasAtuacao.Select(x => new UsuarioAreaAtuacao { UsuarioId = user.Id, AreaAtuacaoId = x.Id }).ToList());
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
         }
 
         return View(viewModel);
