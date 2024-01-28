@@ -1,0 +1,45 @@
+﻿@model EDUCACOOPERN.Models.Curso
+
+@{
+    ViewData["Title"] = "Cursos";
+}
+
+<div class="row">
+    <div class="col-6">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+    <div class="col text-end">
+        <h4 class="mt-2">Detalhes</h4>
+    </div>
+</div>
+
+<hr />
+
+<dl class="row">
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Nome)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.Nome)
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Descricao)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.Descricao)
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Ativo)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.Ativo)
+    </dd>
+</dl>
+
+<div class="row">
+    <div class="col">
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary"><i class="bi bi-pencil me-1"></i>Editar</a>
+        <a asp-action="Delete" asp-route-id="@Model?.Id" class="btn btn-danger"><i class="bi bi-trash"></i>Deletar</a>
+        <a asp-action="Index" class="btn btn-light"><i class="bi bi-arrow-left-circle me-1"></i>Voltar</a>
+    </div>
+</div>

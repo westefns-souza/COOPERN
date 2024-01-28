@@ -14,4 +14,5 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<ApplicationUser> Usuario { get; set; } = default!;
     public DbSet<AreaAtuacao> AreaAtuacao { get; set; } = default!;
     public DbSet<UsuarioAreaAtuacao> UsuarioAreaAtuacao { get; set; } = default!;
+    public DbSet<Curso> Cursos { get; set; } = default!;
 }
