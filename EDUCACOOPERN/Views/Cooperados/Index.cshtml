@@ -2,7 +2,7 @@
 @model IEnumerable<ApplicationUser>
 
 @{
-    ViewData["Title"] = "Usuários";
+    ViewData["Title"] = "Cooperados";
 }
 
 <div class="row">
@@ -11,15 +11,7 @@
     </div>
 
     <div class="col text-end">
-        <div class="btn-group mt-3" role="group">
-            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-plus-circle me-1"></i> Cadastrar
-            </button>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-item" asp-action="CreateCooperado"><i class="bi bi-plus-circle me-1"></i>Cooperado</a></li>
-                <li><a class="dropdown-item" asp-action="Create"><i class="bi bi-plus-circle me-1"></i>Professor</a></li>
-            </ul>
-        </div>
+        <a asp-action="Create" class="btn btn-primary mt-3"><i class="bi bi-plus-circle me-1"></i>Cadastrar</a>
     </div>
 
 </div>

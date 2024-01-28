@@ -1,11 +1,12 @@
-﻿
-using EDUCACOOPERN.Models;
+﻿using EDUCACOOPERN.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace EDUCACOOPERN.ViewModels;
 
 public class CooperadoViewModel
 {
+    public string? Id { get; set; }
+
     [Display(Name = "Nome completo")]
     [Required(ErrorMessage = "O {0} é obrigatório!")]
     public string Nome { get; set; }
