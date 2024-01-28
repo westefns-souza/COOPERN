@@ -1,7 +1,7 @@
-﻿@model EDUCACOOPERN.ViewModels.CooperadoViewModel
+﻿@model EDUCACOOPERN.ViewModels.ProfessorViewModel
 
 @{
-    ViewData["Title"] = "Cooperado";
+    ViewData["Title"] = "Professores";
 }
 
 <div class="row">
@@ -16,7 +16,8 @@
 
 <hr />
 
-<h3>Você cem certeza que quer apagar esse cooperado?</h3>
+<h3>Você cem certeza que quer apagar esse professor?</h3>
+
 <dl class="row">
     <dt class="col-sm-2">
         @Html.DisplayNameFor(model => model.Nome)
@@ -41,14 +42,6 @@
         @Html.DisplayFor(model => model.Celular)
     </dd>
 
-    <dt class="col-sm-2">
-        @Html.DisplayNameFor(model => model.Registro)
-    </dt>
-
-    <dd class="col-sm-10">
-        @Html.DisplayFor(model => model.Registro)
-    </dd>
-    
     <dt class="col-sm-2">
         @Html.DisplayNameFor(model => model.Ativo)
     </dt>

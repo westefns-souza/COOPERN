@@ -1,7 +1,7 @@
-﻿@model EDUCACOOPERN.ViewModels.CooperadoViewModel
+﻿@model EDUCACOOPERN.ViewModels.ProfessorViewModel
 
 @{
-    ViewData["Title"] = "Cooperados";
+    ViewData["Title"] = "Professores";
 }
 
 <div class="row">
@@ -44,13 +44,6 @@
                 <span asp-validation-for="Celular" class="text-danger"></span>
             </div>
         </div>
-        <div class="col-4">
-            <div class="form-group">
-                <label asp-for="Registro" class="control-label"></label>
-                <input asp-for="Registro" class="form-control" />
-                <span asp-validation-for="Registro" class="text-danger"></span>
-            </div>
-        </div>
         <div class="col-2">
             <div class="form-group form-check">
                 <label class="form-check-label mt-4">
@@ -89,7 +82,7 @@
             }
 
             <div class="alert alert-info text-center cooperado-sem-area-atuacao @(possuiAreaAtuacao ? "d-none" : "")">
-                O cooperado ainda não possui nenhuma área de atuação!
+                O professor ainda não possui nenhuma área de atuação!
             </div>
 
             <table class="table table-striped cooperado-com-area-atuacao @(possuiAreaAtuacao ? "" : "d-none")">

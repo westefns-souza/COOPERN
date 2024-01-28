@@ -1,7 +1,7 @@
-﻿@model EDUCACOOPERN.ViewModels.CooperadoViewModel
+﻿@model EDUCACOOPERN.ViewModels.ProfessorViewModel
 
 @{
-    ViewData["Title"] = "Cooperados";
+    ViewData["Title"] = "Professores";
 }
 
 <div class="row">
@@ -9,14 +9,15 @@
         <h1>@ViewData["Title"]</h1>
     </div>
     <div class="col text-end">
-        <h4 class="mt-2">Cadastro</h4>
+        <h4 class="mt-2">Edição</h4>
     </div>
 </div>
 
 <hr />
 
-<form asp-action="Create">
+<form asp-action="Edit">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Id" />
 
     <div class="row">
         <div class="col-6">
@@ -44,13 +45,7 @@
                 <span asp-validation-for="Celular" class="text-danger"></span>
             </div>
         </div>
-        <div class="col-4">
-            <div class="form-group">
-                <label asp-for="Registro" class="control-label"></label>
-                <input asp-for="Registro" class="form-control" />
-                <span asp-validation-for="Registro" class="text-danger"></span>
-            </div>
-        </div>
+
         <div class="col-2">
             <div class="form-group form-check">
                 <label class="form-check-label mt-4">
@@ -89,7 +84,7 @@
             }
 
             <div class="alert alert-info text-center cooperado-sem-area-atuacao @(possuiAreaAtuacao ? "d-none" : "")">
-                O cooperado ainda não possui nenhuma área de atuação!
+                O professor ainda não possui nenhuma área de atuação!
             </div>
 
             <table class="table table-striped cooperado-com-area-atuacao @(possuiAreaAtuacao ? "" : "d-none")">
@@ -102,15 +97,15 @@
                 <tbody id="lista-areas-atuacao">
                     @if (possuiAreaAtuacao)
                     {
-                        foreach(var area in Model.AreasAtuacao)
+                        foreach (var area in Model.AreasAtuacao)
                         {
                             var index = Model.AreasAtuacao.IndexOf(area);
 
-                            <tr class="row item-area-atuacao" >
+                            <tr class="row item-area-atuacao">
                                 <td class="col-10">
                                     <input type="hidden" class="dados-item-area-atuacao" name="AreasAtuacao[@index].Id" value="@area.Id" />
                                     <input type="hidden" class="dados-item-area-atuacao" name="AreasAtuacao[@index].Nome" value="@area.Nome" />
-                                    
+
                                     @area.Nome
                                 </td>
 
@@ -128,7 +123,7 @@
     <div class="row mt-2">
         <div class="col">
             <div class="form-group">
-                <button type="submit" class="btn btn-primary"><i class="bi bi-floppy me-1"></i>Cadastrar</button>
+                <button type="submit" class="btn btn-primary"><i class="bi bi-floppy me-1"></i>Editar</button>
                 <a asp-action="Index" class="btn btn-light"><i class="bi bi-arrow-left-circle me-1"></i>Voltar</a>
             </div>
         </div>
