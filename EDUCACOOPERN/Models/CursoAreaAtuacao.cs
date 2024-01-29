@@ -3,17 +3,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EDUCACOOPERN.Models;
 
-public class UsuarioAreaAtuacao
+public class CursoAreaAtuacao
 {
     [Key]
     public int Id { get; set; }
 
     [Required]
-    public string? UsuarioId { get; set; }
+    public int? CursoId { get; set; }
 
-    [ForeignKey("UsuarioId")]
-    public ApplicationUser? Usuario { get; set; }
-    
+    [ForeignKey("CursoId")]
+    public Curso? Curso { get; set; }
+
     [Required]
     public int AreaAtuacaoId { get; set; }
 

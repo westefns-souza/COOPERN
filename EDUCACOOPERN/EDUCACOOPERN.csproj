@@ -10,11 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\js\cooperado.js" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="wwwroot\js\cooperado.js" />
+    <Content Remove="wwwroot\js\area-atuacao.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,7 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\js\cooperado.js" />
+    <None Include="wwwroot\js\area-atuacao.js" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-﻿@model EDUCACOOPERN.Models.Curso
+﻿@model EDUCACOOPERN.ViewModels.CursoViewModel
 
 @{
     ViewData["Title"] = "Cursos";
@@ -39,6 +39,70 @@
         </div>
     </div>
 
+    <h6 class="mt-2">Áreas de atuação</h6>
+
+    <hr />
+
+    <div class="row">
+        <div class="col-6">
+            <div class="form-group">
+                <label asp-for="AreasAtuacao" class="control-label"></label>
+                <select asp-items="@ViewBag.AreaAtuacao" class="form-select areas-atuacoes">
+                    <option>-- Selecione uma área de atuação --</option>
+                </select>
+                <span asp-validation-for="AreasAtuacao" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-6">
+            <div class="form-group">
+                <button type="button" class="btn btn-light mt-4 btn-adicionar-area-atuacao"><i class="bi bi-plus-circle me-1"></i>Adicionar</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 mt-2">
+            @{
+                var possuiAreaAtuacao = Model.AreasAtuacao.Any();
+            }
+
+            <div class="alert alert-info text-center cooperado-sem-area-atuacao @(possuiAreaAtuacao ? "d-none" : "")">
+                O curso ainda não possui nenhuma área de atuação!
+            </div>
+
+            <table class="table table-striped cooperado-com-area-atuacao @(possuiAreaAtuacao ? "" : "d-none")">
+                <thead>
+                    <tr class="row">
+                        <th class="col-10">Área de atuação</th>
+                        <th class="col-2"></th>
+                    </tr>
+                </thead>
+                <tbody id="lista-areas-atuacao">
+                    @if (possuiAreaAtuacao)
+                    {
+                        foreach (var area in Model.AreasAtuacao)
+                        {
+                            var index = Model.AreasAtuacao.IndexOf(area);
+
+                            <tr class="row item-area-atuacao">
+                                <td class="col-10">
+                                    <input type="hidden" class="dados-item-area-atuacao" name="AreasAtuacao[@index].Id" value="@area.Id" />
+                                    <input type="hidden" class="dados-item-area-atuacao" name="AreasAtuacao[@index].Nome" value="@area.Nome" />
+
+                                    @area.Nome
+                                </td>
+
+                                <td class="col-2 text-end">
+                                    <button type="button" class="btn btn-sm btn-danger btn-remover-area-atuacao" data-id-area-atuacao="@area.Id"><i class="bi bi-trash"></i></button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <div class="row mt-2">
         <div class="col">
             <div class="form-group form-check">
@@ -63,4 +127,7 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script src="~/js/area-atuacao.js" asp-append-version="true"></script>
 }
+
