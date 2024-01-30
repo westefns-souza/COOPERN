@@ -34,6 +34,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Views\Shared\Topnav\_CurrentUser.cshtml" />
+    <None Include="Views\Shared\Topnav\_Dropdown.cshtml" />
+    <None Include="Views\Shared\Topnav\_Links.cshtml" />
+    <None Include="Views\Shared\Topnav\_Search.cshtml" />
+    <None Include="Views\Shared\Topnav\_Topnav.cshtml" />
+    <None Include="Views\Shared\Topnav\_TopnavProfile.cshtml" />
     <None Include="wwwroot\js\area-atuacao.js" />
   </ItemGroup>
 

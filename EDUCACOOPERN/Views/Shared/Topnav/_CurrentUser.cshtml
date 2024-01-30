@@ -1,0 +1,20 @@
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+
+<!-- Current user (right part of the website) -->
+<ul class="navbar-nav align-items-center ml-md-auto">
+    <li class="nav-item">
+        <a class="nav-link pr-0" href="#" role="button">
+            <div class="media align-items-center">
+                <div class="media-body  ml-2  d-none d-lg-block">
+                    <span class="mb-0 text-sm  font-weight-bold">
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            @User.Identity.Name
+                        }
+                    </span>
+                </div>
+            </div>
+        </a>
+    </li>
+</ul>
