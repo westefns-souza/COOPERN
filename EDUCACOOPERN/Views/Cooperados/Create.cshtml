@@ -60,6 +60,26 @@
         </div>
     </div>
 
+    <h6 class="mt-2">Contato alternativo</h6>
+    
+    <div class="row">
+        <div class="col-6">
+            <div class="form-group">
+                <label asp-for="CelularAlternativo" class="control-label"></label>
+                <input asp-for="CelularAlternativo" class="form-control" />
+                <span asp-validation-for="CelularAlternativo" class="text-danger"></span>
+            </div>
+        </div>
+        
+        <div class="col-6">
+            <div class="form-group">
+                <label asp-for="NomeAlternativo" class="control-label"></label>
+                <input asp-for="NomeAlternativo" class="form-control" />
+                <span asp-validation-for="NomeAlternativo" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
     <h6 class="mt-2">Áreas de atuação</h6>
 
     <hr />
@@ -125,6 +145,71 @@
         </div>
     </div>
 
+    <h6 class="mt-2">Programa de desenvolvimento individual</h6>
+
+    <hr />
+
+    <div class="row">
+        <div class="col-6">
+            <div class="form-group">
+                <label asp-for="PDIs" class="control-label"></label>
+                <select asp-items="@ViewBag.PDIs" class="form-select pdi">
+                    <option>-- Selecione um PDI --</option>
+                </select>
+                <span asp-validation-for="PDIs" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-6">
+            <div class="form-group">
+                <button type="button" class="btn btn-light mt-4 btn-adicionar-pdi"><i class="bi bi-plus-circle me-1"></i>Adicionar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 mt-2">
+            @{
+                var possuiPDIs = Model.PDIs.Any();
+            }
+
+            <div class="alert alert-info text-center cooperado-sem-pdi @(possuiPDIs ? "d-none" : "")">
+                O cooperado ainda não possui nenhum plano de desenvolvimento individual!
+            </div>
+
+            <table class="table table-striped cooperado-com-pdi @(possuiPDIs ? "" : "d-none")">
+                <thead>
+                    <tr class="row">
+                        <th class="col-10">Área de atuação</th>
+                        <th class="col-2"></th>
+                    </tr>
+                </thead>
+                <tbody id="lista-pdi">
+                    @if (possuiPDIs)
+                    {
+                        foreach (var area in Model.PDIs)
+                        {
+                            var index = Model.PDIs.IndexOf(area);
+
+                            <tr class="row item-pdi">
+                                <td class="col-10">
+                                    <input type="hidden" class="dados-item-pdi" name="PDIs[@index].Id" value="@area.Id" />
+                                    <input type="hidden" class="dados-item-pdi" name="PDIs[@index].Nome" value="@area.Nome" />
+
+                                    @area.Nome
+                                </td>
+
+                                <td class="col-2 text-end">
+                                    <button type="button" class="btn btn-sm btn-danger btn-remover-pdi" data-id-pdi="@area.Id"><i class="bi bi-trash"></i></button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <div class="row mt-2">
         <div class="col">
             <div class="form-group">
@@ -141,4 +226,5 @@
     }
 
     <script src="~/js/area-atuacao.js" asp-append-version="true"></script>
+    <script src="~/js/pdi.js"></script>
 }

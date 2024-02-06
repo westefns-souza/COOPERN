@@ -50,8 +50,10 @@ public class CooperadosController : Controller
         {
             Ativo = true,
             AreasAtuacao = [],
+            PDIs = []
         };
-        
+
+        PreencherPDIs();
         PreencherAreasDeAtuacao();
         return View(viewModel);
     }
@@ -61,8 +63,10 @@ public class CooperadosController : Controller
     {
         if (!ModelState.IsValid)
         {
+            PreencherPDIs();
             PreencherAreasDeAtuacao();
             viewModel.AreasAtuacao ??= [];
+            viewModel.PDIs ??= [];
             return View(viewModel);
         }
 
@@ -75,6 +79,8 @@ public class CooperadosController : Controller
         user.LockoutEnabled = false;
         user.FullName = viewModel.Nome;
         user.Registro = viewModel.Registro;
+        user.NomeAlternativo = viewModel.NomeAlternativo;
+        user.CelularAlternativo = viewModel.CelularAlternativo;
 
         var result = await _userManager.CreateAsync(user, "EducaCOOPERN$2024");
 
@@ -83,6 +89,7 @@ public class CooperadosController : Controller
             await _userManager.AddToRoleAsync(user, "Cooperado");
 
             await _context.AddRangeAsync(viewModel.AreasAtuacao.Select(x => new UsuarioAreaAtuacao { UsuarioId = user.Id, AreaAtuacaoId = x.Id }).ToList());
+            await _context.AddRangeAsync(viewModel.PDIs.Select(x => new UsuarioPDI { UsuarioId = user.Id, PDIId = x.Id }).ToList());
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Index");
@@ -111,6 +118,11 @@ public class CooperadosController : Controller
             .Select(x => x.AreaAtuacao)
             .ToList();
 
+        var pdis = _context.UsuarioPDIs
+            .Where(x => x.UsuarioId.Equals(id))
+            .Select(x => x.PDI)
+            .ToList();
+
         var viewModel = new CooperadoViewModel()
         {
             Id = id,
@@ -120,8 +132,12 @@ public class CooperadosController : Controller
             Registro = usuario.Registro,
             Ativo = usuario.LockoutEnabled,
             AreasAtuacao = areasAtuacao,
+            PDIs = pdis,
+            CelularAlternativo = usuario.CelularAlternativo,
+            NomeAlternativo = usuario.NomeAlternativo,
         };
 
+        PreencherPDIs();
         PreencherAreasDeAtuacao();
         return View(viewModel);
     }
@@ -131,8 +147,10 @@ public class CooperadosController : Controller
     {
         if (!ModelState.IsValid)
         {
-            PreencherAreasDeAtuacao();
             viewModel.AreasAtuacao ??= [];
+            viewModel.PDIs ??= [];
+            PreencherPDIs();
+            PreencherAreasDeAtuacao();
             return View(viewModel);
         }
 
@@ -145,14 +163,18 @@ public class CooperadosController : Controller
         user.LockoutEnabled = viewModel.Ativo;
         user.FullName = viewModel.Nome;
         user.Registro = viewModel.Registro;
+        user.NomeAlternativo = viewModel.NomeAlternativo;
+        user.CelularAlternativo = viewModel.CelularAlternativo;
 
         var result = await _userManager.UpdateAsync(user);
 
         if (result.Succeeded)
         {
             _context.RemoveRange(await _context.UsuarioAreaAtuacao.Where(x => x.UsuarioId.Equals(user.Id)).ToListAsync());
+            _context.RemoveRange(await _context.UsuarioPDIs.Where(x => x.UsuarioId.Equals(user.Id)).ToListAsync());
 
             await _context.AddRangeAsync(viewModel.AreasAtuacao.Select(x => new UsuarioAreaAtuacao { UsuarioId = user.Id, AreaAtuacaoId = x.Id }).ToList());
+            await _context.AddRangeAsync(viewModel.PDIs.Select(x => new UsuarioPDI { UsuarioId = user.Id, PDIId = x.Id }).ToList());
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Index");
@@ -180,6 +202,11 @@ public class CooperadosController : Controller
             .Select(x => x.AreaAtuacao)
             .ToList();
 
+        var pdis = _context.UsuarioPDIs
+            .Where(x => x.UsuarioId.Equals(id))
+            .Select(x => x.PDI)
+            .ToList();
+
         var viewModel = new CooperadoViewModel()
         {
             Id = id,
@@ -189,6 +216,9 @@ public class CooperadosController : Controller
             Registro = usuario.Registro,
             Ativo = usuario.LockoutEnabled,
             AreasAtuacao = areasAtuacao,
+            PDIs = pdis,
+            CelularAlternativo = usuario.CelularAlternativo,
+            NomeAlternativo = usuario.NomeAlternativo,
         };
 
         return View(viewModel);
@@ -213,6 +243,11 @@ public class CooperadosController : Controller
             .Select(x => x.AreaAtuacao)
             .ToList();
 
+        var pdis = _context.UsuarioPDIs
+            .Where(x => x.UsuarioId.Equals(id))
+            .Select(x => x.PDI)
+            .ToList();
+        
         var viewModel = new CooperadoViewModel()
         {
             Id = id,
@@ -222,6 +257,9 @@ public class CooperadosController : Controller
             Registro = usuario.Registro,
             Ativo = usuario.LockoutEnabled,
             AreasAtuacao = areasAtuacao,
+            PDIs = pdis,
+            CelularAlternativo = usuario.CelularAlternativo,
+            NomeAlternativo = usuario.NomeAlternativo,
         };
 
         return View(viewModel);
@@ -233,7 +271,12 @@ public class CooperadosController : Controller
     public async Task<IActionResult> DeleteConfirmed(string id)
     {
         var usuario = await _context.Usuario.FirstOrDefaultAsync(m => m.Id.Equals(id));
+        
         var areasAtuacao = _context.UsuarioAreaAtuacao
+            .Where(x => x.UsuarioId.Equals(id))
+            .ToList();
+        
+        var pdis = _context.UsuarioPDIs
             .Where(x => x.UsuarioId.Equals(id))
             .ToList();
 
@@ -241,6 +284,7 @@ public class CooperadosController : Controller
         {
             await _userManager.RemoveFromRoleAsync(usuario, "Cooperado");
             _context.RemoveRange(areasAtuacao);
+            _context.RemoveRange(pdis);
             await _userManager.DeleteAsync(usuario);
             await _context.SaveChangesAsync();
         }
@@ -259,6 +303,17 @@ public class CooperadosController : Controller
             .ToList();
 
         ViewBag.AreaAtuacao = areasDeAtuacao;
+    }
+
+    private void PreencherPDIs()
+    {
+        var pdis = _context.PDIs
+            .Where(x => x.Ativo)
+            .OrderBy(x => x.Nome)
+            .Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Nome })
+            .ToList();
+
+        ViewBag.PDIs = pdis;
     }
 
     #endregion

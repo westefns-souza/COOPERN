@@ -9,24 +9,36 @@ public class CooperadoViewModel
 
     [Display(Name = "Nome completo")]
     [Required(ErrorMessage = "O {0} é obrigatório!")]
-    public string Nome { get; set; }
+    public string? Nome { get; set; }
 
     [Display(Name = "E-mail")]
     [Required(ErrorMessage = "O {0} é obrigatório!")]
     [EmailAddress(ErrorMessage = "O {0} deve ser válido!")]
-    public string Email { get; set; }
+    public string? Email { get; set; }
 
     [Display(Name = "Celular")]
     [Required(ErrorMessage = "O {0} é obrigatório!")]
-    public string Celular { get; set; }
+    public string? Celular { get; set; }
 
     [Display(Name = "Registro")]
     [Required(ErrorMessage = "O {0} é obrigatório!")]
-    public string Registro { get; set; }
+    public string? Registro { get; set; }
 
     [Display(Name = "Áreas de atuação")]
     [Required(ErrorMessage = "O {0} é obrigatório!")]
-    public List<AreaAtuacao> AreasAtuacao { get; set; }
+    public List<AreaAtuacao>? AreasAtuacao { get; set; }
+
+    [Display(Name = "PDI")]
+    [Required(ErrorMessage = "O {0} é obrigatório!")]
+    public List<PDI>? PDIs { get; set; }
+
+    [Display(Name = "Celular alternativo")]
+    [Required(ErrorMessage = "O {0} é obrigatório!")]
+    public string? CelularAlternativo { get; set; }
+
+    [Display(Name = "Nome para contato")]
+    [Required(ErrorMessage = "O {0} é obrigatório!")]
+    public string? NomeAlternativo { get; set; }
 
     [Display(Name = "Ativo")]
     public bool Ativo { get; set; }

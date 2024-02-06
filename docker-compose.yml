@@ -8,8 +8,6 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: "Postgres2024!"
       POSTGRES_DB: ecudacoopern
-    # networks:
-    #   - educacoopern_network
     ports:
       - "5432:5432"
     volumes:
@@ -21,30 +19,10 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: "westefns@outlook.com.br"
       PGADMIN_DEFAULT_PASSWORD: "PgAdmin2024!"
-    # networks:
-    #   - educacoopern_network
     ports:
       - "16543:80"
     depends_on:
       - postgres
-  
-  educacoopern:
-    image: ${DOCKER_REGISTRY-}educacoopern
-    container_name: educacoopern
-    build:
-      context: .
-      dockerfile: EDUCACOOPERN/Dockerfile
-    # networks:
-    #   - educacoopern_network
-    # ports:
-    #   - "8080:8080"
-    #   - "8081:8081"
-    depends_on:
-      - postgres
-
-# networks: 
-#   educacoopern_network:
-#     driver: bridge
 
 volumes:
   postgres_data:

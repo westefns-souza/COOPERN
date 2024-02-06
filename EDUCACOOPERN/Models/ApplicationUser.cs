@@ -11,4 +11,14 @@ public class ApplicationUser : IdentityUser
 
     [StringLength(24, ErrorMessage = "O {0} do usuário deve ter até 24 caracteres!")]
     public string? Registro { get; set; }
+
+    [Display(Name = "Celular alternativo")]
+    [Required(ErrorMessage = "O {0} é obrigatório!")]
+    [StringLength(24, ErrorMessage = "O {0} do usuário deve ter até 24 caracteres!")]
+    public string? CelularAlternativo { get; set; }
+
+    [Display(Name = "Nome para contato")]
+    [Required(ErrorMessage = "O {0} é obrigatório!")]
+    [StringLength(100, ErrorMessage = "O {0} do usuário deve ter até 24 caracteres!")]
+    public string? NomeAlternativo { get; set; }
 }
