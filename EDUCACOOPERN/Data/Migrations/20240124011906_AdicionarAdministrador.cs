@@ -17,8 +17,8 @@ namespace EDUCACOOPERN.Data.Migrations
 
             migrationBuilder.InsertData(
                table: "AspNetUsers",
-               columns: new[] {       "Id", "UserName", "NormalizedUserName", "Email", "NormalizedEmail", "EmailConfirmed", "PasswordHash", "SecurityStamp", "ConcurrencyStamp", "PhoneNumberConfirmed", "TwoFactorEnabled", "LockoutEnabled", "AccessFailedCount" },
-               values: new object[] { id, userName, userName.ToUpper(), email, email.ToUpper(), true, "AQAAAAIAAYagAAAAEOyYcOSWPisMYoRImW7qUlKnWORpHxx12bPfrXc7ry8OEyOeCqVVAJuYMouJG6J+kQ==", Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), true, false, true, 0 });
+               columns: new[] {       "Id", "UserName", "NormalizedUserName", "Email", "NormalizedEmail", "EmailConfirmed", "PasswordHash", "SecurityStamp", "ConcurrencyStamp", "PhoneNumberConfirmed", "TwoFactorEnabled", "LockoutEnabled", "AccessFailedCount", "Discriminator" },
+               values: new object[] { id, userName, userName.ToUpper(), email, email.ToUpper(), true, "AQAAAAIAAYagAAAAEOyYcOSWPisMYoRImW7qUlKnWORpHxx12bPfrXc7ry8OEyOeCqVVAJuYMouJG6J+kQ==", Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), true, false, true, 0, "ApplicationUser" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
