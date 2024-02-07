@@ -93,6 +93,67 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-6">
+            <div class="form-group">
+                <label asp-for="Cursos" class="control-label"></label>
+                <select asp-items="@ViewBag.Cursos" class="form-select curso">
+                    <option>-- Selecione um Curso --</option>
+                </select>
+                <span asp-validation-for="Cursos" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-6">
+            <div class="form-group">
+                <button type="button" class="btn btn-light mt-4 btn-adicionar-curso"><i class="bi bi-plus-circle me-1"></i>Adicionar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 mt-2">
+            @{
+                var possuiCursos = Model.Cursos.Any();
+            }
+
+            <div class="alert alert-info text-center cooperado-sem-curso @(possuiCursos ? "d-none" : "")">
+                O curso ainda não possui nenhum curso!
+            </div>
+
+            <table class="table table-striped cooperado-com-curso @(possuiCursos ? "" : "d-none")">
+                <thead>
+                    <tr class="row">
+                        <th class="col-10">Curso</th>
+                        <th class="col-2"></th>
+                    </tr>
+                </thead>
+                <tbody id="lista-curso">
+                    @if (possuiCursos)
+                    {
+                        foreach (var curso in Model.Cursos)
+                        {
+                            var index = Model.Cursos.IndexOf(curso);
+
+                            <tr class="row item-area-atuacao">
+                                <td class="col-10">
+                                    <input type="hidden" class="dados-item-curso" name="Cursos[@index].Id" value="@curso.Id" />
+                                    <input type="hidden" class="dados-item-curso" name="Cursos[@index].Nome" value="@curso.Nome" />
+
+                                    @curso.Nome
+                                </td>
+
+                                <td class="col-2 text-end">
+                                    <button type="button" class="btn btn-sm btn-danger btn-remover-curso" data-id-area-atuacao="@curso.Id"><i class="bi bi-trash"></i></button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <div class="row mt-2">
         <div class="col">
             <div class="form-group form-check">
@@ -119,5 +180,6 @@
     }
 
     <script src="~/js/area-atuacao.js" asp-append-version="true"></script>
+    <script src="~/js/curso.js" asp-append-version="true"></script>
 }
 

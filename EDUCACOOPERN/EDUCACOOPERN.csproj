@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <Content Remove="wwwroot\js\area-atuacao.js" />
+    <Content Remove="wwwroot\js\curso.js" />
     <Content Remove="wwwroot\js\pdi.js" />
   </ItemGroup>
 
@@ -35,6 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\js\curso.js" />
     <None Include="wwwroot\js\pdi.js" />
     <None Include="wwwroot\js\area-atuacao.js" />
   </ItemGroup>

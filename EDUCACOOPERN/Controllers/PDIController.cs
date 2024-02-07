@@ -41,12 +41,19 @@ public class PDIController : Controller
             .Select(x => x.AreaAtuacao)
             .ToList();
 
+        var cursos = _context.PDICursos
+            .Include(x => x.Curso)
+            .Where(x => x.PDId.Equals(id))
+            .Select(x => new PDICursoViewModel { Id = x.CursoId, Nome = x.Curso.Nome })
+            .ToList();
+
         var viewModel = new PDIViewModel()
         {
             Id = pdi.Id,
             Nome = pdi.Nome,
             AreasAtuacao = areasAtuacao,
             Ativo = pdi.Ativo,
+            Cursos = cursos,
         };
 
         return View(viewModel);
@@ -56,12 +63,14 @@ public class PDIController : Controller
     {
         var viewModel = new PDIViewModel
         {
-            Ativo = true,
+            Ativo = true
         };
 
         viewModel.AreasAtuacao ??= [];
+        viewModel.Cursos ??= [];
 
         PreencherAreasDeAtuacao();
+        PreencherCursos();
         return View(viewModel);
     }
 
@@ -72,7 +81,9 @@ public class PDIController : Controller
         if (!ModelState.IsValid)
         {
             viewModel.AreasAtuacao ??= [];
+            viewModel.Cursos ??= [];
             PreencherAreasDeAtuacao();
+            PreencherCursos();
             return View(viewModel);
         }
 
@@ -85,6 +96,7 @@ public class PDIController : Controller
         await _context.AddAsync(pdi);
         await _context.SaveChangesAsync();
         await _context.AddRangeAsync(viewModel.AreasAtuacao.Select(x => new PDIAreaAtuacao { PDIId = pdi.Id, AreaAtuacaoId = x.Id }).ToList());
+        await _context.AddRangeAsync(viewModel.Cursos.Select(x => new PDICurso { PDId = pdi.Id, CursoId = x.Id }).ToList());
         await _context.SaveChangesAsync();
 
         return RedirectToAction(nameof(Index));
@@ -109,15 +121,23 @@ public class PDIController : Controller
             .Select(x => x.AreaAtuacao)
             .ToList();
 
+        var cursos = _context.PDICursos
+            .Include(x => x.Curso)
+            .Where(x => x.PDId.Equals(id))
+            .Select(x => new PDICursoViewModel { Id = x.CursoId, Nome = x.Curso.Nome })
+            .ToList();
+
         var viewModel = new PDIViewModel()
         {
             Id = curso.Id,
             Nome = curso.Nome,
             AreasAtuacao = areasAtuacao,
             Ativo = curso.Ativo,
+            Cursos = cursos,
         };
 
         PreencherAreasDeAtuacao();
+        PreencherCursos();
         return View(viewModel);
     }
 
@@ -133,7 +153,9 @@ public class PDIController : Controller
         if (!ModelState.IsValid)
         {
             viewModel.AreasAtuacao ??= [];
+            viewModel.Cursos ??= [];
             PreencherAreasDeAtuacao();
+            PreencherCursos();
             return View(viewModel);
         }
 
@@ -146,9 +168,11 @@ public class PDIController : Controller
 
             _context.Update(pdi);
             _context.RemoveRange(await _context.PDIAreaAtuacoes.Where(x => x.PDIId.Equals(pdi.Id)).ToListAsync());
+            _context.RemoveRange(await _context.PDICursos.Where(x => x.PDId.Equals(pdi.Id)).ToListAsync());
             await _context.SaveChangesAsync();
 
             await _context.AddRangeAsync(viewModel.AreasAtuacao.Select(x => new PDIAreaAtuacao { PDIId = pdi.Id, AreaAtuacaoId = x.Id }).ToList());
+            await _context.AddRangeAsync(viewModel.Cursos.Select(x => new PDICurso { PDId = pdi.Id, CursoId = x.Id }).ToList());
             await _context.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
@@ -185,12 +209,19 @@ public class PDIController : Controller
             .Select(x => x.AreaAtuacao)
             .ToList();
 
+        var cursos = _context.PDICursos
+            .Include(x => x.Curso)
+            .Where(x => x.PDId.Equals(id))
+            .Select(x => new PDICursoViewModel { Id = x.CursoId, Nome = x.Curso.Nome })
+            .ToList();
+
         var viewModel = new PDIViewModel()
         {
             Id = pdi.Id,
             Nome = pdi.Nome,
             AreasAtuacao = areasAtuacao,
             Ativo = pdi.Ativo,
+            Cursos = cursos,
         };
 
         return View(viewModel);
@@ -204,6 +235,7 @@ public class PDIController : Controller
         if (pdi != null)
         {
             _context.RemoveRange(await _context.PDIAreaAtuacoes.Where(x => x.PDIId.Equals(pdi.Id)).ToListAsync());
+            _context.RemoveRange(await _context.PDICursos.Where(x => x.PDId.Equals(pdi.Id)).ToListAsync());
             _context.Remove(pdi);
             await _context.SaveChangesAsync();
         }
@@ -227,6 +259,17 @@ public class PDIController : Controller
             .ToList();
 
         ViewBag.AreaAtuacao = areasDeAtuacao;
+    }
+
+    private void PreencherCursos()
+    {
+        var cursos = _context.Cursos
+            .Where(x => x.Ativo)
+            .OrderBy(x => x.Nome)
+            .Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Nome })
+            .ToList();
+
+        ViewBag.Cursos = cursos;
     }
 
     #endregion
