@@ -1,0 +1,74 @@
+﻿@using System.Globalization
+@model EDUCACOOPERN.Models.Aula
+
+@{
+    ViewData["Title"] = "Aulas";
+
+    var dataInicial = Model.DataInicio.ToString("dd/MM/yyyy HH:mm");
+    var dataFinal = Model.DataFim.ToString("dd/MM/yyyy HH:mm");
+    var cultura = new CultureInfo("pt-BR");
+}
+
+<div class="row">
+    <div class="col-10">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+
+    <div class="col text-end">
+        <h4 class="mt-2">Detalhes</h4>
+    </div>
+</div>
+
+<hr />
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Curso)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Curso.Nome)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Professor)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Professor.FullName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DataInicio)
+        </dt>
+        <dd class="col-sm-10">
+            @dataInicial
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DataFim)
+        </dt>
+        <dd class="col-sm-10">
+            @dataFinal
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Receita)
+        </dt>
+        <dd class="col-sm-10">
+            @(Model.Receita.HasValue ? Model.Receita.Value.ToString("C", cultura) : 0.0m.ToString("C", cultura))
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+    </dl>
+</div>
+
+<div class="row">
+    <div class="col">
+        @if (User.IsInRole("Coordenador"))
+        {
+            <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary"><i class="bi bi-pencil me-1"></i>Editar</a>
+            <a asp-action="Delete" asp-route-id="@Model?.Id" class="btn btn-danger"><i class="bi bi-trash"></i>Deletar</a>
+        }
+        <a asp-action="Index" class="btn btn-light"><i class="bi bi-arrow-left-circle me-1"></i>Voltar</a>
+    </div>
+</div>

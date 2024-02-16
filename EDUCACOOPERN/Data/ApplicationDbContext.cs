@@ -20,4 +20,6 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<PDIAreaAtuacao> PDIAreaAtuacoes { get; set; } = default!;
     public DbSet<UsuarioPDI> UsuarioPDIs { get; set; } = default!;
     public DbSet<PDICurso> PDICursos { get; set; } = default!;
+    public DbSet<Custos> Custos { get; set; } = default!;
+    public DbSet<Aula> Aulas { get; set; } = default!;
 }

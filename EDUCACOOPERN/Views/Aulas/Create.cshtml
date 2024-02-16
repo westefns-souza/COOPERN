@@ -1,0 +1,75 @@
+﻿@model EDUCACOOPERN.Models.Aula
+
+@{
+    ViewData["Title"] = "Aulas";
+}
+
+<div class="row">
+    <div class="col-6">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+    <div class="col text-end">
+        <h4 class="mt-2">Cadastro</h4>
+    </div>
+</div>
+
+<hr />
+
+<form asp-action="Create">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="CursoId" class="control-label"></label>
+                <select asp-for="CursoId" class="form-select" asp-items="ViewBag.CursoId"></select>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="ProfessorId" class="control-label"></label>
+                <select asp-for="ProfessorId" class="form-select" asp-items="ViewBag.ProfessorId"></select>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="DataInicio" class="control-label"></label>
+                <input asp-for="DataInicio" class="form-control" />
+                <span asp-validation-for="DataInicio" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="DataFim" class="control-label"></label>
+                <input asp-for="DataFim" class="form-control" />
+                <span asp-validation-for="DataFim" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="Receita" class="control-label"></label>
+                <input asp-for="Receita" class="form-control" />
+                <span asp-validation-for="Receita" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col">
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-floppy me-1"></i>Cadastrar</button>
+                <a asp-action="Index" class="btn btn-light"><i class="bi bi-arrow-left-circle me-1"></i>Voltar</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

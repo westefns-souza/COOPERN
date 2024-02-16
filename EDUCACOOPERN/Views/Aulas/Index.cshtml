@@ -1,0 +1,103 @@
+﻿@using System.Globalization
+@model IEnumerable<EDUCACOOPERN.Models.Aula>
+
+@{
+    ViewData["Title"] = "Aulas";
+}
+
+<div class="row">
+    <div class="col-8">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+    
+    @if (User.IsInRole("Coordenador"))
+    {
+        <div class="col text-end">
+            <a asp-action="Create" class="btn btn-primary mt-3"><i class="bi bi-plus-circle me-1"></i>Cadastrar</a>
+        </div>
+    }
+</div>
+
+<hr />
+
+@if (Model != null && Model.Any())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Curso)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Professor)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DataInicio)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DataFim)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Receita)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Status)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var dataInicial = item.DataInicio.ToLocalTime().ToString("dd/MM/yyyy HH:mm");
+                var dataFinal = item.DataFim.ToLocalTime().ToString("dd/MM/yyyy HH:mm");
+                var cultura = new CultureInfo("pt-BR");
+
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Curso.Nome)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Professor.FullName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => dataInicial)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => dataFinal)
+                    </td>
+                    <td>
+                        @(item.Receita.HasValue ? item.Receita.Value.ToString("C", cultura) : 0.0m.ToString("C", cultura))
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Status)
+                    </td>
+
+                    <td class="col-2 text-end">
+                        @if (User.IsInRole("Coordenador"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-light"><i class="bi bi-pencil"></i></a>
+                        }
+                        
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-light"><i class="bi bi-eye"></i></a>
+                        
+                        @if (User.IsInRole("Coordenador"))
+                        {
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="row">
+        <div class="col">
+            <div class="alert alert-info text-center">
+                Ainda não há nenhuma aula cadastrado!
+            </div>
+        </div>
+    </div>
+}
