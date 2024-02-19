@@ -33,7 +33,10 @@ public class Aula
     public decimal? Receita { get; set; }
 
     public List<Custos>? Custos { get; set; }
+    public List<Matricula>? Matriculas { get; set; }
 
     [Required(ErrorMessage = "O {0} do curso é obrigatória!")]
     public EStatusAula Status { get; set; }
+
+
 }

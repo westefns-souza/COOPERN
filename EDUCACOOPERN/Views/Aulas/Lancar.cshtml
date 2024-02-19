@@ -1,0 +1,68 @@
+﻿@using System.Globalization
+@model EDUCACOOPERN.Models.Aula
+
+@{
+    ViewData["Title"] = "Aulas";
+
+    var dataInicial = Model.DataInicio.ToString("dd/MM/yyyy HH:mm");
+    var dataFinal = Model.DataFim.ToString("dd/MM/yyyy HH:mm");
+    var cultura = new CultureInfo("pt-BR");
+}
+
+<div class="row">
+    <div class="col-4">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+
+    <div class="col text-end">
+        <h4 class="mt-2">Lançamento de notas e frequência</h4>
+    </div>
+</div>
+
+<hr />
+
+<form method="post">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Compareceu?</th>
+                <th>Pré teste</th>
+                <th>Pós teste</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var matricula in Model.Matriculas)
+            {
+                var index = Model.Matriculas.IndexOf(matricula);
+
+                <tr>
+                    <td>
+                        <input type="hidden" name="Matriculas[@index].Id" value="@matricula.Id" />
+                        <input type="hidden" name="Matriculas[@index].AlunoId" value="@matricula.AlunoId" />
+                        <input type="hidden" name="Matriculas[@index].AulaId" value="@matricula.AulaId" />
+                        @matricula.Aluno.FullName
+                    </td>
+                    <td>
+                        <div class="form-group form-check">
+                            <input class="form-check-input" name="Matriculas[@index].Compareceu" type="checkbox" checked value="true" />
+                        </div>
+                    </td>
+                    <td>
+                        <input class="form-control" name="Matriculas[@index].NotaPre" value="@matricula.NotaPre" />
+                    </td>
+                    <td>
+                        <input class="form-control" name="Matriculas[@index].NotaPos" value="@matricula.NotaPos" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="row">
+        <div class="col">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-pencil me-1"></i>Salvar</button>
+            <a asp-action="Details" asp-route-id="@Model?.Id" class="btn btn-light"><i class="bi bi-arrow-left-circle me-1"></i>Voltar</a>
+        </div>
+    </div>
+</form>

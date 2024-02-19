@@ -42,6 +42,8 @@ public class AulasController : Controller
         var aula = await _context.Aulas
             .Include(a => a.Curso)
             .Include(a => a.Professor)
+            .Include(a => a.Matriculas)
+            .ThenInclude(x => x.Aluno)
             .FirstOrDefaultAsync(m => m.Id == id);
 
         if (aula == null)
@@ -53,6 +55,42 @@ public class AulasController : Controller
         aula.DataFim = aula.DataFim.ToLocalTime();
 
         return View(aula);
+    }
+
+    public async Task<IActionResult> Lancar(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var aula = await _context.Aulas
+            .Include(a => a.Curso)
+            .Include(a => a.Professor)
+            .Include(a => a.Matriculas)
+            .ThenInclude(x => x.Aluno)
+            .FirstOrDefaultAsync(m => m.Id == id);
+
+        if (aula == null)
+        {
+            return NotFound();
+        }
+
+        aula.DataInicio = aula.DataInicio.ToLocalTime();
+        aula.DataFim = aula.DataFim.ToLocalTime();
+
+        return View(aula);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Lancar(IList<Matricula> matriculas)
+    {
+        _context.UpdateRange(matriculas);
+        _context.SaveChanges();
+
+        var aulaId = matriculas.Select(x => x.AulaId).FirstOrDefault();
+
+        return RedirectToAction("Details", new {id = aulaId });
     }
 
     // GET: Aulas/Create
@@ -203,7 +241,7 @@ public class AulasController : Controller
     {
         return _context.Aulas.Any(e => e.Id == id);
     }
-    
+
     private async Task PreencherViewBagCursoAsync(int? id = null)
     {
         var cursos = await _context.Cursos

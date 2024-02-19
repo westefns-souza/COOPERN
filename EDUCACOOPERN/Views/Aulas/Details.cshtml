@@ -62,12 +62,66 @@
     </dl>
 </div>
 
+@if (User.IsInRole("Coordenador") || User.IsInRole("Professor"))
+{
+    <div class="row">
+        <div class="col-10">
+            <h2>Cooperados</h2>
+        </div>
+
+        <div class="col text-end">
+            <a asp-action="Lancar" asp-route-id="@Model.Id" class="btn btn-primary mt-3"><i class="bi bi-plus-circle me-1"></i>frequência e notas</a>
+        </div>
+    </div>
+
+    <hr />
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Compareceu?</th>
+                <th>Pré teste</th>
+                <th>Pós teste</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var matricula in Model.Matriculas)
+            {
+                <tr>
+                    <td>
+                        @matricula.Aluno.FullName
+                    </td>
+                    <td>
+                        @(matricula.Compareceu ? "Sim" : "Não")
+                    </td>
+                    <td>
+                        @matricula.NotaPre
+                    </td>
+                    <td>
+                        @matricula.NotaPos
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
 @if (User.IsInRole("Coordenador"))
 {
     <div class="row">
         <div class="col">
             <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary"><i class="bi bi-pencil me-1"></i>Editar</a>
             <a asp-action="Delete" asp-route-id="@Model?.Id" class="btn btn-danger"><i class="bi bi-trash"></i>Deletar</a>
+            <a asp-action="Index" class="btn btn-light"><i class="bi bi-arrow-left-circle me-1"></i>Voltar</a>
+        </div>
+    </div>
+}
+
+@if (User.IsInRole("Professor"))
+{
+    <div class="row">
+        <div class="col">
             <a asp-action="Index" class="btn btn-light"><i class="bi bi-arrow-left-circle me-1"></i>Voltar</a>
         </div>
     </div>
