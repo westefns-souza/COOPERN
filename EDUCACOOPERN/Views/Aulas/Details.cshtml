@@ -62,13 +62,26 @@
     </dl>
 </div>
 
-<div class="row">
-    <div class="col">
-        @if (User.IsInRole("Coordenador"))
-        {
+@if (User.IsInRole("Coordenador"))
+{
+    <div class="row">
+        <div class="col">
             <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary"><i class="bi bi-pencil me-1"></i>Editar</a>
             <a asp-action="Delete" asp-route-id="@Model?.Id" class="btn btn-danger"><i class="bi bi-trash"></i>Deletar</a>
-        }
-        <a asp-action="Index" class="btn btn-light"><i class="bi bi-arrow-left-circle me-1"></i>Voltar</a>
+            <a asp-action="Index" class="btn btn-light"><i class="bi bi-arrow-left-circle me-1"></i>Voltar</a>
+        </div>
     </div>
-</div>
+}
+
+@if (User.IsInRole("Cooperado"))
+{
+    <form asp-action="Create" asp-controller="Matriculas">
+        <input type="hidden" name="AulaId" value="@Model?.Id" />
+        <div class="row">
+            <div class="col">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-pencil me-1"></i>Matricular</button>
+                <a asp-action="Index" class="btn btn-light"><i class="bi bi-arrow-left-circle me-1"></i>Voltar</a>
+            </div>
+        </div>
+    </form>
+}

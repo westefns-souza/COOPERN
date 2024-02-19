@@ -1,0 +1,204 @@
+﻿using EDUCACOOPERN.Data;
+using EDUCACOOPERN.Data.Migrations;
+using EDUCACOOPERN.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+
+namespace EDUCACOOPERN.Controllers;
+
+public class MatriculasController : Controller
+{
+    private readonly ApplicationDbContext _context;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public MatriculasController(
+        ApplicationDbContext context,
+        UserManager<ApplicationUser> userManager
+    )
+    {
+        _context = context;
+        _userManager = userManager;
+    }
+
+    public async Task<IActionResult> Index()
+    {
+        var matriculas = await _context.Matricula
+            .Include(m => m.Aluno)
+            .Include(m => m.Aula)
+            .ToListAsync();
+
+        return View(matriculas);
+    }
+
+    public async Task<IActionResult> Details(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var matricula = await _context.Matricula
+            .Include(m => m.Aluno)
+            .Include(m => m.Aula)
+            .ThenInclude(x => x.Curso)
+            .Include(m => m.Aula)
+            .ThenInclude(x => x.Professor)
+            .FirstOrDefaultAsync(m => m.Id == id);
+
+        if (matricula == null)
+        {
+            return NotFound();
+        }
+
+        matricula.Aula.DataInicio = matricula.Aula.DataInicio.ToLocalTime();
+        matricula.Aula.DataFim = matricula.Aula.DataFim.ToLocalTime();
+
+        return View(matricula);
+    }
+
+    public async Task<IActionResult> CreateAsync()
+    {
+        await PreencherAlunosAsync();
+        await PrencherAulasAsync();
+
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create([Bind("AulaId")] Matricula matricula)
+    {
+        matricula.AlunoId = _context.Usuario
+            .FirstOrDefault(x => x.UserName.Equals(User.Identity.Name))
+            .Id;
+
+        if (!ModelState.IsValid)
+        {
+            await PreencherAlunosAsync(matricula.AlunoId);
+            await PrencherAulasAsync(matricula.AulaId);
+            return View(matricula);
+        }
+        
+        _context.Add(matricula);
+        await _context.SaveChangesAsync();
+        return RedirectToAction(nameof(Details), new { id = matricula.Id });
+    }
+
+    // GET: Matriculas/Edit/5
+    public async Task<IActionResult> Edit(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var matricula = await _context.Matricula.FindAsync(id);
+        if (matricula == null)
+        {
+            return NotFound();
+        }
+
+        await PreencherAlunosAsync(matricula.AlunoId);
+        await PrencherAulasAsync(matricula.AulaId);
+        return View(matricula);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(int id, [Bind("Id,AulaId,AlunoId,NotaPre,NotaPos,Compareceu")] Matricula matricula)
+    {
+        if (id != matricula.Id)
+        {
+            return NotFound();
+        }
+
+        if (ModelState.IsValid)
+        {
+            try
+            {
+                _context.Update(matricula);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!MatriculaExists(matricula.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        await PreencherAlunosAsync(matricula.AlunoId);
+        await PrencherAulasAsync(matricula.AulaId);
+        return View(matricula);
+    }
+
+    public async Task<IActionResult> Delete(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var matricula = await _context.Matricula
+            .Include(m => m.Aluno)
+            .Include(m => m.Aula)
+            .FirstOrDefaultAsync(m => m.Id == id);
+
+        if (matricula == null)
+        {
+            return NotFound();
+        }
+
+        return View(matricula);
+    }
+
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        var matricula = await _context.Matricula.FindAsync(id);
+        if (matricula != null)
+        {
+            _context.Matricula.Remove(matricula);
+        }
+
+        await _context.SaveChangesAsync();
+        return RedirectToAction(nameof(Index));
+    }
+
+    private bool MatriculaExists(int id)
+    {
+        return _context.Matricula.Any(e => e.Id == id);
+    }
+
+    private async Task PreencherAlunosAsync(string? id = null)
+    {
+        var idusuarios = _context.UserRoles
+            .Where(x => x.RoleId.Equals("3"))
+            .Select(x => x.UserId)
+            .ToList();
+
+        var usuarios = await _userManager.Users
+            .Where(x => idusuarios.Contains(x.Id))
+            .OrderBy(x => x.Email)
+            .ToListAsync();
+
+        ViewData["AlunoId"] = new SelectList(usuarios, "Id", "Id", id);
+    }
+
+    private async Task PrencherAulasAsync(int? id = null)
+    {
+        var aulas = await _context.Aulas
+            .ToListAsync();
+
+        ViewData["AulaId"] = new SelectList(aulas, "Id", "ProfessorId", id);
+    }
+}
