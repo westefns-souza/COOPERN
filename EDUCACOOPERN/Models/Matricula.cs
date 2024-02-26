@@ -28,4 +28,7 @@ public class Matricula
 
     [Display(Name = "Compareceu")]
     public bool Compareceu { get; set; }
+
+    [Display(Name = "Situação")]
+    public EStatusMatricula Status { get; set; }
 }

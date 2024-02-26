@@ -37,6 +37,4 @@ public class Aula
 
     [Required(ErrorMessage = "O {0} do curso é obrigatória!")]
     public EStatusAula Status { get; set; }
-
-
 }

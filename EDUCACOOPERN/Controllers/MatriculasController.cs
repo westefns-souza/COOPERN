@@ -80,13 +80,14 @@ public class MatriculasController : Controller
             await PrencherAulasAsync(matricula.AulaId);
             return View(matricula);
         }
-        
+
+        matricula.Status = EStatusMatricula.Matriculado;
         _context.Add(matricula);
+        
         await _context.SaveChangesAsync();
         return RedirectToAction(nameof(Details), new { id = matricula.Id });
     }
 
-    // GET: Matriculas/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
         if (id == null)
@@ -165,9 +166,11 @@ public class MatriculasController : Controller
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
         var matricula = await _context.Matricula.FindAsync(id);
+        
         if (matricula != null)
         {
-            _context.Matricula.Remove(matricula);
+            matricula.Status = EStatusMatricula.Cancelado;
+            _context.Update(matricula);
         }
 
         await _context.SaveChangesAsync();

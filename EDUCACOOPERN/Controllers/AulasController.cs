@@ -20,7 +20,6 @@ public class AulasController : Controller
         _userManager = userManager;
     }
 
-    // GET: Aulas
     public async Task<IActionResult> Index()
     {
         var aulas = await _context.Aulas
@@ -31,7 +30,6 @@ public class AulasController : Controller
         return View(aulas);
     }
 
-    // GET: Aulas/Details/5
     public async Task<IActionResult> Details(int? id)
     {
         if (id == null)
@@ -42,7 +40,7 @@ public class AulasController : Controller
         var aula = await _context.Aulas
             .Include(a => a.Curso)
             .Include(a => a.Professor)
-            .Include(a => a.Matriculas)
+            .Include(a => a.Matriculas.Where(x => !x.Status.Equals(EStatusMatricula.Cancelado)))
             .ThenInclude(x => x.Aluno)
             .FirstOrDefaultAsync(m => m.Id == id);
 
@@ -67,7 +65,7 @@ public class AulasController : Controller
         var aula = await _context.Aulas
             .Include(a => a.Curso)
             .Include(a => a.Professor)
-            .Include(a => a.Matriculas)
+            .Include(a => a.Matriculas.Where(x => !x.Status.Equals(EStatusMatricula.Cancelado)))
             .ThenInclude(x => x.Aluno)
             .FirstOrDefaultAsync(m => m.Id == id);
 
@@ -85,15 +83,33 @@ public class AulasController : Controller
     [HttpPost]
     public async Task<IActionResult> Lancar(IList<Matricula> matriculas)
     {
-        _context.UpdateRange(matriculas);
-        _context.SaveChanges();
+        foreach (var matricula in matriculas)
+        {
+            if (matricula.Compareceu && matricula.NotaPos >= 6)
+            {
+                matricula.Status = EStatusMatricula.Aprovado;
+            }
+            else if (matricula.Compareceu && matricula.NotaPos <= 6)
+            {
+                matricula.Status = EStatusMatricula.Reprovado;
+            }
+            else
+            {
+                matricula.NotaPre = 0;
+                matricula.NotaPos = 0;
+                matricula.Status = EStatusMatricula.Reprovado;
+            }
+
+            _context.Update(matricula);
+        }
+
+        await _context.SaveChangesAsync();
 
         var aulaId = matriculas.Select(x => x.AulaId).FirstOrDefault();
 
-        return RedirectToAction("Details", new {id = aulaId });
+        return RedirectToAction("Details", new { id = aulaId });
     }
 
-    // GET: Aulas/Create
     [Authorize(Roles = "Coordenador")]
     public async Task<IActionResult> CreateAsync()
     {
@@ -103,9 +119,6 @@ public class AulasController : Controller
         return View();
     }
 
-    // POST: Aulas/Create
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = "Coordenador")]
@@ -127,7 +140,6 @@ public class AulasController : Controller
         return View(aula);
     }
 
-    // GET: Aulas/Edit/5
     [Authorize(Roles = "Coordenador")]
     public async Task<IActionResult> Edit(int? id)
     {
@@ -136,7 +148,9 @@ public class AulasController : Controller
             return NotFound();
         }
 
-        var aula = await _context.Aulas.FindAsync(id);
+        var aula = await _context.Aulas
+            .FindAsync(id);
+
         if (aula == null)
         {
             return NotFound();
@@ -151,9 +165,6 @@ public class AulasController : Controller
         return View(aula);
     }
 
-    // POST: Aulas/Edit/5
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = "Coordenador")]
@@ -195,7 +206,6 @@ public class AulasController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // GET: Aulas/Delete/5
     [Authorize(Roles = "Coordenador")]
     public async Task<IActionResult> Delete(int? id)
     {
@@ -220,7 +230,6 @@ public class AulasController : Controller
         return View(aula);
     }
 
-    // POST: Aulas/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = "Coordenador")]

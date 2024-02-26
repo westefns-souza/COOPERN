@@ -3,5 +3,5 @@
 public enum EClassificacao
 {
     Material,
-    Transporte
+    Professor
 }
