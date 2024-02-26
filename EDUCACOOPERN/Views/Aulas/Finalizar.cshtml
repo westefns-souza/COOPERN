@@ -3,7 +3,6 @@
 
 @{
     ViewData["Title"] = "Aulas";
-
     var dataInicial = Model.DataInicio.ToString("dd/MM/yyyy HH:mm");
     var dataFinal = Model.DataFim.ToString("dd/MM/yyyy HH:mm");
     var cultura = new CultureInfo("pt-BR");
@@ -15,11 +14,13 @@
     </div>
 
     <div class="col text-end">
-        <h4 class="mt-2">Detalhes</h4>
+        <h4 class="mt-2">Apagar</h4>
     </div>
 </div>
 
 <hr />
+
+<h3>Você cem certeza que quer finalizar essa aula?</h3>
 
 <div>
     <dl class="row">
@@ -68,13 +69,6 @@
         <div class="col-10">
             <h2>Cooperados</h2>
         </div>
-
-        @if (Model.Matriculas.Any() && (Model.Status == EStatusAula.Aberta || Model.Status == EStatusAula.Pendente))
-        {
-            <div class="col text-end">
-                <a asp-action="Lancar" asp-route-id="@Model.Id" class="btn btn-primary mt-3"><i class="bi bi-plus-circle me-1"></i>frequência e notas</a>
-            </div>
-        }
     </div>
 
     <hr />
@@ -165,39 +159,9 @@
     }
 }
 
-@if (User.IsInRole("Coordenador"))
-{
-    <div class="row">
-        <div class="col">
-            @if (Model.Status == EStatusAula.Aberta || Model.Status == EStatusAula.Pendente)
-            {
-                <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary"><i class="bi bi-pencil me-1"></i>Editar</a>
-                <a asp-action="Finalizar" asp-route-id="@Model?.Id" class="btn btn-primary"><i class="bi bi-pencil me-1"></i>Finalizar</a>
-                <a asp-action="Delete" asp-route-id="@Model?.Id" class="btn btn-danger"><i class="bi bi-trash"></i>Deletar</a>
-            }
-            <a asp-action="Index" class="btn btn-light"><i class="bi bi-arrow-left-circle me-1"></i>Voltar</a>
-        </div>
-    </div>
-}
 
-@if (User.IsInRole("Professor"))
-{
-    <div class="row">
-        <div class="col">
-            <a asp-action="Index" class="btn btn-light"><i class="bi bi-arrow-left-circle me-1"></i>Voltar</a>
-        </div>
-    </div>
-}
-
-@if (User.IsInRole("Cooperado"))
-{
-    <form asp-action="Create" asp-controller="Matriculas">
-        <input type="hidden" name="AulaId" value="@Model?.Id" />
-        <div class="row">
-            <div class="col">
-                <button type="submit" class="btn btn-primary"><i class="bi bi-pencil me-1"></i>Matricular</button>
-                <a asp-action="Index" class="btn btn-light"><i class="bi bi-arrow-left-circle me-1"></i>Voltar</a>
-            </div>
-        </div>
-    </form>
-}
+<form asp-action="Finalizar">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-primary"><i class="bi bi-check"></i>Finalizar</button>
+    <a asp-action="Index" class="btn btn-light"><i class="bi bi-arrow-left-circle me-1"></i>Voltar</a>
+</form>

@@ -42,6 +42,7 @@ public class AulasController : Controller
             .Include(a => a.Professor)
             .Include(a => a.Matriculas.Where(x => !x.Status.Equals(EStatusMatricula.Cancelado)))
             .ThenInclude(x => x.Aluno)
+            .Include(a => a.Custos)
             .FirstOrDefaultAsync(m => m.Id == id);
 
         if (aula == null)
@@ -113,16 +114,21 @@ public class AulasController : Controller
     [Authorize(Roles = "Coordenador")]
     public async Task<IActionResult> CreateAsync()
     {
+        var viewModel = new Aula()
+        {
+            Custos = []
+        };
+
         await PreencherViewBagCursoAsync();
         await PreencherViewBagProfessorAsync();
 
-        return View();
+        return View(viewModel);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = "Coordenador")]
-    public async Task<IActionResult> Create([Bind("Id,CursoId,ProfessorId,DataInicio,DataFim,Receita,Status")] Aula aula)
+    public async Task<IActionResult> Create(Aula aula)
     {
         if (ModelState.IsValid)
         {
@@ -133,6 +139,8 @@ public class AulasController : Controller
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+        aula.Custos ??= [];
 
         await PreencherViewBagCursoAsync(aula.CursoId);
         await PreencherViewBagProfessorAsync(aula.ProfessorId);
@@ -149,7 +157,8 @@ public class AulasController : Controller
         }
 
         var aula = await _context.Aulas
-            .FindAsync(id);
+            .Include(x => x.Custos)
+            .FirstOrDefaultAsync(x => x.Id == id);
 
         if (aula == null)
         {
@@ -168,7 +177,7 @@ public class AulasController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = "Coordenador")]
-    public async Task<IActionResult> Edit(int id, [Bind("Id,CursoId,ProfessorId,DataInicio,DataFim,Receita,Status")] Aula aula)
+    public async Task<IActionResult> Edit(int id, Aula aula)
     {
         if (id != aula.Id)
         {
@@ -187,7 +196,7 @@ public class AulasController : Controller
         {
             aula.DataInicio = aula.DataInicio.ToUniversalTime();
             aula.DataFim = aula.DataFim.ToUniversalTime();
-
+            _context.RemoveRange(await _context.Custos.Where(x => x.AulaId == aula.Id).ToListAsync());
             _context.Update(aula);
             await _context.SaveChangesAsync();
         }
@@ -230,6 +239,33 @@ public class AulasController : Controller
         return View(aula);
     }
 
+    [Authorize(Roles = "Coordenador")]
+    public async Task<IActionResult> Finalizar(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var aula = await _context.Aulas
+            .Include(a => a.Curso)
+            .Include(a => a.Professor)
+            .Include(a => a.Matriculas.Where(x => !x.Status.Equals(EStatusMatricula.Cancelado)))
+            .ThenInclude(x => x.Aluno)
+            .Include(a => a.Custos)
+            .FirstOrDefaultAsync(m => m.Id == id);
+
+        if (aula == null)
+        {
+            return NotFound();
+        }
+
+        aula.DataInicio = aula.DataInicio.ToLocalTime();
+        aula.DataFim = aula.DataFim.ToLocalTime();
+
+        return View(aula);
+    }
+
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = "Coordenador")]
@@ -239,7 +275,25 @@ public class AulasController : Controller
 
         if (aula != null)
         {
-            _context.Aulas.Remove(aula);
+            aula.Status = EStatusAula.Cancelada;
+            _context.Update(aula);
+        }
+
+        await _context.SaveChangesAsync();
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpPost, ActionName("Finalizar")]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Coordenador")]
+    public async Task<IActionResult> FinalizarConfirmed(int id)
+    {
+        var aula = await _context.Aulas.FindAsync(id);
+
+        if (aula != null)
+        {
+            aula.Status = EStatusAula.Finalizada;
+            _context.Update(aula);
         }
 
         await _context.SaveChangesAsync();
