@@ -85,7 +85,7 @@ public class MatriculasController : Controller
         _context.Add(matricula);
         
         await _context.SaveChangesAsync();
-        return RedirectToAction(nameof(Details), new { id = matricula.Id });
+        return RedirectToAction(nameof(Details), "Aulas", new { id = matricula.AlunoId });
     }
 
     public async Task<IActionResult> Edit(int? id)
