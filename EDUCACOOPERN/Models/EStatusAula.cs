@@ -4,6 +4,7 @@ public enum EStatusAula
 {
     Aberta,
     Cancelada,
+    Realizada,
     Pendente,
     Finalizada
 }

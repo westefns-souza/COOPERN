@@ -2,7 +2,7 @@
 @model EDUCACOOPERN.Models.Aula
 
 @{
-    ViewData["Title"] = "Aulas";
+    ViewData["Title"] = "Planejamento do curso";
 
     var dataInicial = Model.DataInicio.ToString("dd/MM/yyyy HH:mm");
     var dataFinal = Model.DataFim.ToString("dd/MM/yyyy HH:mm");
@@ -47,12 +47,18 @@
         <dd class="col-sm-10">
             @dataFinal
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Receita)
-        </dt>
-        <dd class="col-sm-10">
-            @(Model.Receita.HasValue ? Model.Receita.Value.ToString("C", cultura) : 0.0m.ToString("C", cultura))
-        </dd>
+
+        @if (Model.Status == EStatusAula.Pendente || Model.Status == EStatusAula.Finalizada)
+        {
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Receita)
+            </dt>
+
+            <dd class="col-sm-10">
+                @(Model.Receita.HasValue ? Model.Receita.Value.ToString("C", cultura) : 0.0m.ToString("C", cultura))
+            </dd>
+        }
+
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Status)
         </dt>
@@ -65,19 +71,20 @@
 @if (User.IsInRole("Coordenador") || User.IsInRole("Professor"))
 {
     <div class="row">
-        <div class="col-10">
+        <div class="col-8">
             <h2>Cooperados</h2>
         </div>
 
-        @if (Model.Matriculas.Any() && (Model.Status == EStatusAula.Aberta || Model.Status == EStatusAula.Pendente))
+        @if (Model.Matriculas.Any() && (Model.Status == EStatusAula.Aberta || Model.Status == EStatusAula.Realizada))
         {
             <div class="col text-end">
-                <a asp-action="Lancar" asp-route-id="@Model.Id" class="btn btn-primary mt-3"><i class="bi bi-plus-circle me-1"></i>frequência e notas</a>
+                <a asp-action="Lancar" asp-route-id="@Model.Id" class="btn btn-primary mt-3"><i class="bi bi-plus-circle me-1"></i>Frequência e notas</a>
             </div>
         }
     </div>
 
     <hr />
+
     @if (Model.Matriculas.Any())
     {
         <table class="table table-striped">
@@ -117,51 +124,54 @@
     else
     {
         <div class="alert alert-info">
-            A aula ainda não possui nenhum custo lançado!
+            A aula ainda não possui nenhuma matrícula!
         </div>
     }
 
-    <div class="row">
-        <div class="col-12">
-            <h2>Custos</h2>
-        </div>
-    </div>
-
-    <hr />
-
-    @if (Model.Custos.Any())
+    @if (User.IsInRole("Coordenador") && (Model.Status == EStatusAula.Pendente || Model.Status == EStatusAula.Finalizada))
     {
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Classificação</th>
-                    <th>Valor</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var custo in Model.Custos)
-                {
+        <div class="row">
+            <div class="col-12">
+                <h2>Custos</h2>
+            </div>
+        </div>
+
+        <hr />
+
+        @if (Model.Custos != null && Model.Custos.Any())
+        {
+            <table class="table table-striped">
+                <thead>
                     <tr>
-                        <td>
-                            @custo.Classificacao
-                        </td>
-                        <td>
-                            @custo.Valor.ToString("C", cultura)
-                        </td>
+                        <th>Classificação</th>
+                        <th>Valor</th>
                     </tr>
-                }
+                </thead>
+                <tbody>
+                    @foreach (var custo in Model.Custos)
+                    {
+                        <tr>
+                            <td>
+                                @custo.Classificacao
+                            </td>
+                            <td>
+                                @custo.Valor.ToString("C", cultura)
+                            </td>
+                        </tr>
+                    }
 
-                <tr>
-                    <td colspan="2">Total: @Model.Custos.Sum(x => x.Valor).ToString("C", cultura)</td>
-                </tr>
-            </tbody>
-        </table>
-    }
-    else
-    {
-        <div class="alert alert-info">
-            A aula ainda não possui nenhum custo lançado!
-        </div>
+                    <tr>
+                        <td colspan="2">Total: @Model.Custos.Sum(x => x.Valor).ToString("C", cultura)</td>
+                    </tr>
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                A aula ainda não possui nenhum custo lançado!
+            </div>
+        }
     }
 }
 
@@ -169,12 +179,20 @@
 {
     <div class="row">
         <div class="col">
-            @if (Model.Status == EStatusAula.Aberta || Model.Status == EStatusAula.Pendente)
+            @if (Model.Status == EStatusAula.Aberta)
             {
                 <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary"><i class="bi bi-pencil me-1"></i>Editar</a>
-                <a asp-action="Finalizar" asp-route-id="@Model?.Id" class="btn btn-primary"><i class="bi bi-pencil me-1"></i>Finalizar</a>
                 <a asp-action="Delete" asp-route-id="@Model?.Id" class="btn btn-danger"><i class="bi bi-trash"></i>Deletar</a>
             }
+            else if (Model.Status == EStatusAula.Realizada)
+            {
+                <a asp-action="Custos" asp-route-id="@Model?.Id" class="btn btn-primary"><i class="bi bi-pencil me-1"></i>Custos</a>
+            }
+            else if (Model.Status == EStatusAula.Pendente)
+            {
+                <a asp-action="Finalizar" asp-route-id="@Model?.Id" class="btn btn-primary"><i class="bi bi-pencil me-1"></i>Finalizar</a>
+            }
+
             <a asp-action="Index" class="btn btn-light"><i class="bi bi-arrow-left-circle me-1"></i>Voltar</a>
         </div>
     </div>
@@ -195,7 +213,10 @@
         <input type="hidden" name="AulaId" value="@Model?.Id" />
         <div class="row">
             <div class="col">
-                <button type="submit" class="btn btn-primary"><i class="bi bi-pencil me-1"></i>Matricular</button>
+                @if (Model.Status == EStatusAula.Aberta && (Model.Matriculas == null || !Model.Matriculas.Any(x => x.AlunoId.Equals(User.Identity.Name) && x.Status == EStatusMatricula.Matriculado)))
+                {
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-pencil me-1"></i>Matricular</button>
+                }
                 <a asp-action="Index" class="btn btn-light"><i class="bi bi-arrow-left-circle me-1"></i>Voltar</a>
             </div>
         </div>

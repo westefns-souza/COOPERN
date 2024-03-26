@@ -82,7 +82,7 @@ public class AulasController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Lancar(IList<Matricula> matriculas)
+    public async Task<IActionResult> Lancar(int id, IList<Matricula> matriculas)
     {
         foreach (var matricula in matriculas)
         {
@@ -104,12 +104,14 @@ public class AulasController : Controller
             _context.Update(matricula);
         }
 
+        var aula = await _context.Aulas.FirstOrDefaultAsync(x => x.Id == id);
+        aula.Status = EStatusAula.Realizada;
+
         await _context.SaveChangesAsync();
 
-        var aulaId = matriculas.Select(x => x.AulaId).FirstOrDefault();
-
-        return RedirectToAction("Details", new { id = aulaId });
+        return RedirectToAction("Details", new { id });
     }
+
 
     [Authorize(Roles = "Coordenador")]
     public async Task<IActionResult> CreateAsync()
@@ -239,6 +241,23 @@ public class AulasController : Controller
         return View(aula);
     }
 
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Coordenador")]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        var aula = await _context.Aulas.FindAsync(id);
+
+        if (aula != null)
+        {
+            aula.Status = EStatusAula.Cancelada;
+            _context.Update(aula);
+        }
+
+        await _context.SaveChangesAsync();
+        return RedirectToAction(nameof(Index));
+    }
+
     [Authorize(Roles = "Coordenador")]
     public async Task<IActionResult> Finalizar(int? id)
     {
@@ -266,23 +285,6 @@ public class AulasController : Controller
         return View(aula);
     }
 
-    [HttpPost, ActionName("Delete")]
-    [ValidateAntiForgeryToken]
-    [Authorize(Roles = "Coordenador")]
-    public async Task<IActionResult> DeleteConfirmed(int id)
-    {
-        var aula = await _context.Aulas.FindAsync(id);
-
-        if (aula != null)
-        {
-            aula.Status = EStatusAula.Cancelada;
-            _context.Update(aula);
-        }
-
-        await _context.SaveChangesAsync();
-        return RedirectToAction(nameof(Index));
-    }
-
     [HttpPost, ActionName("Finalizar")]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = "Coordenador")]
@@ -299,6 +301,61 @@ public class AulasController : Controller
         await _context.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
+
+    [Authorize(Roles = "Coordenador")]
+    public async Task<IActionResult> Custos(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var aula = await _context.Aulas
+            .Include(x => x.Custos)
+            .Include(a => a.Professor)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        if (aula == null)
+        {
+            return NotFound();
+        }
+
+        aula.DataInicio = aula.DataInicio.ToLocalTime();
+        aula.DataFim = aula.DataFim.ToLocalTime();
+
+        return View(aula);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Coordenador")]
+    public async Task<IActionResult> Custos(int id, Aula viewModel)
+    {   
+        try
+        {
+            var aula = _context.Aulas.FirstOrDefault(x => x.Id == id);
+            aula.Receita = viewModel.Receita;
+            aula.Status = EStatusAula.Pendente;
+            _context.RemoveRange(await _context.Custos.Where(x => x.AulaId == aula.Id).ToListAsync());
+            _context.AddRange(viewModel.Custos.Select(x => new Custos { AulaId = viewModel.Id, Classificacao = x.Classificacao, Valor = x.Valor}));
+            _context.Update(aula);
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!AulaExists(viewModel.Id))
+            {
+                return NotFound();
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        return RedirectToAction(nameof(Details), new { id });
+    }
+
 
     private bool AulaExists(int id)
     {

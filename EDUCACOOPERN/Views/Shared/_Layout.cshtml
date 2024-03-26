@@ -27,7 +27,7 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacidade</a>
                         </li>
 
-                        @if (User.Identity.IsAuthenticated)
+                        @if (User.IsInRole("Cooperados"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Aulas" asp-action="Index">Aulas</a>
@@ -60,10 +60,10 @@
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a class="dropdown-item" asp-controller="Curso" asp-action="Create">Cadastro</a>
+                                        <a class="dropdown-item" asp-controller="Cursos" asp-action="Create">Cadastro</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" asp-controller="Curso" asp-action="Index">Planejamento</a>
+                                        <a class="dropdown-item" asp-controller="Cursos" asp-action="Index">Planejamento</a>
                                     </li>
                                 </ul>
                             </li>

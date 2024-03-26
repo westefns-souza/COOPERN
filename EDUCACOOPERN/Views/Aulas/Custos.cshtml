@@ -1,0 +1,162 @@
+﻿@using System.Globalization
+@model EDUCACOOPERN.Models.Aula
+
+@{
+    ViewData["Title"] = "Planejamento do curso";
+
+    var dataInicial = Model.DataInicio.ToString("dd/MM/yyyy HH:mm");
+    var dataFinal = Model.DataFim.ToString("dd/MM/yyyy HH:mm");
+    var cultura = new CultureInfo("pt-BR");
+}
+
+<div class="row">
+    <div class="col-6">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+    <div class="col text-end">
+        <h4 class="mt-2">Custos e receita</h4>
+    </div>
+</div>
+
+<hr />
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Curso)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Curso.Nome)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Professor)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Professor.FullName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DataInicio)
+        </dt>
+        <dd class="col-sm-10">
+            @dataInicial
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DataFim)
+        </dt>
+        <dd class="col-sm-10">
+            @dataFinal
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+    </dl>
+</div>
+
+<form asp-action="Custos">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input asp-for="Id" type="hidden" />
+
+    <div class="row">
+        <div class="col-2">
+            <div class="form-group">
+                <label class="control-label">Custo</label>
+                <input class="form-control custo-valor" />
+                <span class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-4">
+            <div class="form-group">
+                <label class="control-label">Classificação</label>
+                <select class="form-select custo-classificacao">
+                    <option>-- Selecione uma classificação --</option>
+                    <option value="@EClassificacao.Material">Material</option>
+                    <option value="@EClassificacao.Professor">Professor</option>
+                </select>
+                <span asp-validation-for="Custos" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-2">
+            <div class="form-group">
+                <button type="button" class="btn btn-light mt-4 btn-adicionar-custo"><i class="bi bi-plus-circle me-1"></i>Adicionar</button>
+            </div>
+        </div>
+
+        <div class="col-4">
+            <div class="form-group">
+                <label asp-for="Receita" class="control-label"></label>
+                <input asp-for="Receita" class="form-control" />
+                <span asp-validation-for="Receita" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 mt-2">
+            @{
+                var possuiCusto = Model.Custos != null && Model.Custos.Any();
+            }
+
+            <div class="alert alert-info text-center cooperado-sem-custos @(possuiCusto ? "d-none" : "")">
+                A aula ainda não possui nenhum custo lançado!
+            </div>
+
+            <table class="table table-striped cooperado-com-custos @(possuiCusto ? "" : "d-none")">
+                <thead>
+                    <tr class="row">
+                        <th class="col-2">Custo</th>
+                        <th class="col-8">Classificação</th>
+                        <th class="col-2"></th>
+                    </tr>
+                </thead>
+                <tbody id="lista-custos">
+                    @if (possuiCusto)
+                    {
+                        foreach (var custo in Model.Custos)
+                        {
+                            var index = Model.Custos.IndexOf(custo);
+
+                            <tr class="row item-custos">
+                                <td class="col-8">
+                                    <input type="hidden" class="dados-item-custo" name="Custos[@index].Valor" value="@custo.Valor" />
+                                    <input type="hidden" class="dados-item-custo" name="Custos[@index].Classificacao" value="@custo.Classificacao" />
+
+                                    @custo.Classificacao
+                                </td>
+
+                                <td class="col-2">
+                                    @custo.Valor.ToString("C", cultura)
+                                </td>
+
+                                <td class="col-2 text-end">
+                                    <button type="button" class="btn btn-sm btn-danger btn-remover-custo"><i class="bi bi-trash"></i></button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col">
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-floppy me-1"></i>Lançar</button>
+                <a asp-action="Index" class="btn btn-light"><i class="bi bi-arrow-left-circle me-1"></i>Voltar</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/js/custos.js" asp-append-version="true"></script>
+}
