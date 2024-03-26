@@ -2,7 +2,7 @@
 @model IEnumerable<EDUCACOOPERN.Models.Aula>
 
 @{
-    ViewData["Title"] = "Aulas";
+    ViewData["Title"] = "Programação";
 }
 
 <div class="row">
@@ -38,9 +38,6 @@
                     @Html.DisplayNameFor(model => model.DataFim)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Receita)
-                </th>
-                <th>
                     @Html.DisplayNameFor(model => model.Status)
                 </th>
                 <th></th>
@@ -65,9 +62,6 @@
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => dataFinal)
-                    </td>
-                    <td>
-                        @(item.Receita.HasValue ? item.Receita.Value.ToString("C", cultura) : 0.0m.ToString("C", cultura))
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Status)
