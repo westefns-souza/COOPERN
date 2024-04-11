@@ -42,9 +42,11 @@ public class ProfessoresController : Controller
         {
             Ativo = true,
             AreasAtuacao = [],
+            Formacoes = [],
         };
 
         PreencherAreasDeAtuacao();
+        PreencherTiposFormacao();
         return View(viewModel);
     }
 
@@ -54,7 +56,9 @@ public class ProfessoresController : Controller
         if (!ModelState.IsValid)
         {
             PreencherAreasDeAtuacao();
+            PreencherTiposFormacao();
             viewModel.AreasAtuacao ??= [];
+            viewModel.Formacoes ??= [];
             return View(viewModel);
         }
 
@@ -65,7 +69,8 @@ public class ProfessoresController : Controller
             UserName = viewModel.Email,
             EmailConfirmed = true,
             LockoutEnabled = false,
-            FullName = viewModel.Nome
+            FullName = viewModel.Nome,
+            Formacoes = viewModel.Formacoes,
         };
 
         var result = await _userManager.CreateAsync(user, "EducaCOOPERN$2024");
@@ -76,6 +81,7 @@ public class ProfessoresController : Controller
             
             var usuarioAreaAtuacao = viewModel.AreasAtuacao.Select(x => new UsuarioAreaAtuacao { UsuarioId = user.Id, AreaAtuacaoId = x.Id }).ToList();
             await _context.AddRangeAsync(usuarioAreaAtuacao);
+
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Index");
@@ -92,7 +98,9 @@ public class ProfessoresController : Controller
             return NotFound();
         }
 
-        var usuario = await _userManager.Users.FirstOrDefaultAsync(x => x.Id.Equals(id));
+        var usuario = await _userManager.Users
+            .Include(x => x.Formacoes)
+            .FirstOrDefaultAsync(x => x.Id.Equals(id));
 
         if (usuario == null)
         {
@@ -112,9 +120,11 @@ public class ProfessoresController : Controller
             Email = usuario.Email,
             Ativo = usuario.LockoutEnabled,
             AreasAtuacao = areasAtuacao,
+            Formacoes = usuario.Formacoes.ToList(),
         };
 
         PreencherAreasDeAtuacao();
+        PreencherTiposFormacao();
         return View(viewModel);
     }
 
@@ -124,11 +134,15 @@ public class ProfessoresController : Controller
         if (!ModelState.IsValid)
         {
             PreencherAreasDeAtuacao();
+            PreencherTiposFormacao();
             viewModel.AreasAtuacao ??= [];
+            viewModel.Formacoes ??= [];
             return View(viewModel);
         }
 
-        var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id.Equals(viewModel.Id));
+        var user = await _userManager.Users
+            .Include(x => x.Formacoes)
+            .FirstOrDefaultAsync(x => x.Id.Equals(viewModel.Id));
 
         user.PhoneNumber = viewModel.Celular;
         user.Email = viewModel.Email;
@@ -142,8 +156,10 @@ public class ProfessoresController : Controller
         if (result.Succeeded)
         {
             _context.RemoveRange(await _context.UsuarioAreaAtuacao.Where(x => x.UsuarioId.Equals(user.Id)).ToListAsync());
+            _context.RemoveRange(user.Formacoes);
 
             await _context.AddRangeAsync(viewModel.AreasAtuacao.Select(x => new UsuarioAreaAtuacao { UsuarioId = user.Id, AreaAtuacaoId = x.Id }).ToList());
+            await _context.AddRangeAsync(viewModel.Formacoes.Select(x => new Formacao { UsuarioId = user.Id, Tipo = x.Tipo, Nome = x.Nome }).ToList());
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Index");
@@ -159,7 +175,9 @@ public class ProfessoresController : Controller
             return NotFound();
         }
 
-        var usuario = await _context.Usuario.FirstOrDefaultAsync(m => m.Id.Equals(id));
+        var usuario = await _context.Usuario
+            .Include(x => x.Formacoes)
+            .FirstOrDefaultAsync(m => m.Id.Equals(id));
 
         if (usuario == null)
         {
@@ -179,6 +197,7 @@ public class ProfessoresController : Controller
             Email = usuario.Email,
             Ativo = usuario.LockoutEnabled,
             AreasAtuacao = areasAtuacao,
+            Formacoes = usuario.Formacoes.ToList(),
         };
 
         return View(viewModel);
@@ -191,7 +210,9 @@ public class ProfessoresController : Controller
             return NotFound();
         }
 
-        var usuario = await _context.Usuario.FirstOrDefaultAsync(m => m.Id.Equals(id));
+        var usuario = await _context.Usuario
+            .Include(x => x.Formacoes)
+            .FirstOrDefaultAsync(m => m.Id.Equals(id));
 
         if (usuario == null)
         {
@@ -211,6 +232,7 @@ public class ProfessoresController : Controller
             Email = usuario.Email,
             Ativo = usuario.LockoutEnabled,
             AreasAtuacao = areasAtuacao,
+            Formacoes = usuario.Formacoes.ToList(),
         };
 
         return View(viewModel);
@@ -221,7 +243,10 @@ public class ProfessoresController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(string id)
     {
-        var usuario = await _context.Usuario.FirstOrDefaultAsync(m => m.Id.Equals(id));
+        var usuario = await _context.Usuario
+            .Include(x => x.Formacoes)
+            .FirstOrDefaultAsync(m => m.Id.Equals(id));
+
         var areasAtuacao = _context.UsuarioAreaAtuacao
             .Where(x => x.UsuarioId.Equals(id))
             .ToList();
@@ -230,6 +255,7 @@ public class ProfessoresController : Controller
         {
             await _userManager.RemoveFromRoleAsync(usuario, "Professor");
             _context.RemoveRange(areasAtuacao);
+            _context.RemoveRange(usuario.Formacoes);
             await _userManager.DeleteAsync(usuario);
             await _context.SaveChangesAsync();
         }
@@ -248,6 +274,16 @@ public class ProfessoresController : Controller
             .ToList();
 
         ViewBag.AreaAtuacao = areasDeAtuacao;
+    }
+
+    private void PreencherTiposFormacao()
+    {
+        var tiposFormacao = Enum.GetValues(typeof(ETipoFormacao))
+            .Cast<ETipoFormacao>()
+            .Select(x => new SelectListItem { Value = ((int)x).ToString(), Text = x.ToString() })
+            .ToList();
+
+        ViewBag.TiposFormacao = tiposFormacao;
     }
 
     #endregion

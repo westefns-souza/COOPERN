@@ -13,6 +13,7 @@
     <Content Remove="wwwroot\js\area-atuacao.js" />
     <Content Remove="wwwroot\js\curso.js" />
     <Content Remove="wwwroot\js\custos.js" />
+    <Content Remove="wwwroot\js\formacoes.js" />
     <Content Remove="wwwroot\js\pdi.js" />
   </ItemGroup>
 
@@ -37,6 +38,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\js\formacoes.js" />
     <None Include="wwwroot\js\custos.js" />
     <None Include="wwwroot\js\curso.js" />
     <None Include="wwwroot\js\pdi.js" />

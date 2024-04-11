@@ -67,6 +67,32 @@
     </dd>
 </dl>
 
+
+@if (Model.Formacoes != null && Model.Formacoes.Any())
+{
+    <h6>Formações</h6>
+
+    <hr />
+
+    <table class="table table-striped">
+        <thead>
+            <tr class="row">
+                <th class="col-4">Grau</th>
+                <th class="col">Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var formacao in Model.Formacoes)
+            {
+                <tr class="row">
+                    <td class="col-4">@formacao.Tipo</td>
+                    <td class="col">@formacao.Nome</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
 <form asp-action="Delete">
     <input type="hidden" asp-for="Id" />
     <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i>Deletar</button>

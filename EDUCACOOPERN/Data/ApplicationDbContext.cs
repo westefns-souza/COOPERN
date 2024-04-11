@@ -22,6 +22,6 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<PDICurso> PDICursos { get; set; } = default!;
     public DbSet<Custos> Custos { get; set; } = default!;
     public DbSet<Aula> Aulas { get; set; } = default!;
-
-public DbSet<EDUCACOOPERN.Models.Matricula> Matricula { get; set; } = default!;
+    public DbSet<Matricula> Matricula { get; set; } = default!;
+    public DbSet<Formacao> Formacoes { get; set; } = default!;
 }

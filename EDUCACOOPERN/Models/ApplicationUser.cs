@@ -46,4 +46,6 @@ public class ApplicationUser : IdentityUser
 
     [Display(Name = "Data de Nascimento")]
     public DateTime? DataNascimento { get; set; }
+
+    public IList<Formacao> Formacoes { get; set; } = [];
 }

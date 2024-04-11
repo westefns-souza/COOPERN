@@ -120,6 +120,83 @@
         </div>
     </div>
 
+    <h6 class="mt-2">Formações</h6>
+
+    <hr />
+
+    <div class="row">
+        <div class="col-4">
+            <div class="form-group">
+                <label asp-for="Formacoes" class="control-label"></label>
+                <select asp-items="ViewBag.TiposFormacao" class="form-select tipo-formacao">
+                    <option value="">-- Selecione um tipo de formação --</option>
+                </select>
+                <span asp-validation-for="Formacoes" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-6">
+            <div class="form-group">
+                <label class="control-label">Descrição</label>
+                <input class="form-control formacao" />
+            </div>
+        </div>
+
+        <div class="col-2">
+            <div class="form-group">
+                <button type="button" class="btn btn-light mt-4 btn-adicionar-formacao"><i class="bi bi-plus-circle me-1"></i>Adicionar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 mt-2">
+            @{
+                var possuiFormacoes = Model.Formacoes != null && Model.Formacoes.Any();
+            }
+
+            <div class="alert alert-info text-center cooperado-sem-formacao @(possuiFormacoes ? "d-none" : "")">
+                O professor ainda não possui nenhuma formação
+            </div>
+
+            <table class="table table-striped cooperado-com-formacao @(possuiFormacoes ? "" : "d-none")">
+                <thead>
+                    <tr class="row">
+                        <th class="col-3">Formação</th>
+                        <th class="col-6">Descrição</th>
+                        <th class="col-2"></th>
+                    </tr>
+                </thead>
+                <tbody id="lista-formacoes">
+                    @if (possuiAreaAtuacao)
+                    {
+                        foreach (var formacao in Model.Formacoes)
+                        {
+                            var index = Model.Formacoes.IndexOf(formacao);
+
+                            <tr class="row item-formacao">
+                                <td class="col-4">
+                                    <input type="hidden" class="dados-item-formacao" name="Formacoes[@index].Nome" value="@formacao.Nome" />
+                                    <input type="hidden" class="dados-item-formacao" name="Formacoes[@index].Tipo" value="@formacao.Tipo" />
+
+                                    @formacao.Tipo
+                                </td>
+
+                                <td class="col-6">
+                                    @formacao.Nome
+                                </td>
+
+                                <td class="col-2 text-end">
+                                    <button type="button" class="btn btn-sm btn-danger btn-remover-formacao"><i class="bi bi-trash"></i></button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <div class="row mt-2">
         <div class="col">
             <div class="form-group">
@@ -136,4 +213,5 @@
     }
 
     <script src="~/js/area-atuacao.js" asp-append-version="true"></script>
+    <script src="~/js/formacoes.js" asp-append-version="true"></script>
 }

@@ -24,6 +24,10 @@ public class ProfessorViewModel
     [Required(ErrorMessage = "O {0} é obrigatório!")]
     public List<AreaAtuacao>? AreasAtuacao { get; set; }
 
+    [Display(Name = "Formações")]
+    [Required(ErrorMessage = "O {0} é obrigatório!")]
+    public List<Formacao>? Formacoes { get; set; }
+
     [Display(Name = "Ativo")]
     public bool Ativo { get; set; }
 }
