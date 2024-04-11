@@ -14,29 +14,21 @@ public class ProfessoresController : Controller
 {
     private readonly ApplicationDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IUserStore<ApplicationUser> _userStore;
 
     public ProfessoresController(
         ApplicationDbContext context,
-        UserManager<ApplicationUser> userManager,
-        IUserStore<ApplicationUser> userStore
+        UserManager<ApplicationUser> userManager
     )
     {
         _context = context;
         _userManager = userManager;
-        _userStore = userStore;
     }
 
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        var idusuarios = _context.UserRoles
-            .Where(x => x.RoleId.Equals("2"))
-            .Select(x => x.UserId)
-            .ToList();
-
         var usuarios = await _userManager.Users
-            .Where(x => idusuarios.Contains(x.Id))
+            .Where(x => _context.UserRoles.Any(y => y.UserId == x.Id && y.RoleId == "2"))
             .OrderBy(x => x.Email)
             .ToListAsync();
 
@@ -66,22 +58,24 @@ public class ProfessoresController : Controller
             return View(viewModel);
         }
 
-        var user = Activator.CreateInstance<ApplicationUser>();
-
-        user.PhoneNumber = viewModel.Celular;
-        user.Email = viewModel.Email;
-        user.UserName = viewModel.Email;
-        user.EmailConfirmed = true;
-        user.LockoutEnabled = false;
-        user.FullName = viewModel.Nome;
+        var user = new ApplicationUser
+        {
+            PhoneNumber = viewModel.Celular,
+            Email = viewModel.Email,
+            UserName = viewModel.Email,
+            EmailConfirmed = true,
+            LockoutEnabled = false,
+            FullName = viewModel.Nome
+        };
 
         var result = await _userManager.CreateAsync(user, "EducaCOOPERN$2024");
 
         if (result.Succeeded)
         {
             await _userManager.AddToRoleAsync(user, "Professor");
-
-            await _context.AddRangeAsync(viewModel.AreasAtuacao.Select(x => new UsuarioAreaAtuacao { UsuarioId = user.Id, AreaAtuacaoId = x.Id }).ToList());
+            
+            var usuarioAreaAtuacao = viewModel.AreasAtuacao.Select(x => new UsuarioAreaAtuacao { UsuarioId = user.Id, AreaAtuacaoId = x.Id }).ToList();
+            await _context.AddRangeAsync(usuarioAreaAtuacao);
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Index");
@@ -105,10 +99,10 @@ public class ProfessoresController : Controller
             return NotFound();
         }
 
-        var areasAtuacao = _context.UsuarioAreaAtuacao
+        var areasAtuacao = await _context.UsuarioAreaAtuacao
             .Where(x => x.UsuarioId.Equals(id))
             .Select(x => x.AreaAtuacao)
-            .ToList();
+            .ToListAsync();
 
         var viewModel = new ProfessorViewModel()
         {
@@ -172,10 +166,10 @@ public class ProfessoresController : Controller
             return NotFound();
         }
 
-        var areasAtuacao = _context.UsuarioAreaAtuacao
+        var areasAtuacao = await _context.UsuarioAreaAtuacao
             .Where(x => x.UsuarioId.Equals(id))
             .Select(x => x.AreaAtuacao)
-            .ToList();
+            .ToListAsync();
 
         var viewModel = new ProfessorViewModel()
         {
@@ -204,10 +198,10 @@ public class ProfessoresController : Controller
             return NotFound();
         }
 
-        var areasAtuacao = _context.UsuarioAreaAtuacao
+        var areasAtuacao = await _context.UsuarioAreaAtuacao
             .Where(x => x.UsuarioId.Equals(id))
             .Select(x => x.AreaAtuacao)
-            .ToList();
+            .ToListAsync();
 
         var viewModel = new ProfessorViewModel()
         {

@@ -22,7 +22,7 @@ public class ProfessorViewModel
 
     [Display(Name = "Áreas de atuação")]
     [Required(ErrorMessage = "O {0} é obrigatório!")]
-    public List<AreaAtuacao> AreasAtuacao { get; set; }
+    public List<AreaAtuacao>? AreasAtuacao { get; set; }
 
     [Display(Name = "Ativo")]
     public bool Ativo { get; set; }
