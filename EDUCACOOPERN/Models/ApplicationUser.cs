@@ -38,16 +38,19 @@ public class ApplicationUser : IdentityUser
     public string? NumeroConselho { get; set; }
 
     [Display(Name = "CPF")]
-    //[Required(ErrorMessage = "O {0} é obrigatório!")]
-    [StringLength(11, ErrorMessage = "O {0} do usuário deve ter até 11 caracteres!")]
+    //[Required(ErrorMessage = "O {0} é obrigatório!")]    //[Required(ErrorMessage = "O {0} é obrigatório!")]
+    [RegularExpression(@"\d{3}\.\d{3}\.\d{3}-\d{2}", ErrorMessage = "O {0} do usuário deve ser no formato: xxx.xxx.xxx-xx!")]
+    [StringLength(14, ErrorMessage = "O {0} do usuário deve ter até 14 caracteres!")]
     public string? CPF { get; set; }
 
     [Display(Name = "Profissão")]
-    //[Required(ErrorMessage = "O {0} é obrigatório!")]
+    //[Required(ErrorMessage = "A {0} é obrigatório!")]
     [StringLength(100, ErrorMessage = "A {0} do usuário deve ter até 100 caracteres!")]
     public string? Profissião { get; set; }
 
     [Display(Name = "Data de Nascimento")]
     //[Required(ErrorMessage = "A {0} é obrigatório!")]
     public DateTime? DataNascimento { get; set; }
+
+    
 }
