@@ -5,8 +5,9 @@ namespace EDUCACOOPERN.Models;
 
 public class ApplicationUser : IdentityUser
 {
-    [Display(Name = "Nome completo")]
+    [Required(ErrorMessage = "O {0} é obrigatório!")]
     [StringLength(256, MinimumLength = 3, ErrorMessage = "O {0} do usuário deve ter entre 3 e 256 caracteres!")]
+    [RegularExpression(@"^[a-zA-Z\s]*$", ErrorMessage = "O {0} deve conter apenas letras e espaços!")]
     public string? FullName { get; set; }
 
     [StringLength(24, ErrorMessage = "O {0} do usuário deve ter até 24 caracteres!")]
@@ -23,34 +24,26 @@ public class ApplicationUser : IdentityUser
     public string? NomeAlternativo { get; set; }
 
     [Display(Name = "Conselho")]
-    //[Required(ErrorMessage = "O {0} é obrigatório!")]
     [StringLength(24, ErrorMessage = "O {0} do usuário deve ter até 24 caracteres!")]
     public string? Conselho { get; set; }
 
     [Display(Name = "UF do conselho")]
-    //[Required(ErrorMessage = "O {0} é obrigatório!")]
     [StringLength(2, ErrorMessage = "O {0} do usuário deve ter até 2 caracteres!")]
     public string? UFConselho { get; set; }
 
     [Display(Name = "Número do conselho")]
-    //[Required(ErrorMessage = "O {0} é obrigatório!")]
     [StringLength(11, ErrorMessage = "O {0} do usuário deve ter até 11 caracteres!")]
     public string? NumeroConselho { get; set; }
 
     [Display(Name = "CPF")]
-    //[Required(ErrorMessage = "O {0} é obrigatório!")]    //[Required(ErrorMessage = "O {0} é obrigatório!")]
     [RegularExpression(@"\d{3}\.\d{3}\.\d{3}-\d{2}", ErrorMessage = "O {0} do usuário deve ser no formato: xxx.xxx.xxx-xx!")]
     [StringLength(14, ErrorMessage = "O {0} do usuário deve ter até 14 caracteres!")]
     public string? CPF { get; set; }
 
     [Display(Name = "Profissão")]
-    //[Required(ErrorMessage = "A {0} é obrigatório!")]
     [StringLength(100, ErrorMessage = "A {0} do usuário deve ter até 100 caracteres!")]
-    public string? Profissião { get; set; }
+    public string? Profissao { get; set; }
 
     [Display(Name = "Data de Nascimento")]
-    //[Required(ErrorMessage = "A {0} é obrigatório!")]
     public DateTime? DataNascimento { get; set; }
-
-    
 }
