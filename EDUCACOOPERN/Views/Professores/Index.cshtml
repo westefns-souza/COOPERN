@@ -6,7 +6,7 @@
 }
 
 <div class="row">
-    <div class="col-8">
+    <div>
         <h1>@ViewData["Title"]</h1>
     </div>
 
@@ -37,10 +37,10 @@
             {
                 <tr class="row">
                     <td class="col-5">
-                        @Html.DisplayFor(modelItem => item.FullName)
+                        @item.FullName
                     </td>
                     <td class="col-5">
-                        @Html.DisplayFor(modelItem => item.Email)
+                        @item.Email
                     </td>
                     <td class="col-2 text-end">
                         <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-light"><i class="bi bi-pencil"></i></a>
@@ -57,7 +57,7 @@ else
     <div class="row">
         <div class="col">
             <div class="alert alert-info text-center">
-                Ainda não há nenhum usuário cadastrado!
+                Ainda não há nenhum(a) professor(a) cadastrado(a)!
             </div>
         </div>
     </div>
