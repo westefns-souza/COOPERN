@@ -118,7 +118,9 @@ public class AulasController : Controller
     {
         var viewModel = new Aula()
         {
-            Custos = []
+            Custos = [],
+            DataInicio = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd HH:mm")),
+            DataFim = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd HH:mm")),
         };
 
         await PreencherViewBagCursoAsync();

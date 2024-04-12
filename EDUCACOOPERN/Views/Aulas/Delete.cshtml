@@ -3,6 +3,10 @@
 
 @{
     ViewData["Title"] = "Planejamento do curso";
+
+    Model.DataInicio = Model.DataInicio.ToLocalTime();
+    Model.DataFim = Model.DataFim.ToLocalTime();
+
     var dataInicial = Model.DataInicio.ToString("dd/MM/yyyy HH:mm");
     var dataFinal = Model.DataFim.ToString("dd/MM/yyyy HH:mm");
     var cultura = new CultureInfo("pt-BR");
@@ -20,7 +24,7 @@
 
 <hr />
 
-<h3>Você cem certeza que quer apagar essa aula?</h3>
+<h3>Você tem certeza que quer apagar essa aula?</h3>
 
 <div>
     <dl class="row">

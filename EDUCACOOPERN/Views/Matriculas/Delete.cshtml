@@ -1,51 +1,78 @@
 ﻿@model EDUCACOOPERN.Models.Matricula
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Matrícula";
+    var dataInicial = Model.Aula.DataInicio.ToString("dd/MM/yyyy HH:mm");
+    var dataFinal = Model.Aula.DataFim.ToString("dd/MM/yyyy HH:mm");
 }
 
-<h1>Delete</h1>
+<div class="row">
+    <div class="col-6">
+        <h1>@ViewData["Title"]</h1>
+    </div>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Matricula</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Aula)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Aula.ProfessorId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Aluno)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Aluno.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NotaPre)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NotaPre)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NotaPos)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NotaPos)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Compareceu)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Compareceu)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+    <div class="col text-end">
+        <h4 class="mt-2">Cancelar Matrícula</h4>
+    </div>
 </div>
+
+<hr />
+
+<h3>Você tem certeza que quer se desmatricular dessa aula?</h3>
+
+<dl class="row">
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Aluno)
+    </dt>
+
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.Aluno.FullName)
+    </dd>
+
+    <dt class="col-sm-2">
+        Curso
+    </dt>
+
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.Aula.Curso.Nome)
+    </dd>
+
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Aula.ProfessorId)
+    </dt>
+
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.Aula.Professor.FullName)
+    </dd>
+
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Aula.DataInicio)
+    </dt>
+
+    <dd class="col-sm-10">
+        @dataInicial
+    </dd>
+
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Aula.DataFim)
+    </dt>
+
+    <dd class="col-sm-10">
+        @dataFinal
+    </dd>
+
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Status)
+    </dt>
+
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.Status)
+    </dd>
+</dl>
+
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i>Cancelar</button>
+    <a asp-action="Index" class="btn btn-light"><i class="bi bi-arrow-left-circle me-1"></i>Voltar</a>
+</form>

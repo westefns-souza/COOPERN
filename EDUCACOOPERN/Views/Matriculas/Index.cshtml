@@ -1,59 +1,155 @@
 ﻿@model IEnumerable<EDUCACOOPERN.Models.Matricula>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Matrículas";
+    var proximasAulas = Model.Where(m => m.Aula.DataInicio > DateTime.Now).ToList();
+    var historico = Model.Where(m => m.Aula.DataInicio < DateTime.Now).ToList();
 }
 
-<h1>Index</h1>
+<div class="row">
+    <div class="col-6">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Aula)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Aluno)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NotaPre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NotaPos)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Compareceu)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Aula.ProfessorId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Aluno.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NotaPre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NotaPos)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Compareceu)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<hr />
+
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Próximas aulas</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Histórico</button>
+    </li>
+</ul>
+<div class="tab-content mt-1" id="myTabContent">
+    <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+        @if (proximasAulas != null && proximasAulas.Any())
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            Curso
+                        </th>
+
+                        <th>
+                            @Html.DisplayNameFor(model => model.Aula.DataInicio)
+                        </th>
+
+                        <th>
+                            @Html.DisplayNameFor(model => model.Aula.DataFim)
+                        </th>
+
+                        <th>
+                            @Html.DisplayNameFor(model => model.Status)
+                        </th>
+
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in proximasAulas)
+                    {
+                        var dataInicial = item.Aula.DataInicio.ToLocalTime().ToString("dd/MM/yyyy HH:mm");
+                        var dataFinal = item.Aula.DataFim.ToLocalTime().ToString("dd/MM/yyyy HH:mm");
+
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Aula.Curso.Nome)
+                            </td>
+
+                            <td>
+                                @Html.DisplayFor(modelItem => dataInicial)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => dataFinal)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Status)
+                            </td>
+                            <td class="text-end">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-light"><i class="bi bi-eye"></i></a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="row">
+                <div class="col">
+                    <div class="alert alert-info text-center">
+                        Ainda não há nenhuma matrícula para os próximos dias!
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+        @if (historico != null && historico.Any())
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            Curso
+                        </th>
+
+                        <th>
+                            @Html.DisplayNameFor(model => model.Aula.DataInicio)
+                        </th>
+
+                        <th>
+                            @Html.DisplayNameFor(model => model.Aula.DataFim)
+                        </th>
+
+                        <th>
+                            @Html.DisplayNameFor(model => model.Status)
+                        </th>
+
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in historico)
+                    {
+                        var dataInicial = item.Aula.DataInicio.ToLocalTime().ToString("dd/MM/yyyy HH:mm");
+                        var dataFinal = item.Aula.DataFim.ToLocalTime().ToString("dd/MM/yyyy HH:mm");
+
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Aula.Curso.Nome)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => dataInicial)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => dataFinal)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Status)
+                            </td>
+                            <td class="text-end">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-light"><i class="bi bi-eye"></i></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="row">
+                <div class="col">
+                    <div class="alert alert-info text-center">
+                        Ainda não há nenhuma matrícula a ser exibida!
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+

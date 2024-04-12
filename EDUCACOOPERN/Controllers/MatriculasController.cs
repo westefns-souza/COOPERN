@@ -1,6 +1,6 @@
 ﻿using EDUCACOOPERN.Data;
-using EDUCACOOPERN.Data.Migrations;
 using EDUCACOOPERN.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EDUCACOOPERN.Controllers;
 
+[Authorize]
 public class MatriculasController : Controller
 {
     private readonly ApplicationDbContext _context;
@@ -24,9 +25,17 @@ public class MatriculasController : Controller
 
     public async Task<IActionResult> Index()
     {
+        var alunoEmail = User.Identity.Name;
+        var alunoId = _context.Usuario
+            .FirstOrDefault(x => x.UserName.Equals(alunoEmail))
+            .Id;
+
         var matriculas = await _context.Matricula
             .Include(m => m.Aluno)
             .Include(m => m.Aula)
+            .Include(m => m.Aula.Curso)
+            .Include(m => m.Aula.Professor)
+            .Where(x => x.AlunoId.Equals(alunoId) && x.Status != EStatusMatricula.Cancelado)
             .ToListAsync();
 
         return View(matriculas);
@@ -42,9 +51,8 @@ public class MatriculasController : Controller
         var matricula = await _context.Matricula
             .Include(m => m.Aluno)
             .Include(m => m.Aula)
-            .ThenInclude(x => x.Curso)
-            .Include(m => m.Aula)
-            .ThenInclude(x => x.Professor)
+            .Include(m => m.Aula.Curso)
+            .Include(m => m.Aula.Professor)
             .FirstOrDefaultAsync(m => m.Id == id);
 
         if (matricula == null)
@@ -85,7 +93,7 @@ public class MatriculasController : Controller
         _context.Add(matricula);
         
         await _context.SaveChangesAsync();
-        return RedirectToAction(nameof(Details), "Aulas", new { id = matricula.AlunoId });
+        return RedirectToAction(nameof(Details), new { id = matricula.Id });
     }
 
     public async Task<IActionResult> Edit(int? id)
@@ -151,6 +159,8 @@ public class MatriculasController : Controller
         var matricula = await _context.Matricula
             .Include(m => m.Aluno)
             .Include(m => m.Aula)
+            .Include(m => m.Aula.Curso)
+            .Include(m => m.Aula.Professor)
             .FirstOrDefaultAsync(m => m.Id == id);
 
         if (matricula == null)

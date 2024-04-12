@@ -2,6 +2,10 @@
 
 @{
     ViewData["Title"] = "Matrícula";
+    
+    Model.Aula.DataInicio = Model.Aula.DataInicio.ToLocalTime();
+    Model.Aula.DataFim = Model.Aula.DataFim.ToLocalTime();
+    
     var dataInicial = Model.Aula.DataInicio.ToString("dd/MM/yyyy HH:mm");
     var dataFinal = Model.Aula.DataFim.ToString("dd/MM/yyyy HH:mm");
 }
@@ -28,7 +32,7 @@
     </dd>
 
     <dt class="col-sm-2">
-        @Html.DisplayNameFor(model => model.Aula.Curso.Nome)
+        Curso
     </dt>
     
     <dd class="col-sm-10">
