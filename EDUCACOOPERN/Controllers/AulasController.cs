@@ -20,11 +20,31 @@ public class AulasController : Controller
         _userManager = userManager;
     }
 
+    [Authorize(Roles = "Coordenador")]
     public async Task<IActionResult> Index()
     {
         var aulas = await _context.Aulas
             .Include(a => a.Curso)
             .Include(a => a.Professor)
+            .ToListAsync();
+
+        return View(aulas);
+    }
+
+    [Authorize(Roles = "Cooperado")]
+    public async Task<IActionResult> Abertas()
+    {
+        var alunoEmail = User.Identity.Name;
+        var alunoId = _context.Usuario
+            .FirstOrDefault(x => x.UserName.Equals(alunoEmail))
+            .Id;
+
+        var aulas = await _context.Aulas
+            .Include(a => a.Curso)
+            .Include(a => a.Professor)
+            .Include(a => a.Matriculas.Where(x => !x.Status.Equals(EStatusMatricula.Cancelado)))
+            .Where(x => x.Status == EStatusAula.Aberta)
+            .Where(x => x.Matriculas.All(x => !x.AlunoId.Equals(alunoId)))
             .ToListAsync();
 
         return View(aulas);

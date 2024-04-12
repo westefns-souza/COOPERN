@@ -72,10 +72,7 @@
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="AreaAtuacoes" asp-action="Index">Áreas de atuações</a>
                                 </li>
-                            }
 
-                            @if (User.Identity.IsAuthenticated)
-                            {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Aulas" asp-action="Index">Programação</a>
                                 </li>
@@ -83,6 +80,10 @@
 
                             @if (User.IsInRole("Cooperado"))
                             {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Aulas" asp-action="Abertas">Programação</a>
+                                </li>
+
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Matriculas" asp-action="Index">Matrículas</a>
                                 </li>
