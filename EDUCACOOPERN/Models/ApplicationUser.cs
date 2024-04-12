@@ -5,6 +5,7 @@ namespace EDUCACOOPERN.Models;
 
 public class ApplicationUser : IdentityUser
 {
+    [Display(Name = "Nome Completo")]
     [Required(ErrorMessage = "O {0} é obrigatório!")]
     [StringLength(256, MinimumLength = 3, ErrorMessage = "O {0} do usuário deve ter entre 3 e 256 caracteres!")]
     [RegularExpression(@"^[a-zA-Z\s]*$", ErrorMessage = "O {0} deve conter apenas letras e espaços!")]
