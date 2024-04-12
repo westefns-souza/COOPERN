@@ -1,3 +1,16 @@
+:root {
+    /* Main backgroud color */
+    --cooperne-bg-color-blue: #03998f;
+    --cooperne-bg-color-red: #f8171b;
+    --cooperne-bg-color-white: #f5f5f5;
+    --cooperne-bg-color-green: #17b66d;
+    /* Main text color */
+    --cooperne-text-color-white: #FAFAFA;
+    --cooperne-text-color-brow: #7B3638;
+    --cooperne-text-color-red: #E54B49;
+    --cooperne-text-color-blue: #03998f;
+}
+
 html {
   font-size: 14px;
 }
@@ -19,4 +32,31 @@ html {
 
 body {
   margin-bottom: 60px;
+  background-color: var(--cooperne-bg-color-white);
+}
+
+.btn-primary {
+    background-color: var(--cooperne-bg-color-green);
+    border-color: var(--cooperne-bg-color-green);
+    color: var(--cooperne-text-color-white);
+}
+
+    .btn-primary:hover {
+        background-color: var(--cooperne-bg-color-green);
+        border-color: var(--cooperne-bg-color-green);
+        color: var(--cooperne-text-color-white);
+        opacity: 0.8;
+    }
+
+.text-danger {
+    color: var(--cooperne-text-color-red) !important;
+}
+
+.coopern-btn-blue {
+    color: var(--cooperne-text-color-blue);
+}
+
+.form-check-input:checked {
+    background-color: var(--cooperne-bg-color-green);
+    border-color: var(--cooperne-bg-color-green);
 }
