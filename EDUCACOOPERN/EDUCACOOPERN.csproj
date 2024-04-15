@@ -10,14 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\js\area-atuacao.js" />
-    <Content Remove="wwwroot\js\curso.js" />
-    <Content Remove="wwwroot\js\custos.js" />
-    <Content Remove="wwwroot\js\formacoes.js" />
-    <Content Remove="wwwroot\js\pdi.js" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="8.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.1" />
@@ -37,12 +29,5 @@
     <Folder Include="Data\Migrations\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="wwwroot\js\formacoes.js" />
-    <None Include="wwwroot\js\custos.js" />
-    <None Include="wwwroot\js\curso.js" />
-    <None Include="wwwroot\js\pdi.js" />
-    <None Include="wwwroot\js\area-atuacao.js" />
-  </ItemGroup>
 
 </Project>
