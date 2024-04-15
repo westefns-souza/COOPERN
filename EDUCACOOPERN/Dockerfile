@@ -12,6 +12,7 @@ WORKDIR /src
 COPY ["EDUCACOOPERN/EDUCACOOPERN.csproj", "EDUCACOOPERN/"]
 RUN dotnet restore "./EDUCACOOPERN/./EDUCACOOPERN.csproj"
 COPY . .
+COPY ./wwwroot/* /app/wwwroot
 WORKDIR "/src/EDUCACOOPERN"
 RUN dotnet build "./EDUCACOOPERN.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
