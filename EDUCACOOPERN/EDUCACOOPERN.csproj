@@ -38,11 +38,27 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\js\formacoes.js" />
-    <None Include="wwwroot\js\custos.js" />
-    <None Include="wwwroot\js\curso.js" />
-    <None Include="wwwroot\js\pdi.js" />
-    <None Include="wwwroot\js\area-atuacao.js" />
+    <None Include="wwwroot\js\formacoes.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\js\custos.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\js\curso.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\js\pdi.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\js\area-atuacao.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\js\site.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
