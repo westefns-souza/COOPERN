@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using EDUCACOOPERN.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using EDUCACOOPERN.Models;
 
 namespace EDUCACOOPERN.Data;
 
@@ -24,4 +24,5 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<Aula> Aulas { get; set; } = default!;
     public DbSet<Matricula> Matricula { get; set; } = default!;
     public DbSet<Formacao> Formacoes { get; set; } = default!;
+    public DbSet<Certificado> Certificado { get; set; } = default!;
 }

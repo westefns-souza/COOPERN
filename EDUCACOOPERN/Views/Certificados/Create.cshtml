@@ -1,0 +1,51 @@
+﻿@model EDUCACOOPERN.Models.Certificado
+
+@{
+    ViewData["Title"] = "Cadastro";
+}
+
+<div class="row">
+    <div class="col-6">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+    <div class="col text-end">
+        <h4 class="mt-2">Cadastro</h4>
+    </div>
+</div>
+
+<hr />
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="Descricao" class="control-label"></label>
+                <input asp-for="Descricao" class="form-control" />
+                <span asp-validation-for="Descricao" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="Arquivo" class="control-label"></label>
+                <input name="arquivo" type="file" class="form-control" accept=".pdf,.png,.jpg" />
+                <span asp-validation-for="Arquivo" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-4">
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-floppy me-1"></i>Cadastrar</button>
+                <a asp-action="Index" asp-controller="Certificados" class="btn btn-light"><i class="bi bi-arrow-left-circle me-1"></i>Voltar</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

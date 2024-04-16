@@ -3,6 +3,7 @@ using System;
 using EDUCACOOPERN.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EDUCACOOPERN.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240415235106_Adicao de certificados")]
+    partial class Adicaodecertificados
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -87,14 +90,15 @@ namespace EDUCACOOPERN.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Arquivo")
-                        .HasColumnType("text");
+                    b.Property<byte[]>("Arquivo")
+                        .HasColumnType("bytea");
 
                     b.Property<string>("Descricao")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Extencao")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("UsuarioId")
