@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using EDUCACOOPERN.Data.Migrations;
+using System.ComponentModel.DataAnnotations;
 
 namespace EDUCACOOPERN.Models;
 
@@ -15,4 +16,5 @@ public class PDI
     public bool Ativo { get; set; }
 
     public IList<PDIAreaAtuacao>? PDIAreaAtuacoes { get; set; }
+    public IList<PDICurso>? PDICursos { get; set; }
 }

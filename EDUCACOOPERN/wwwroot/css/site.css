@@ -60,3 +60,7 @@ body {
     background-color: var(--cooperne-bg-color-green);
     border-color: var(--cooperne-bg-color-green);
 }
+
+.text-primary {
+    color: var(--cooperne-text-color-blue);
+}

@@ -3,6 +3,19 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EDUCACOOPERN.ViewModels;
 
+public class HomeViewModel
+{
+    public CooperadoHomeViewModel? CooperadoHome { get; set; }
+}
+
+public class CooperadoHomeViewModel
+{
+    public PDI? PDI { get; set; }
+    public int QuantidadeCursosRealizados { get; set; }
+    public int QuantidadeCursosNaoRealizados { get; set; }
+    public IList<int> CursosRealizados { get; set; }
+}
+
 public class CooperadoViewModel
 {
     public string? Id { get; set; }

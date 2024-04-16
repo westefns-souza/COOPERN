@@ -1,7 +1,71 @@
-﻿@{
+﻿@model HomeViewModel
+
+@{
     ViewData["Title"] = "Home";
 }
 
 <div class="text-center">
     <h1 class="display-4">Bem-vindo</h1>
 </div>
+
+@if (Model.CooperadoHome != null)
+{
+    <div class="card">
+        <div class="card-header">
+            Acompanhamento do PDI
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <canvas id="myChartAcompanhamentoPDI"></canvas>
+                </div>
+                <div class="col">
+                    <div class="card">
+                        <ul class="list-group list-group-flush">
+                            @foreach (var curso in Model.CooperadoHome.PDI.PDICursos)
+                            {
+                                <li class="list-group-item">
+                                    <i class=""></i>
+                                    @if (Model.CooperadoHome.CursosRealizados.Contains(curso.CursoId))
+                                    {
+                                        <span><i class="bi bi-person-check text-primary"></i></span>
+                                    }
+                                    else
+                                    {
+                                        <span><i class="bi bi-person-check"></i></span>
+                                    }
+
+                                    @curso.Curso.Nome
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@section scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    @* @if (User.IsInRole("Cooperado"))
+    { *@
+        <script>
+            const ctx = document.getElementById('myChartAcompanhamentoPDI');
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Realizado', 'Não Realizado'],
+                    datasets: [{
+                        label: '# quantidades',
+                        data: [@Model.CooperadoHome.QuantidadeCursosRealizados, @Model.CooperadoHome.QuantidadeCursosNaoRealizados],
+                        borderWidth: 1
+                    }]
+                }
+            });
+        </script>
+    @* } *@
+}
