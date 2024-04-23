@@ -1,11 +1,13 @@
 ﻿using EDUCACOOPERN.Data;
 using EDUCACOOPERN.Models;
 using EDUCACOOPERN.ViewModels;
+using Humanizer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace EDUCACOOPERN.Controllers;
 
@@ -28,7 +30,7 @@ public class CooperadosController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string? nome = null)
     {
         var idusuarios = _context.UserRoles
             .Where(x => x.RoleId.Equals("3"))
@@ -39,6 +41,11 @@ public class CooperadosController : Controller
             .Where(x => idusuarios.Contains(x.Id))
             .OrderBy(x => x.Email)
             .ToListAsync();
+
+        if (!nome.IsNullOrEmpty())
+        {
+            usuarios = usuarios.Where(x => x.FullName.StartsWith(nome)).ToList();
+        }
 
         return View(usuarios);
     }

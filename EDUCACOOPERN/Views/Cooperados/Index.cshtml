@@ -18,8 +18,24 @@
 
 <hr />
 
+    <form method="get" class="mb-2">
+        <div class="row">
+            <div class="col">
+                <label class="control-label">Nome</label>
+                <input class="form-control" name="nome" />
+            </div>
+            <div class="col-2">
+                <button class="btn btn-primary mt-4">
+                    <i class="bi bi-search"></i>
+                    Procurar
+                </button>
+            </div>
+        </div>
+    </form>
+
 @if (Model != null && Model.Any())
 {
+
     <table class="table table-striped">
         <thead>
             <tr class="row">
