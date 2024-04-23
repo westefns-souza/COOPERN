@@ -1,0 +1,65 @@
+﻿@model List<IGrouping<string?, EDUCACOOPERN.Models.Aula>>
+
+
+@{
+    ViewData["Title"] = "Relatório - Cursos";
+}
+
+<div class="row">
+    <div class="col-8">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+</div>
+
+<hr />
+
+@if (Model != null && Model.Any())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr class="row">
+                <th class="col">
+                    Curso
+                </th>
+                <th class="col-2 text-center">% Realizados</th>
+                <th class="col-2 text-center">% Não Realizados</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var cursosFinalizados = item
+                    .Select(x => x.Status.Equals(EStatusAula.Realizada))
+                    .Count();
+
+                var NaoRealizados = item
+                    .Select(x => x.Status.Equals(EStatusAula.Cancelada))
+                    .Count();
+
+                <tr class="row">
+                    <td class="col">
+                        @Html.DisplayFor(modelItem => item.Key)
+                    </td>
+
+                    <td class="col-2 text-center">
+                        @cursosFinalizados
+                    </td>
+
+                    <td class="col-2 text-center">
+                        @NaoRealizados
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="row">
+        <div class="col">
+            <div class="alert alert-info text-center">
+                Ainda não há nenhum cooperado com PDI!
+            </div>
+        </div>
+    </div>
+}

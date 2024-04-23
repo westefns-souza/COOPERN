@@ -26,4 +26,14 @@ public class RelatoriosController : Controller
 
         return View(PDIs);
     }
+
+    public async Task<IActionResult> Cursos()
+    {
+        List<IGrouping<string?, Aula>> Aulas = await _context.Aulas
+            .Include(c => c.Curso)
+            .GroupBy(c => c.Curso.Nome)
+            .ToListAsync();
+
+        return View(Aulas);
+    }
 }
