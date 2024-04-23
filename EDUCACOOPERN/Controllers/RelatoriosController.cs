@@ -36,4 +36,15 @@ public class RelatoriosController : Controller
 
         return View(Aulas);
     }
+
+    public async Task<IActionResult> Receitas()
+    {
+        List<IGrouping<string?, Aula>> Aulas = await _context.Aulas
+            .Include(x => x.Custos)
+            .Include(c => c.Curso)
+            .GroupBy(c => c.Curso.Nome)
+            .ToListAsync();
+
+        return View(Aulas);
+    }
 }
