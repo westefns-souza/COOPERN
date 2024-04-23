@@ -18,4 +18,6 @@ public class Curso
 
     [Display(Name = "Ativo")]
     public bool Ativo { get; set; }
+
+    public List<CursoAreaAtuacao> CursoAreaAtuacoes { get; set; }
 }

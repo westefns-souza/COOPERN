@@ -6,6 +6,14 @@ namespace EDUCACOOPERN.ViewModels;
 public class HomeViewModel
 {
     public CooperadoHomeViewModel? CooperadoHome { get; set; }
+
+    public AdministradorViewModel? AdministradorHome { get; set; }
+}
+
+public class AdministradorViewModel
+{
+    public Dictionary<string?, int>? QuantidadeDeInscritosPorAreaDeAtuacao { get; set; }
+    public Dictionary<string?, int>? QuantidadeDeInscritosPorCurso { get; set; }
 }
 
 public class CooperadoHomeViewModel

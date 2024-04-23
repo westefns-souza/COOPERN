@@ -45,6 +45,39 @@
         </div>
     </div>
 }
+else if (Model.AdministradorHome != null)
+{
+    <div class="row">
+        <div class="col-6">
+            <div class="card">
+                <div class="card-header">
+                    Matriculados Por Área de Atuação
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            <canvas id="myChartQuantidadePorAreaDeAtuacao"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card">
+                <div class="card-header">
+                    Matriculados Por Curso
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            <canvas id="myChartQuantidadePorCurso"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 
 @section scripts {
@@ -64,6 +97,28 @@
                         data: [@Model.CooperadoHome.QuantidadeCursosRealizados, @Model.CooperadoHome.QuantidadeCursosNaoRealizados],
                         borderWidth: 1
                     }]
+                }
+            });
+        </script>
+    }
+    else if (User.IsInRole("Coordenador"))
+    {
+        <script>
+            const ctx = document.getElementById('myChartQuantidadePorAreaDeAtuacao');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: @Html.Raw(Json.Serialize(Model.AdministradorHome.QuantidadeDeInscritosPorAreaDeAtuacao.Select(x => x.Key))),
+                    datasets: @Html.Raw(Json.Serialize(Model.AdministradorHome.QuantidadeDeInscritosPorAreaDeAtuacao.Select(x => new { label = x.Key, data = new int[] { x.Value } })))
+                            }
+            });
+
+            const ctxCurso = document.getElementById('myChartQuantidadePorCurso');
+            new Chart(ctxCurso, {
+                type: 'bar',
+                data: {
+                    labels: @Html.Raw(Json.Serialize(Model.AdministradorHome.QuantidadeDeInscritosPorCurso.Select(x => x.Key))),
+                    datasets: @Html.Raw(Json.Serialize(Model.AdministradorHome.QuantidadeDeInscritosPorCurso.Select(x => new { label = x.Key, data = new int[] { x.Value } })))
                 }
             });
         </script>

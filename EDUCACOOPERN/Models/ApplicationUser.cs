@@ -49,4 +49,5 @@ public class ApplicationUser : IdentityUser
     public DateTime? DataNascimento { get; set; }
 
     public IList<Formacao> Formacoes { get; set; } = [];
+    public IList<Matricula> Matriculas { get; set; } = [];
 }

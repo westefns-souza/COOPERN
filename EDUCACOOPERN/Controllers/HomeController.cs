@@ -49,6 +49,24 @@ public class HomeController : Controller
             home.CooperadoHome.CursosRealizados = cursosIds;
             home.CooperadoHome.QuantidadeCursosRealizados = aulasConcluidas.Count();
             home.CooperadoHome.QuantidadeCursosNaoRealizados = cursosDoPDIIds.Where(x => !cursosIds.Contains(x)).Count();
+        } else if (User.IsInRole("Coordenador")) {
+            var administrador = new AdministradorViewModel();
+
+            administrador.QuantidadeDeInscritosPorAreaDeAtuacao = _context.Matricula
+                            .Include(p => p.Aula.Matriculas)
+                            .Include(p => p.Aula.Curso.CursoAreaAtuacoes)
+                            .GroupBy(p => p.Aula.Curso.CursoAreaAtuacoes.Select(x => x.AreaAtuacao.Nome).FirstOrDefault())
+                            .Select(p => new { AreaAtuacao = p.Key, Quantidade = p.Count() })
+                            .ToDictionary(p => p.AreaAtuacao, p => p.Quantidade);
+
+            administrador.QuantidadeDeInscritosPorCurso = _context.Matricula
+                            .Include(p => p.Aula.Matriculas)
+                            .Include(p => p.Aula.Curso)
+                            .GroupBy(p => p.Aula.Curso.Nome)
+                            .Select(p => new { Curso = p.Key, Quantidade = p.Count() })
+                            .ToDictionary(p => p.Curso, p => p.Quantidade);
+
+            home.AdministradorHome = administrador;
         }
 
         return View(home);
