@@ -95,6 +95,14 @@
                                 </li>
                             }
 
+                            @if (User.IsInRole("Professor"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Aulas" asp-action="Index">Programação</a>
+                                </li>
+                            }
+
+
                             @if (User.IsInRole("Cooperado"))
                             {
                                 <li class="nav-item">

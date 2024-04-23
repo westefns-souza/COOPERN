@@ -44,7 +44,7 @@ public class CooperadosController : Controller
 
         if (!nome.IsNullOrEmpty())
         {
-            usuarios = usuarios.Where(x => x.FullName.StartsWith(nome)).ToList();
+            usuarios = usuarios.Where(x => x.FullName.ToUpper().StartsWith(nome.ToUpper())).ToList();
         }
 
         return View(usuarios);

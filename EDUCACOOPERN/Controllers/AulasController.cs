@@ -20,13 +20,18 @@ public class AulasController : Controller
         _userManager = userManager;
     }
 
-    [Authorize(Roles = "Coordenador")]
+    [Authorize(Roles = "Coordenador, Professor")]
     public async Task<IActionResult> Index()
     {
         var aulas = await _context.Aulas
             .Include(a => a.Curso)
             .Include(a => a.Professor)
             .ToListAsync();
+
+        if (User.IsInRole("Professor"))
+        {
+            aulas = aulas.Where(x => x.ProfessorId.Equals(_userManager.GetUserId(User))).ToList();
+        }
 
         return View(aulas);
     }
@@ -133,7 +138,7 @@ public class AulasController : Controller
     }
 
 
-    [Authorize(Roles = "Coordenador")]
+    [Authorize(Roles = "Coordenador, Professor")]
     public async Task<IActionResult> CreateAsync()
     {
         var viewModel = new Aula()
@@ -151,7 +156,7 @@ public class AulasController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    [Authorize(Roles = "Coordenador")]
+    [Authorize(Roles = "Coordenador, Professor")]
     public async Task<IActionResult> Create(Aula aula)
     {
         if (ModelState.IsValid)
@@ -172,7 +177,7 @@ public class AulasController : Controller
         return View(aula);
     }
 
-    [Authorize(Roles = "Coordenador")]
+    [Authorize(Roles = "Coordenador, Professor")]
     public async Task<IActionResult> Edit(int? id)
     {
         if (id == null)
@@ -200,7 +205,7 @@ public class AulasController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    [Authorize(Roles = "Coordenador")]
+    [Authorize(Roles = "Coordenador, Professor")]
     public async Task<IActionResult> Edit(int id, Aula aula)
     {
         if (id != aula.Id)
