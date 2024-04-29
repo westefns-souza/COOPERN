@@ -163,7 +163,7 @@ public class AulasController : Controller
         {
             aula.DataInicio = aula.DataInicio.ToUniversalTime();
             aula.DataFim = aula.DataFim.ToUniversalTime();
-
+            aula.Id = 0;
             _context.Add(aula);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
