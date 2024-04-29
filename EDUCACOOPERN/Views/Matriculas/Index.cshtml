@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<EDUCACOOPERN.Models.Matricula>
 
 @{
-    ViewData["Title"] = "Matrículas";
+    ViewData["Title"] = "Matriculas";
     var proximasAulas = Model.Where(m => m.Aula.DataInicio > DateTime.Now).ToList();
     var historico = Model.Where(m => m.Aula.DataInicio < DateTime.Now).ToList();
 }

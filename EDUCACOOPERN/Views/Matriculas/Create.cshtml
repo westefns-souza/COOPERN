@@ -1,51 +1,53 @@
 ﻿@model EDUCACOOPERN.Models.Matricula
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Matriculas";
 }
 
-<h1>Create</h1>
-
-<h4>Matricula</h4>
-<hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="AulaId" class="control-label"></label>
-                <select asp-for="AulaId" class ="form-control" asp-items="ViewBag.AulaId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="AlunoId" class="control-label"></label>
-                <select asp-for="AlunoId" class ="form-control" asp-items="ViewBag.AlunoId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="NotaPre" class="control-label"></label>
-                <input asp-for="NotaPre" class="form-control" />
-                <span asp-validation-for="NotaPre" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="NotaPos" class="control-label"></label>
-                <input asp-for="NotaPos" class="form-control" />
-                <span asp-validation-for="NotaPos" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Compareceu" /> @Html.DisplayNameFor(model => model.Compareceu)
-                </label>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+    <div class="col-6">
+        <h1>@ViewData["Title"]</h1>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+<hr />
+
+<form asp-action="Create">
+    <div class="row">
+        <div class="col-md-6">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="AulaId" class="control-label"></label>
+                <select asp-for="AulaId" class="form-control" asp-items="ViewBag.AulaId"></select>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="AlunoId" class="control-label"></label>
+                <select asp-for="AlunoId" class="form-control" asp-items="ViewBag.AlunoId"></select>
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col">
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-floppy me-1"></i>Matricular</button>
+                    @if(User.IsInRole("Cooperado"))
+                    {
+                        <a asp-action="Index" asp-asp-controller="Cursos" class="btn btn-light"><i class="bi bi-arrow-left-circle me-1"></i>Voltar</a>
+                    } else
+                    {
+                        <a asp-action="details" asp-asp-controller="Aulas" asp-route-id="@Model.AulaId" class="btn btn-light"><i class="bi bi-arrow-left-circle me-1"></i>Voltar</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

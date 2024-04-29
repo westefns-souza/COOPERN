@@ -66,21 +66,29 @@ public class MatriculasController : Controller
         return View(matricula);
     }
 
-    public async Task<IActionResult> CreateAsync()
+    public async Task<IActionResult> CreateAsync(int? id)
     {
-        await PreencherAlunosAsync();
-        await PrencherAulasAsync();
+        var viewModel = new Matricula()
+        {
+            AulaId = id ?? 0
+        };
 
-        return View();
+        await PreencherAlunosAsync();
+        await PrencherAulasAsync(id);
+
+        return View(viewModel);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("AulaId")] Matricula matricula)
+    public async Task<IActionResult> Create([Bind("AulaId, AlunoId")] Matricula matricula)
     {
-        matricula.AlunoId = _context.Usuario
-            .FirstOrDefault(x => x.UserName.Equals(User.Identity.Name))
-            .Id;
+        if (matricula.AlunoId == null)
+        {
+            matricula.AlunoId = _context.Usuario
+                .FirstOrDefault(x => x.UserName.Equals(User.Identity.Name))
+                .Id;
+        }
 
         if (!ModelState.IsValid)
         {
@@ -91,8 +99,14 @@ public class MatriculasController : Controller
 
         matricula.Status = EStatusMatricula.Matriculado;
         _context.Add(matricula);
-        
+
         await _context.SaveChangesAsync();
+
+        if (User.IsInRole("Coordenador"))
+        {
+            return RedirectToAction(nameof(Details), "Aulas", new { id = matricula.AulaId });
+        }
+
         return RedirectToAction(nameof(Details), new { id = matricula.Id });
     }
 
@@ -176,7 +190,7 @@ public class MatriculasController : Controller
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
         var matricula = await _context.Matricula.FindAsync(id);
-        
+
         if (matricula != null)
         {
             matricula.Status = EStatusMatricula.Cancelado;
@@ -184,6 +198,12 @@ public class MatriculasController : Controller
         }
 
         await _context.SaveChangesAsync();
+
+        if (User.IsInRole("Coordenador"))
+        {
+            return RedirectToAction(nameof(Details), "Aulas", new { id = matricula.AulaId });
+        }
+
         return RedirectToAction(nameof(Index));
     }
 
@@ -201,17 +221,30 @@ public class MatriculasController : Controller
 
         var usuarios = await _userManager.Users
             .Where(x => idusuarios.Contains(x.Id))
-            .OrderBy(x => x.Email)
+            .OrderBy(x => x.FullName)
+            .Select(x => new
+            {
+                Id = x.Id,
+                Value = x.FullName
+            })
             .ToListAsync();
 
-        ViewData["AlunoId"] = new SelectList(usuarios, "Id", "Id", id);
+        ViewData["AlunoId"] = new SelectList(usuarios, "Id", "Value", id);
     }
 
     private async Task PrencherAulasAsync(int? id = null)
     {
         var aulas = await _context.Aulas
+            .Include(x => x.Curso)
+            .Include(x => x.Professor)
+            .Where(x => x.Status.Equals(EStatusAula.Aberta))
+            .Select(x => new
+            {
+                Id = x.Id,
+                Nome = $"{x.Curso.Nome} - {x.Professor.FullName} - {x.DataInicio:dd/MM/yyyy}"
+            })
             .ToListAsync();
 
-        ViewData["AulaId"] = new SelectList(aulas, "Id", "ProfessorId", id);
+        ViewData["AulaId"] = new SelectList(aulas, "Id", "Nome", id);
     }
 }

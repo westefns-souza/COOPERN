@@ -71,16 +71,21 @@
 @if (User.IsInRole("Coordenador") || User.IsInRole("Professor"))
 {
     <div class="row">
-        <div class="col-8">
+        <div class="col-6">
             <h2>Cooperados</h2>
         </div>
 
-        @if (Model.Matriculas.Any() && (Model.Status == EStatusAula.Aberta || Model.Status == EStatusAula.Realizada))
-        {
-            <div class="col text-end">
+        <div class="col text-end">
+            @if (User.IsInRole("Coordenador") && (Model.Status == EStatusAula.Aberta || Model.Status == EStatusAula.Realizada))
+            {
+                <a asp-action="Create" asp-controller="Matriculas" asp-route-id="@Model.Id" class="btn btn-primary mt-3"><i class="bi bi-plus-circle me-1"></i>Matricular cooperado</a>
+            }
+
+            @if (Model.Matriculas.Any() && (Model.Status == EStatusAula.Aberta || Model.Status == EStatusAula.Realizada))
+            {
                 <a asp-action="Lancar" asp-route-id="@Model.Id" class="btn btn-primary mt-3"><i class="bi bi-plus-circle me-1"></i>Frequência e notas</a>
-            </div>
-        }
+            }
+        </div>
     </div>
 
     <hr />
@@ -95,6 +100,7 @@
                     <th>Pré teste</th>
                     <th>Pós teste</th>
                     <th>Situação</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -115,6 +121,12 @@
                         </td>
                         <td>
                             @matricula.Status
+                        </td>
+                        <td>
+                            @if (Model.Status == EStatusAula.Aberta)
+                            {
+                                <a asp-action="Delete" asp-controller="Matriculas" asp-route-id="@matricula.Id" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
+                            }
                         </td>
                     </tr>
                 }

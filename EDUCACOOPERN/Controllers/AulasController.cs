@@ -137,7 +137,6 @@ public class AulasController : Controller
         return RedirectToAction("Details", new { id });
     }
 
-
     [Authorize(Roles = "Coordenador, Professor")]
     public async Task<IActionResult> CreateAsync()
     {
@@ -382,7 +381,6 @@ public class AulasController : Controller
 
         return RedirectToAction(nameof(Details), new { id });
     }
-
 
     private bool AulaExists(int id)
     {
