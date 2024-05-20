@@ -30,12 +30,13 @@ public class HomeController : Controller
         {
             var cooperado = new CooperadoHomeViewModel();
 
-            cooperado.PDI = _context.UsuarioPDIs
+            var pdi = _context.UsuarioPDIs
                 .Include(p => p.PDI)
                 .Include(p => p.PDI.PDICursos)
                 .ThenInclude(p => p.Curso)
-                .FirstOrDefault(p => p.UsuarioId.Equals(userId))
-                .PDI;
+                .FirstOrDefault(p => p.UsuarioId.Equals(userId));
+
+            cooperado.PDI = pdi != null ? pdi.PDI : null;
 
             var aulasConcluidas = _context.Matricula
                 .Include(p => p.Aula)
@@ -43,14 +44,14 @@ public class HomeController : Controller
                 .ToList();
 
             var cursosIds = aulasConcluidas.Select(p => p.Aula.CursoId).ToList();
-            var cursosDoPDIIds = cooperado.PDI.PDICursos.Select(p => p.CursoId).ToList();
+            var cursosDoPDIIds = cooperado.PDI != null ? cooperado.PDI.PDICursos.Select(p => p.CursoId).ToList() : null;
 
             home.CooperadoHome = cooperado;
             home.CooperadoHome.CursosRealizados = cursosIds;
             home.CooperadoHome.QuantidadeCursosRealizados = aulasConcluidas.Count();
-            home.CooperadoHome.QuantidadeCursosNaoRealizados = cursosDoPDIIds.Where(x => !cursosIds.Contains(x)).Count();
+            home.CooperadoHome.QuantidadeCursosNaoRealizados = cursosDoPDIIds != null ? cursosDoPDIIds.Where(x => !cursosIds.Contains(x)).Count() : 0;
             home.CooperadoHome.CurosDoMes = _context.Aulas
-                .Include(p => p.Matriculas)
+                .Include(p => p.Curso)
                 .Where(p => p.DataInicio.Month == DateTime.Now.Month && p.DataInicio.Year == DateTime.Now.Year)
                 .ToList();
         } else if (User.IsInRole("Coordenador")) {

@@ -24,21 +24,24 @@
                         <div class="col">
                             <div class="card">
                                 <ul class="list-group list-group-flush">
-                                    @foreach (var curso in Model.CooperadoHome.PDI.PDICursos)
+                                    @if (Model.CooperadoHome.PDI != null && Model.CooperadoHome.PDI.PDICursos != null)
                                     {
-                                        <li class="list-group-item">
-                                            <i class=""></i>
-                                            @if (Model.CooperadoHome.CursosRealizados.Contains(curso.CursoId))
-                                            {
-                                                <span><i class="bi bi-person-check text-primary"></i></span>
-                                            }
-                                            else
-                                            {
-                                                <span><i class="bi bi-person-check"></i></span>
-                                            }
+                                        foreach (var curso in Model.CooperadoHome.PDI.PDICursos)
+                                        {
+                                            <li class="list-group-item">
+                                                <i class=""></i>
+                                                @if (Model.CooperadoHome.CursosRealizados.Contains(curso.CursoId))
+                                                {
+                                                    <span><i class="bi bi-person-check text-primary"></i></span>
+                                                }
+                                                else
+                                                {
+                                                    <span><i class="bi bi-person-check"></i></span>
+                                                }
 
-                                            @curso.Curso.Nome
-                                        </li>
+                                                @curso.Curso.Nome
+                                            </li>
+                                        }
                                     }
                                 </ul>
                             </div>
@@ -57,13 +60,16 @@
                         <div class="col">
                             <div class="card">
                                 <ul class="list-group list-group-flush">
-                                    @foreach (var curso in Model.CooperadoHome.CurosDoMes)
+                                    @if (Model.CooperadoHome.CurosDoMes != null)
                                     {
-                                        <a asp-action="Details" asp-controller="Aulas" asp-route-id="@curso.Id">
-                                            <li class="list-group-item">
-                                                @curso.Curso.Nome
-                                            </li>
-                                        </a>
+                                        foreach (var curso in Model.CooperadoHome.CurosDoMes)
+                                        {
+                                            <a asp-action="Details" asp-controller="Aulas" asp-route-id="@curso.Id">
+                                                <li class="list-group-item">
+                                                        @curso.Curso.Nome
+                                                </li>
+                                            </a>
+                                        }
                                     }
                                 </ul>
                             </div>
@@ -109,7 +115,7 @@ else if (Model.AdministradorHome != null)
 }
 else
 {
- <div class="row">
+    <div class="row">
         <div class="col">
             <div class="card">
                 <div class="card-header">
@@ -123,9 +129,9 @@ else
                                     @foreach (var curso in Model.ProfessorHome.MeusCuros)
                                     {
                                         <a asp-action="Details" asp-controller="Aulas" asp-route-id="@curso.Id">
-                                            <li class="list-group-item">
-                                                    @curso.Curso.Nome
-                                            </li>
+                                        <li class="list-group-item">
+                                                @curso.Curso.Nome
+                                        </li>
                                         </a>
                                     }
                                 </ul>
@@ -135,7 +141,7 @@ else
                 </div>
             </div>
         </div>
- </div>
+    </div>
 }
 
 
@@ -169,7 +175,7 @@ else
                 data: {
                     labels: @Html.Raw(Json.Serialize(Model.AdministradorHome.QuantidadeDeInscritosPorAreaDeAtuacao.Select(x => x.Key))),
                     datasets: @Html.Raw(Json.Serialize(Model.AdministradorHome.QuantidadeDeInscritosPorAreaDeAtuacao.Select(x => new { label = x.Key, data = new int[] { x.Value } })))
-                                                    }
+                                                                            }
             });
 
             const ctxCurso = document.getElementById('myChartQuantidadePorCurso');
@@ -178,7 +184,7 @@ else
                 data: {
                     labels: @Html.Raw(Json.Serialize(Model.AdministradorHome.QuantidadeDeInscritosPorCurso.Select(x => x.Key))),
                     datasets: @Html.Raw(Json.Serialize(Model.AdministradorHome.QuantidadeDeInscritosPorCurso.Select(x => new { label = x.Key, data = new int[] { x.Value } })))
-                                        }
+                                                                }
             });
         </script>
     }
