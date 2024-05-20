@@ -6,8 +6,15 @@ namespace EDUCACOOPERN.ViewModels;
 public class HomeViewModel
 {
     public CooperadoHomeViewModel? CooperadoHome { get; set; }
+    
+    public ProfessorHomeViewModel? ProfessorHome { get; set; }
 
     public AdministradorViewModel? AdministradorHome { get; set; }
+}
+
+public class ProfessorHomeViewModel
+{
+    public IList<Aula>? MeusCuros { get; set; }
 }
 
 public class AdministradorViewModel
@@ -22,6 +29,7 @@ public class CooperadoHomeViewModel
     public int QuantidadeCursosRealizados { get; set; }
     public int QuantidadeCursosNaoRealizados { get; set; }
     public IList<int> CursosRealizados { get; set; }
+    public IList<Aula>? CurosDoMes { get; set; }
 }
 
 public class CooperadoViewModel

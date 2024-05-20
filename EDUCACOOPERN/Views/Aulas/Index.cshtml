@@ -67,7 +67,7 @@
                     </td>
 
                     <td class="col-2 text-end">
-                        @if (User.IsInRole("Coordenador") && (item.Status == EStatusAula.Aberta || item.Status == EStatusAula.Pendente))
+                        @if (User.IsInRole("Coordenador"))
                         {
                             <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-light"><i class="bi bi-pencil"></i></a>
                         }

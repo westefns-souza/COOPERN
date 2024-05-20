@@ -26,6 +26,8 @@ public class AulasController : Controller
         var aulas = await _context.Aulas
             .Include(a => a.Curso)
             .Include(a => a.Professor)
+            .Where(x => x.Status != EStatusAula.Cancelada)
+            .OrderByDescending(x => x.DataInicio)
             .ToListAsync();
 
         if (User.IsInRole("Professor"))

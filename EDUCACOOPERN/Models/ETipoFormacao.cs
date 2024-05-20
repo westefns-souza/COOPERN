@@ -1,8 +1,12 @@
-﻿namespace EDUCACOOPERN.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace EDUCACOOPERN.Models;
 
 public enum ETipoFormacao
 {
     Bacharelado,
     Mestrado,
-    Doutorado
+    Doutorado,
+    [Display(Name = "Especialização")]
+    Especializacao,
 }

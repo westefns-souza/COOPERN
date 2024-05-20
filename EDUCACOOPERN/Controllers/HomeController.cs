@@ -49,6 +49,10 @@ public class HomeController : Controller
             home.CooperadoHome.CursosRealizados = cursosIds;
             home.CooperadoHome.QuantidadeCursosRealizados = aulasConcluidas.Count();
             home.CooperadoHome.QuantidadeCursosNaoRealizados = cursosDoPDIIds.Where(x => !cursosIds.Contains(x)).Count();
+            home.CooperadoHome.CurosDoMes = _context.Aulas
+                .Include(p => p.Matriculas)
+                .Where(p => p.DataInicio.Month == DateTime.Now.Month && p.DataInicio.Year == DateTime.Now.Year)
+                .ToList();
         } else if (User.IsInRole("Coordenador")) {
             var administrador = new AdministradorViewModel();
 
@@ -67,6 +71,20 @@ public class HomeController : Controller
                             .ToDictionary(p => p.Curso, p => p.Quantidade);
 
             home.AdministradorHome = administrador;
+        }
+        else if (User.IsInRole("Professor"))
+        {
+            home = new HomeViewModel
+            {
+                ProfessorHome = new ProfessorHomeViewModel
+                {
+                    MeusCuros = _context.Aulas
+                        .Include(p => p.Curso)
+                        .Where(p => p.ProfessorId.Equals(userId) && p.Status != EStatusAula.Cancelada)
+                        .OrderByDescending(p => p.DataInicio)
+                        .ToList()
+                }
+            };
         }
 
         return View(home);
