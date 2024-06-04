@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using X.PagedList;
 
 namespace EDUCACOOPERN.Controllers;
 
@@ -30,21 +31,30 @@ public class CooperadosController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index(string? nome = null)
+    public async Task<IActionResult> Index(string? nome = null, int? pagina = 1)
     {
         var idusuarios = _context.UserRoles
             .Where(x => x.RoleId.Equals("3"))
             .Select(x => x.UserId)
             .ToList();
         
-        var usuarios = await _userManager.Users
-            .Where(x => idusuarios.Contains(x.Id))
-            .OrderBy(x => x.Email)
-            .ToListAsync();
+        IPagedList<ApplicationUser> usuarios;
 
         if (!nome.IsNullOrEmpty())
         {
-            usuarios = usuarios.Where(x => x.FullName.ToUpper().StartsWith(nome.ToUpper())).ToList();
+            usuarios = await _userManager.Users
+                .Where(x => idusuarios.Contains(x.Id))
+                .OrderBy(x => x.Email)
+                .Where(x => x.FullName.ToUpper().StartsWith(nome.ToUpper()))
+                .OrderBy(x => x.FullName)
+                .ToPagedListAsync((int)pagina, 20);
+        }
+        else
+        {
+            usuarios = await _userManager.Users
+                .Where(x => idusuarios.Contains(x.Id))
+                .OrderBy(x => x.FullName)
+                .ToPagedListAsync((int)pagina, 20);
         }
 
         return View(usuarios);

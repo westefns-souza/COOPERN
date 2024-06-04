@@ -1,5 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@model IEnumerable<ApplicationUser>
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@model IPagedList<ApplicationUser>
 
 @{
     ViewData["Title"] = "Professores";
@@ -24,10 +26,10 @@
         <thead>
             <tr class="row">
                 <th class="col-5">
-                    @Html.DisplayNameFor(model => model.FullName)
+                    Nome completo
                 </th>
                 <th class="col-5">
-                    @Html.DisplayNameFor(model => model.Email)
+                    E-mail
                 </th>
                 <th class="col-2"></th>
             </tr>
@@ -51,6 +53,22 @@
             }
         </tbody>
     </table>
+
+    <div class="row">
+        <div class="col text-center">
+            @Html.PagedListPager(Model, page => Url.Action("Index", new { pagina = page }), new PagedListRenderOptions
+           {
+               LiElementClasses = new[] { "page-item" },
+               UlElementClasses = new[] { "pagination" },
+               PageClasses = new[] { "page-link" },
+               ActiveLiElementClass = "active",
+               DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+               DisplayLinkToLastPage = PagedListDisplayMode.Always,
+               //DisplayEllipsesWhenNotAdjacent = true,
+               EllipsesFormat = "..."
+           })
+        </div>
+    </div>
 }
 else
 {

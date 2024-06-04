@@ -1,5 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@model IEnumerable<ApplicationUser>
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@model IPagedList<ApplicationUser>
 
 @{
     ViewData["Title"] = "Cooperados";
@@ -18,32 +20,31 @@
 
 <hr />
 
-    <form method="get" class="mb-2">
-        <div class="row">
-            <div class="col">
-                <label class="control-label">Nome</label>
-                <input class="form-control" name="nome" />
-            </div>
-            <div class="col-2">
-                <button class="btn btn-primary mt-4">
-                    <i class="bi bi-search"></i>
-                    Procurar
-                </button>
-            </div>
+<form method="get" class="mb-2">
+    <div class="row">
+        <div class="col">
+            <label class="control-label">Nome</label>
+            <input class="form-control" name="nome" />
         </div>
-    </form>
+        <div class="col-2">
+            <button class="btn btn-primary mt-4">
+                <i class="bi bi-search"></i>
+                Procurar
+            </button>
+        </div>
+    </div>
+</form>
 
 @if (Model != null && Model.Any())
 {
-
     <table class="table table-striped">
         <thead>
             <tr class="row">
                 <th class="col-5">
-                    @Html.DisplayNameFor(model => model.FullName)
+                    Nome completo
                 </th>
                 <th class="col-5">
-                    @Html.DisplayNameFor(model => model.Email)
+                    E-mail
                 </th>
                 <th class="col-2"></th>
             </tr>
@@ -67,6 +68,21 @@
             }
         </tbody>
     </table>
+    <div class="row">
+        <div class="col text-center">
+            @Html.PagedListPager(Model, page => Url.Action("Index", new { pagina = page }), new PagedListRenderOptions
+           {
+               LiElementClasses = new[] { "page-item" },
+               UlElementClasses = new[] { "pagination" },
+               PageClasses = new[] { "page-link" },
+               ActiveLiElementClass = "active",
+               DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+               DisplayLinkToLastPage = PagedListDisplayMode.Always,
+               //DisplayEllipsesWhenNotAdjacent = true,
+               EllipsesFormat = "..."
+           })
+        </div>
+    </div>
 }
 else
 {

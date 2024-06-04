@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using X.PagedList;
 
 namespace EDUCACOOPERN.Controllers;
 
@@ -25,12 +26,12 @@ public class ProfessoresController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int? pagina = 1)
     {
         var usuarios = await _userManager.Users
             .Where(x => _context.UserRoles.Any(y => y.UserId == x.Id && y.RoleId == "2"))
             .OrderBy(x => x.Email)
-            .ToListAsync();
+            .ToPagedListAsync((int)pagina, 20);
 
         return View(usuarios);
     }
