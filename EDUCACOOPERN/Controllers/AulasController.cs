@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.CompilerServices;
 
 namespace EDUCACOOPERN.Controllers;
 
@@ -21,12 +22,22 @@ public class AulasController : Controller
     }
 
     [Authorize(Roles = "Coordenador, Professor")]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int? ano, int? mes)
     {
+        if (ano == null)
+        {
+            var hoje = DateTime.Now;
+            ano = hoje.Year;
+            mes = hoje.Month;
+        }
+
         var aulas = await _context.Aulas
             .Include(a => a.Curso)
             .Include(a => a.Professor)
-            .Where(x => x.Status != EStatusAula.Cancelada)
+            .Where(x => 
+                x.Status != EStatusAula.Cancelada 
+                && x.DataInicio.Year == ano 
+                && x.DataInicio.Month == mes)
             .OrderByDescending(x => x.DataInicio)
             .ToListAsync();
 
@@ -35,6 +46,8 @@ public class AulasController : Controller
             aulas = aulas.Where(x => x.ProfessorId.Equals(_userManager.GetUserId(User))).ToList();
         }
 
+        await PreencherAnoAsync((int)ano);
+        await PreencherMesesAsync((int)mes);
         return View(aulas);
     }
 
@@ -411,5 +424,27 @@ public class AulasController : Controller
             .ToListAsync();
 
         ViewData["ProfessorId"] = new SelectList(usuarios, "Id", "FullName", id);
+    }
+
+    private async Task PreencherAnoAsync(int ano)
+    {
+        var anosComAula = _context.Aulas
+            .Select(x => x.DataInicio.Year)
+            .Distinct()
+            .OrderByDescending(x => x)
+            .ToList();
+
+        ViewBag.Anos = new SelectList(anosComAula, ano);
+    }
+
+    private async Task PreencherMesesAsync(int mes)
+    {
+        var mesesComAula = _context.Aulas
+            .Select(x => x.DataInicio.Month.ToString())
+            .Distinct()
+            .OrderByDescending(x => x)
+            .ToList();
+
+        ViewBag.Meses = new SelectList(mesesComAula, mes);
     }
 }

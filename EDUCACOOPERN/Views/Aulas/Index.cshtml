@@ -9,7 +9,7 @@
     <div class="col-8">
         <h1>@ViewData["Title"]</h1>
     </div>
-    
+
     @if (User.IsInRole("Coordenador"))
     {
         <div class="col text-end">
@@ -20,6 +20,26 @@
 
 <hr />
 
+<form>
+    <div class="row g-3 align-items-center">
+        <div class="col-auto">
+            <label>Ano</label>
+        </div>
+        <div class="col-auto">
+            <select asp-items="ViewBag.Anos" name="ano" class="form-select"></select>
+        </div>
+
+        <div class="col-auto">
+            <label>Mês</label>
+        </div>
+        <div class="col-auto">
+            <select asp-items="ViewBag.Meses" name="mes" class="form-select"></select>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-primary">Pesquisar</button>
+        </div>
+    </div>
+</form>
 @if (Model != null && Model.Any())
 {
     <table class="table table-striped">
@@ -71,7 +91,7 @@
                         {
                             <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-light"><i class="bi bi-pencil"></i></a>
                         }
-                        
+
                         <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-light"><i class="bi bi-eye"></i></a>
 
                         @if (User.IsInRole("Coordenador") && (item.Status == EStatusAula.Aberta || item.Status == EStatusAula.Pendente))
