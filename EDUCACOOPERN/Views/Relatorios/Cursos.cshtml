@@ -21,6 +21,9 @@
                 <th class="col">
                     Curso
                 </th>
+                <th class="col-2 text-center">
+                    Cancelado
+                </th>
                 <th class="col-2 text-center">% Realizados</th>
                 <th class="col-2 text-center">% Não Realizados</th>
             </tr>
@@ -39,6 +42,17 @@
                 <tr class="row">
                     <td class="col">
                         @Html.DisplayFor(modelItem => item.Key)
+                    </td>
+
+                    <td class="col-2 text-center">
+                        @if(item.Select(x => x.Curso.Ativo).FirstOrDefault())
+                        {
+                            <span>Não</span>
+                        }
+                        else
+                        {
+                            <span>Sim</span>
+                        }
                     </td>
 
                     <td class="col-2 text-center">

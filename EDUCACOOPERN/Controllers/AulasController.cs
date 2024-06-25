@@ -34,9 +34,9 @@ public class AulasController : Controller
         var aulas = await _context.Aulas
             .Include(a => a.Curso)
             .Include(a => a.Professor)
-            .Where(x => 
-                x.Status != EStatusAula.Cancelada 
-                && x.DataInicio.Year == ano 
+            .Where(x =>
+                x.Status != EStatusAula.Cancelada
+                && x.DataInicio.Year == ano
                 && x.DataInicio.Month == mes)
             .OrderByDescending(x => x.DataInicio)
             .ToListAsync();
@@ -371,14 +371,14 @@ public class AulasController : Controller
     [ValidateAntiForgeryToken]
     [Authorize(Roles = "Coordenador")]
     public async Task<IActionResult> Custos(int id, Aula viewModel)
-    {   
+    {
         try
         {
             var aula = _context.Aulas.FirstOrDefault(x => x.Id == id);
             aula.Receita = viewModel.Receita;
             aula.Status = EStatusAula.Pendente;
             _context.RemoveRange(await _context.Custos.Where(x => x.AulaId == aula.Id).ToListAsync());
-            _context.AddRange(viewModel.Custos.Select(x => new Custos { AulaId = viewModel.Id, Classificacao = x.Classificacao, Valor = x.Valor}));
+            _context.AddRange(viewModel.Custos.Select(x => new Custos { AulaId = viewModel.Id, Classificacao = x.Classificacao, Valor = x.Valor }));
             _context.Update(aula);
             await _context.SaveChangesAsync();
         }
@@ -440,11 +440,36 @@ public class AulasController : Controller
     private async Task PreencherMesesAsync(int mes)
     {
         var mesesComAula = _context.Aulas
-            .Select(x => x.DataInicio.Month.ToString())
+            .Select(x => x.DataInicio.Month)
             .Distinct()
             .OrderByDescending(x => x)
             .ToList();
 
-        ViewBag.Meses = new SelectList(mesesComAula, mes);
+        var meses = new List<object>();
+
+        foreach (var x in mesesComAula)
+        {
+            var nome = "";
+
+            switch (x)
+            {
+                case 1: nome = "Janeiro"; break;
+                case 2: nome = "Fevereiro"; break;
+                case 3: nome = "Março"; break;
+                case 4: nome = "Abril"; break;
+                case 5: nome = "Maio";break;
+                case 6: nome = "Junho"; break;
+                case 7: nome = "Julho"; break;
+                case 8: nome = "Agosto"; break;
+                case 9: nome = "Setembro"; break;
+                case 10: nome = "Outubro"; break;
+                case 11: nome = "Novembro"; break;
+                case 12: nome = "Dezembro"; break;
+            }
+
+            meses.Add(new { mes = x, nome = nome });
+        }
+
+        ViewBag.Meses = new SelectList(meses, "mes", "nome", mes);
     }
 }

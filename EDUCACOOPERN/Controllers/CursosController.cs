@@ -206,8 +206,9 @@ public class CursosController : Controller
         var curso = await _context.Cursos.FindAsync(id);
         if (curso != null)
         {
-            _context.RemoveRange(await _context.CursoAreaAtuacoes.Where(x => x.CursoId.Equals(curso.Id)).ToListAsync());
-            _context.Remove(curso);
+            curso.Ativo = false;
+            //_context.RemoveRange(await _context.CursoAreaAtuacoes.Where(x => x.CursoId.Equals(curso.Id)).ToListAsync());
+            _context.Update(curso);
             await _context.SaveChangesAsync();
         }
 
