@@ -20,8 +20,8 @@ public class CooperadosController : Controller
     private readonly IUserStore<ApplicationUser> _userStore;
 
     public CooperadosController(
-        ApplicationDbContext context, 
-        UserManager<ApplicationUser> userManager, 
+        ApplicationDbContext context,
+        UserManager<ApplicationUser> userManager,
         IUserStore<ApplicationUser> userStore
     )
     {
@@ -37,7 +37,7 @@ public class CooperadosController : Controller
             .Where(x => x.RoleId.Equals("3"))
             .Select(x => x.UserId)
             .ToList();
-        
+
         IPagedList<ApplicationUser> usuarios;
 
         if (!nome.IsNullOrEmpty())
@@ -88,7 +88,7 @@ public class CooperadosController : Controller
         }
 
         var user = Activator.CreateInstance<ApplicationUser>();
-        
+
         user.PhoneNumber = viewModel.Celular;
         user.Email = viewModel.Email;
         user.UserName = viewModel.Email;
@@ -106,7 +106,11 @@ public class CooperadosController : Controller
             await _userManager.AddToRoleAsync(user, "Cooperado");
 
             await _context.AddRangeAsync(viewModel.AreasAtuacao.Select(x => new UsuarioAreaAtuacao { UsuarioId = user.Id, AreaAtuacaoId = x.Id }).ToList());
-            await _context.AddRangeAsync(viewModel.PDIs.Select(x => new UsuarioPDI { UsuarioId = user.Id, PDIId = x.Id }).ToList());
+            if (viewModel.PDIs != null && viewModel.PDIs.Any())
+            {
+                await _context.AddRangeAsync(viewModel.PDIs.Select(x => new UsuarioPDI { UsuarioId = user.Id, PDIId = x.Id }).ToList());
+            }
+
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Index");
@@ -124,7 +128,7 @@ public class CooperadosController : Controller
         }
 
         var usuario = await _userManager.Users.FirstOrDefaultAsync(x => x.Id.Equals(id));
-        
+
         if (usuario == null)
         {
             return NotFound();
@@ -191,7 +195,12 @@ public class CooperadosController : Controller
             _context.RemoveRange(await _context.UsuarioPDIs.Where(x => x.UsuarioId.Equals(user.Id)).ToListAsync());
 
             await _context.AddRangeAsync(viewModel.AreasAtuacao.Select(x => new UsuarioAreaAtuacao { UsuarioId = user.Id, AreaAtuacaoId = x.Id }).ToList());
-            await _context.AddRangeAsync(viewModel.PDIs.Select(x => new UsuarioPDI { UsuarioId = user.Id, PDIId = x.Id }).ToList());
+
+            if (viewModel.PDIs != null && viewModel.PDIs.Any())
+            {
+                await _context.AddRangeAsync(viewModel.PDIs.Select(x => new UsuarioPDI { UsuarioId = user.Id, PDIId = x.Id }).ToList());
+            }
+           
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Index");
@@ -264,7 +273,7 @@ public class CooperadosController : Controller
             .Where(x => x.UsuarioId.Equals(id))
             .Select(x => x.PDI)
             .ToList();
-        
+
         var viewModel = new CooperadoViewModel()
         {
             Id = id,
@@ -288,11 +297,11 @@ public class CooperadosController : Controller
     public async Task<IActionResult> DeleteConfirmed(string id)
     {
         var usuario = await _context.Usuario.FirstOrDefaultAsync(m => m.Id.Equals(id));
-        
+
         var areasAtuacao = _context.UsuarioAreaAtuacao
             .Where(x => x.UsuarioId.Equals(id))
             .ToList();
-        
+
         var pdis = _context.UsuarioPDIs
             .Where(x => x.UsuarioId.Equals(id))
             .ToList();
