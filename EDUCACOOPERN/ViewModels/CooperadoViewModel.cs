@@ -58,7 +58,7 @@ public class CooperadoViewModel
     public List<AreaAtuacao>? AreasAtuacao { get; set; }
 
     [Display(Name = "PDI")]
-    [Required(ErrorMessage = "O {0} é obrigatório!")]
+    //[Required(ErrorMessage = "O {0} é obrigatório!")]
     public List<PDI>? PDIs { get; set; }
 
     [Display(Name = "Celular alternativo")]
