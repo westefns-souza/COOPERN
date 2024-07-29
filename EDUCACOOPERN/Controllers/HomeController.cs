@@ -54,7 +54,9 @@ public class HomeController : Controller
                 .Include(p => p.Curso)
                 .Where(p => p.DataInicio.Month == DateTime.Now.Month && p.DataInicio.Year == DateTime.Now.Year)
                 .ToList();
-        } else if (User.IsInRole("Coordenador")) {
+        } 
+        
+        if (User.IsInRole("Coordenador")) {
             var administrador = new AdministradorViewModel();
 
             administrador.QuantidadeDeInscritosPorAreaDeAtuacao = _context.Matricula
@@ -73,18 +75,16 @@ public class HomeController : Controller
 
             home.AdministradorHome = administrador;
         }
-        else if (User.IsInRole("Professor"))
+        
+        if (User.IsInRole("Professor"))
         {
-            home = new HomeViewModel
+            home.ProfessorHome = new ProfessorHomeViewModel
             {
-                ProfessorHome = new ProfessorHomeViewModel
-                {
-                    MeusCuros = _context.Aulas
+                MeusCuros = _context.Aulas
                         .Include(p => p.Curso)
                         .Where(p => p.ProfessorId.Equals(userId) && p.Status != EStatusAula.Cancelada)
                         .OrderByDescending(p => p.DataInicio)
                         .ToList()
-                }
             };
         }
 

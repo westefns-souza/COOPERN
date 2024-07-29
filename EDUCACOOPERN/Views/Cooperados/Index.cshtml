@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using X.PagedList
 @using X.PagedList.Mvc.Core
-@model IPagedList<ApplicationUser>
+@model IndexCooperados
 
 @{
     ViewData["Title"] = "Cooperados";
@@ -15,62 +15,75 @@
     <div class="col text-end">
         <a asp-action="Create" class="btn btn-primary mt-3"><i class="bi bi-plus-circle me-1"></i>Cadastrar</a>
     </div>
-
 </div>
 
-<hr />
+<hr /> 
 
-<form method="get" class="mb-2">
-    <div class="row">
-        <div class="col">
-            <label class="control-label">Nome</label>
-            <input class="form-control" name="nome" />
-        </div>
-        <div class="col-2">
-            <button class="btn btn-primary mt-4">
-                <i class="bi bi-search"></i>
-                Procurar
-            </button>
-        </div>
+<div class="card text-bg-light mb-3">
+    <div class="card-body">
+        <form method="get" class="mb-2">
+            <div class="row">
+                <div class="col">
+                    <label class="control-label">Nome</label>
+                    <input class="form-control" asp-for="Nome" />
+                </div>
+                <div class="col-3">
+                    <label class="control-label">Perfil</label>
+                    <select class="form-select" asp-for="Perfil">
+                        <option value="">Todos</option>
+                        <option value="3">Cooperados</option>
+                        <option value="2">Professores</option>
+                    </select>
+                </div>
+                <div class="col-2">
+                    <button class="btn btn-primary mt-4">
+                        <i class="bi bi-search"></i>
+                        Procurar
+                    </button>
+                </div>
+            </div>
+        </form>
     </div>
-</form>
+</div>
 
-@if (Model != null && Model.Any())
+@if (Model != null && Model.Usuario.Any())
 {
-    <table class="table table-striped">
-        <thead>
-            <tr class="row">
-                <th class="col-5">
-                    Nome completo
-                </th>
-                <th class="col-5">
-                    E-mail
-                </th>
-                <th class="col-2"></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr class="row">
-                    <td class="col-5">
-                        @Html.DisplayFor(modelItem => item.FullName)
-                    </td>
-                    <td class="col-5">
-                        @Html.DisplayFor(modelItem => item.Email)
-                    </td>
-                    <td class="col-2 text-end">
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-light"><i class="bi bi-pencil"></i></a>
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-light"><i class="bi bi-eye"></i></a>
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    <div class="row">
-        <div class="col text-center">
-            @Html.PagedListPager(Model, page => Url.Action("Index", new { pagina = page }), new PagedListRenderOptions
+    <div class="card text-bg-light">
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr class="row">
+                        <th class="col-5">
+                            Nome completo
+                        </th>
+                        <th class="col-5">
+                            E-mail
+                        </th>
+                        <th class="col-2"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Usuario)
+                    {
+                        <tr class="row">
+                            <td class="col-5">
+                                @Html.DisplayFor(modelItem => item.FullName)
+                            </td>
+                            <td class="col-5">
+                                @Html.DisplayFor(modelItem => item.Email)
+                            </td>
+                            <td class="col-2 text-end">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-light"><i class="bi bi-pencil"></i></a>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-light"><i class="bi bi-eye"></i></a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="row">
+                <div class="col text-center">
+                    @Html.PagedListPager(Model.Usuario, page => Url.Action("Index", new { pagina = page }), new PagedListRenderOptions
            {
                LiElementClasses = new[] { "page-item" },
                UlElementClasses = new[] { "pagination" },
@@ -81,6 +94,8 @@
                //DisplayEllipsesWhenNotAdjacent = true,
                EllipsesFormat = "..."
            })
+                </div>
+            </div>
         </div>
     </div>
 }

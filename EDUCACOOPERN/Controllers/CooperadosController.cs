@@ -31,33 +31,36 @@ public class CooperadosController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index(string? nome = null, int? pagina = 1)
+    public async Task<IActionResult> Index(IndexCooperados viewModel)
     {
+        if (viewModel == null)
+        {
+            viewModel = new IndexCooperados();
+        }
+
         var idusuarios = _context.UserRoles
-            .Where(x => x.RoleId.Equals("3"))
+            .Where(x => string.IsNullOrEmpty(viewModel.Perfil) || x.RoleId.Equals(viewModel.Perfil))
             .Select(x => x.UserId)
             .ToList();
 
-        IPagedList<ApplicationUser> usuarios;
-
-        if (!nome.IsNullOrEmpty())
+        if (!viewModel.Nome.IsNullOrEmpty())
         {
-            usuarios = await _userManager.Users
+            viewModel.Usuario = await _userManager.Users
                 .Where(x => idusuarios.Contains(x.Id))
                 .OrderBy(x => x.Email)
-                .Where(x => x.FullName.ToUpper().StartsWith(nome.ToUpper()))
+                .Where(x => x.FullName.ToUpper().StartsWith(viewModel.Nome.ToUpper()))
                 .OrderBy(x => x.FullName)
-                .ToPagedListAsync((int)pagina, 20);
+                .ToPagedListAsync(viewModel.Pagina ?? 1, 20);
         }
         else
         {
-            usuarios = await _userManager.Users
+            viewModel.Usuario = await _userManager.Users
                 .Where(x => idusuarios.Contains(x.Id))
                 .OrderBy(x => x.FullName)
-                .ToPagedListAsync((int)pagina, 20);
+                .ToPagedListAsync(viewModel.Pagina ?? 1, 20);
         }
 
-        return View(usuarios);
+        return View(viewModel);
     }
 
     [HttpGet]
@@ -67,11 +70,13 @@ public class CooperadosController : Controller
         {
             Ativo = true,
             AreasAtuacao = [],
-            PDIs = []
+            PDIs = [],
+            Formacoes = []
         };
 
         PreencherPDIs();
         PreencherAreasDeAtuacao();
+        PreencherTiposFormacao();
         return View(viewModel);
     }
 
@@ -82,8 +87,10 @@ public class CooperadosController : Controller
         {
             PreencherPDIs();
             PreencherAreasDeAtuacao();
+            PreencherTiposFormacao();
             viewModel.AreasAtuacao ??= [];
             viewModel.PDIs ??= [];
+            viewModel.Formacoes ??= [];
             return View(viewModel);
         }
 
@@ -98,12 +105,18 @@ public class CooperadosController : Controller
         user.Registro = viewModel.Registro;
         user.NomeAlternativo = viewModel.NomeAlternativo;
         user.CelularAlternativo = viewModel.CelularAlternativo;
+        user.Formacoes = viewModel.Formacoes;
 
         var result = await _userManager.CreateAsync(user, "EducaCOOPERN$2024");
 
         if (result.Succeeded)
         {
             await _userManager.AddToRoleAsync(user, "Cooperado");
+
+            if (viewModel.Professor)
+            {
+                await _userManager.AddToRoleAsync(user, "Professor");
+            }
 
             await _context.AddRangeAsync(viewModel.AreasAtuacao.Select(x => new UsuarioAreaAtuacao { UsuarioId = user.Id, AreaAtuacaoId = x.Id }).ToList());
             if (viewModel.PDIs != null && viewModel.PDIs.Any())
@@ -127,7 +140,9 @@ public class CooperadosController : Controller
             return NotFound();
         }
 
-        var usuario = await _userManager.Users.FirstOrDefaultAsync(x => x.Id.Equals(id));
+        var usuario = await _userManager.Users
+            .Include(x => x.Formacoes)
+            .FirstOrDefaultAsync(x => x.Id.Equals(id));
 
         if (usuario == null)
         {
@@ -156,10 +171,12 @@ public class CooperadosController : Controller
             PDIs = pdis,
             CelularAlternativo = usuario.CelularAlternativo,
             NomeAlternativo = usuario.NomeAlternativo,
+            Formacoes = usuario.Formacoes.ToList(),
         };
 
         PreencherPDIs();
         PreencherAreasDeAtuacao();
+        PreencherTiposFormacao();
         return View(viewModel);
     }
 
@@ -172,6 +189,7 @@ public class CooperadosController : Controller
             viewModel.PDIs ??= [];
             PreencherPDIs();
             PreencherAreasDeAtuacao();
+            PreencherTiposFormacao();
             return View(viewModel);
         }
 
@@ -193,14 +211,32 @@ public class CooperadosController : Controller
         {
             _context.RemoveRange(await _context.UsuarioAreaAtuacao.Where(x => x.UsuarioId.Equals(user.Id)).ToListAsync());
             _context.RemoveRange(await _context.UsuarioPDIs.Where(x => x.UsuarioId.Equals(user.Id)).ToListAsync());
+            _context.RemoveRange(user.Formacoes);
 
             await _context.AddRangeAsync(viewModel.AreasAtuacao.Select(x => new UsuarioAreaAtuacao { UsuarioId = user.Id, AreaAtuacaoId = x.Id }).ToList());
+            await _context.AddRangeAsync(viewModel.Formacoes.Select(x => new Formacao { UsuarioId = user.Id, Tipo = x.Tipo, Nome = x.Nome }).ToList());
+
+            if (!viewModel.Professor && _context.UserRoles
+                .Where(x => x.UserId.Equals(user.Id) && x.RoleId.Equals("2"))
+                .Any()
+            )
+            {
+                await _userManager.RemoveFromRoleAsync(user, "Professor");
+            }
+
+            if (viewModel.Professor && !_context.UserRoles
+                .Where(x => x.UserId.Equals(user.Id) && x.RoleId.Equals("2"))
+                .Any()
+            )
+            {
+                await _userManager.AddToRoleAsync(user, "Professor");
+            }
 
             if (viewModel.PDIs != null && viewModel.PDIs.Any())
             {
                 await _context.AddRangeAsync(viewModel.PDIs.Select(x => new UsuarioPDI { UsuarioId = user.Id, PDIId = x.Id }).ToList());
             }
-           
+
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Index");
@@ -216,7 +252,9 @@ public class CooperadosController : Controller
             return NotFound();
         }
 
-        var usuario = await _context.Usuario.FirstOrDefaultAsync(m => m.Id.Equals(id));
+        var usuario = await _context.Usuario
+            .Include(x => x.Formacoes)
+            .FirstOrDefaultAsync(m => m.Id.Equals(id));
 
         if (usuario == null)
         {
@@ -245,6 +283,7 @@ public class CooperadosController : Controller
             PDIs = pdis,
             CelularAlternativo = usuario.CelularAlternativo,
             NomeAlternativo = usuario.NomeAlternativo,
+            Formacoes = usuario.Formacoes.ToList()
         };
 
         return View(viewModel);
@@ -257,7 +296,9 @@ public class CooperadosController : Controller
             return NotFound();
         }
 
-        var usuario = await _context.Usuario.FirstOrDefaultAsync(m => m.Id.Equals(id));
+        var usuario = await _context.Usuario
+            .Include(x => x.Formacoes)
+            .FirstOrDefaultAsync(m => m.Id.Equals(id));
 
         if (usuario == null)
         {
@@ -286,6 +327,7 @@ public class CooperadosController : Controller
             PDIs = pdis,
             CelularAlternativo = usuario.CelularAlternativo,
             NomeAlternativo = usuario.NomeAlternativo,
+            Formacoes = usuario.Formacoes.ToList()
         };
 
         return View(viewModel);
@@ -340,6 +382,16 @@ public class CooperadosController : Controller
             .ToList();
 
         ViewBag.PDIs = pdis;
+    }
+
+    private void PreencherTiposFormacao()
+    {
+        var tiposFormacao = Enum.GetValues(typeof(ETipoFormacao))
+            .Cast<ETipoFormacao>()
+            .Select(x => new SelectListItem { Value = ((int)x).ToString(), Text = x.ToString() })
+            .ToList();
+
+        ViewBag.TiposFormacao = tiposFormacao;
     }
 
     #endregion

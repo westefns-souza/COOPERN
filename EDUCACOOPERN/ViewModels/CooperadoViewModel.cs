@@ -1,5 +1,6 @@
 ﻿using EDUCACOOPERN.Models;
 using System.ComponentModel.DataAnnotations;
+using X.PagedList;
 
 namespace EDUCACOOPERN.ViewModels;
 
@@ -30,6 +31,17 @@ public class CooperadoHomeViewModel
     public int QuantidadeCursosNaoRealizados { get; set; }
     public IList<int> CursosRealizados { get; set; }
     public IList<Aula>? CurosDoMes { get; set; }
+
+    public IList<Aula>? MeusCuros { get; set; }
+}
+
+public class IndexCooperados
+{
+    public string? Nome { get; set; }
+    public string? Perfil { get; set; }
+    public int? Pagina { get; set; } = 1;
+
+    public IPagedList<ApplicationUser>? Usuario { get; set; }
 }
 
 public class CooperadoViewModel
@@ -71,4 +83,11 @@ public class CooperadoViewModel
 
     [Display(Name = "Ativo")]
     public bool Ativo { get; set; }
+
+    [Display(Name = "Professor(a)")]
+    public bool Professor { get; set; }
+
+    [Display(Name = "Formações")]
+    [Required(ErrorMessage = "O {0} é obrigatório!")]
+    public List<Formacao>? Formacoes { get; set; }
 }

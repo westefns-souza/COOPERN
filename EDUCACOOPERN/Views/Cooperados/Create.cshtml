@@ -18,195 +18,301 @@
 <form asp-action="Create">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-    <div class="row">
-        <div class="col-6">
-            <div class="form-group">
-                <label asp-for="Nome" class="control-label"></label>
-                <input asp-for="Nome" class="form-control" />
-                <span asp-validation-for="Nome" class="text-danger"></span>
-            </div>
+    <div class="card text-bg-light mb-3">
+        <div class="card-header">
+            <h6 class="mt-2">Dados básicos</h6>
         </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label asp-for="Nome" class="control-label"></label>
+                        <input asp-for="Nome" class="form-control" />
+                        <span asp-validation-for="Nome" class="text-danger"></span>
+                    </div>
+                </div>
 
-        <div class="col-6">
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label asp-for="Email" class="control-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="form-group form-check">
+                        <label class="form-check-label mt-4">
+                            <input class="form-check-input" asp-for="Professor" /> @Html.DisplayNameFor(model => model.Professor)
+                        </label>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
 
-    <div class="row">
-        <div class="col-6">
-            <div class="form-group">
-                <label asp-for="Celular" class="control-label"></label>
-                <input asp-for="Celular" class="form-control" />
-                <span asp-validation-for="Celular" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="col-4">
-            <div class="form-group">
-                <label asp-for="Registro" class="control-label"></label>
-                <input asp-for="Registro" class="form-control" />
-                <span asp-validation-for="Registro" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="col-2">
-            <div class="form-group form-check">
-                <label class="form-check-label mt-4">
-                    <input class="form-check-input" asp-for="Ativo" /> @Html.DisplayNameFor(model => model.Ativo)
-                </label>
-            </div>
-        </div>
-    </div>
-
-    <h6 class="mt-2">Contato alternativo</h6>
-    
-    <div class="row">
-        <div class="col-6">
-            <div class="form-group">
-                <label asp-for="CelularAlternativo" class="control-label"></label>
-                <input asp-for="CelularAlternativo" class="form-control" />
-                <span asp-validation-for="CelularAlternativo" class="text-danger"></span>
-            </div>
-        </div>
-        
-        <div class="col-6">
-            <div class="form-group">
-                <label asp-for="NomeAlternativo" class="control-label"></label>
-                <input asp-for="NomeAlternativo" class="form-control" />
-                <span asp-validation-for="NomeAlternativo" class="text-danger"></span>
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label asp-for="Celular" class="control-label"></label>
+                        <input asp-for="Celular" class="form-control" />
+                        <span asp-validation-for="Celular" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label asp-for="Registro" class="control-label"></label>
+                        <input asp-for="Registro" class="form-control" />
+                        <span asp-validation-for="Registro" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="form-group form-check">
+                        <label class="form-check-label mt-4">
+                            <input class="form-check-input" asp-for="Ativo" /> @Html.DisplayNameFor(model => model.Ativo)
+                        </label>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <h6 class="mt-2">Áreas de atuação</h6>
-
-    <hr />
-
-    <div class="row">
-        <div class="col-6">
-            <div class="form-group">
-                <label asp-for="AreasAtuacao" class="control-label"></label>
-                <select asp-items="@ViewBag.AreaAtuacao" class="form-select areas-atuacoes">
-                    <option>-- Selecione uma área de atuação --</option>
-                </select>
-                <span asp-validation-for="AreasAtuacao" class="text-danger"></span>
-            </div>
+    <div class="card text-bg-light mb-3">
+        <div class="card-header">
+            <h6 class="mt-2">Contato alternativo</h6>
         </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label asp-for="CelularAlternativo" class="control-label"></label>
+                        <input asp-for="CelularAlternativo" class="form-control" />
+                        <span asp-validation-for="CelularAlternativo" class="text-danger"></span>
+                    </div>
+                </div>
 
-        <div class="col-6">
-            <div class="form-group">
-                <button type="button" class="btn btn-light mt-4 btn-adicionar-area-atuacao"><i class="bi bi-plus-circle me-1"></i>Adicionar</button>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label asp-for="NomeAlternativo" class="control-label"></label>
+                        <input asp-for="NomeAlternativo" class="form-control" />
+                        <span asp-validation-for="NomeAlternativo" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-12 mt-2">
-            @{
-                var possuiAreaAtuacao = Model.AreasAtuacao.Any();
-            }
+    <div class="card text-bg-light mb-3">
+        <div class="card-header">
+            <h6 class="mt-2">Áreas de atuação</h6>
+        </div>
+        <div class="card-body">
 
-            <div class="alert alert-info text-center cooperado-sem-area-atuacao @(possuiAreaAtuacao ? "d-none" : "")">
-                O cooperado ainda não possui nenhuma área de atuação!
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label asp-for="AreasAtuacao" class="control-label"></label>
+                        <select asp-items="@ViewBag.AreaAtuacao" class="form-select areas-atuacoes">
+                            <option>-- Selecione uma área de atuação --</option>
+                        </select>
+                        <span asp-validation-for="AreasAtuacao" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-6">
+                    <div class="form-group">
+                        <button type="button" class="btn btn-light mt-4 btn-adicionar-area-atuacao"><i class="bi bi-plus-circle me-1"></i>Adicionar</button>
+                    </div>
+                </div>
             </div>
 
-            <table class="table table-striped cooperado-com-area-atuacao @(possuiAreaAtuacao ? "" : "d-none")">
-                <thead>
-                    <tr class="row">
-                        <th class="col-10">Área de atuação</th>
-                        <th class="col-2"></th>
-                    </tr>
-                </thead>
-                <tbody id="lista-areas-atuacao">
-                    @if (possuiAreaAtuacao)
-                    {
-                        foreach(var area in Model.AreasAtuacao)
-                        {
-                            var index = Model.AreasAtuacao.IndexOf(area);
-
-                            <tr class="row item-area-atuacao" >
-                                <td class="col-10">
-                                    <input type="hidden" class="dados-item-area-atuacao" name="AreasAtuacao[@index].Id" value="@area.Id" />
-                                    <input type="hidden" class="dados-item-area-atuacao" name="AreasAtuacao[@index].Nome" value="@area.Nome" />
-                                    
-                                    @area.Nome
-                                </td>
-
-                                <td class="col-2 text-end">
-                                    <button type="button" class="btn btn-sm btn-danger btn-remover-area-atuacao" data-id-area-atuacao="@area.Id"><i class="bi bi-trash"></i></button>
-                                </td>
-                            </tr>
-                        }
+            <div class="row">
+                <div class="col-12 mt-2">
+                    @{
+                        var possuiAreaAtuacao = Model.AreasAtuacao.Any();
                     }
-                </tbody>
-            </table>
-        </div>
-    </div>
 
-    <h6 class="mt-2">Programa de desenvolvimento individual</h6>
+                    <div class="alert alert-info text-center cooperado-sem-area-atuacao @(possuiAreaAtuacao ? "d-none" : "")">
+                        O cooperado ainda não possui nenhuma área de atuação!
+                    </div>
 
-    <hr />
-
-    <div class="row">
-        <div class="col-6">
-            <div class="form-group">
-                <label asp-for="PDIs" class="control-label"></label>
-                <select asp-items="@ViewBag.PDIs" class="form-select pdi">
-                    <option>-- Selecione um PDI --</option>
-                </select>
-                <span asp-validation-for="PDIs" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="col-6">
-            <div class="form-group">
-                <button type="button" class="btn btn-light mt-4 btn-adicionar-pdi"><i class="bi bi-plus-circle me-1"></i>Adicionar</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-12 mt-2">
-            @{
-                var possuiPDIs = Model.PDIs.Any();
-            }
-
-            <div class="alert alert-info text-center cooperado-sem-pdi @(possuiPDIs ? "d-none" : "")">
-                O cooperado ainda não possui nenhum plano de desenvolvimento individual!
-            </div>
-
-            <table class="table table-striped cooperado-com-pdi @(possuiPDIs ? "" : "d-none")">
-                <thead>
-                    <tr class="row">
-                        <th class="col-10">PDI</th>
-                        <th class="col-2"></th>
-                    </tr>
-                </thead>
-                <tbody id="lista-pdi">
-                    @if (possuiPDIs)
-                    {
-                        foreach (var area in Model.PDIs)
-                        {
-                            var index = Model.PDIs.IndexOf(area);
-
-                            <tr class="row item-pdi">
-                                <td class="col-10">
-                                    <input type="hidden" class="dados-item-pdi" name="PDIs[@index].Id" value="@area.Id" />
-                                    <input type="hidden" class="dados-item-pdi" name="PDIs[@index].Nome" value="@area.Nome" />
-
-                                    @area.Nome
-                                </td>
-
-                                <td class="col-2 text-end">
-                                    <button type="button" class="btn btn-sm btn-danger btn-remover-pdi" data-id-pdi="@area.Id"><i class="bi bi-trash"></i></button>
-                                </td>
+                    <table class="table table-striped cooperado-com-area-atuacao @(possuiAreaAtuacao ? "" : "d-none")">
+                        <thead>
+                            <tr class="row">
+                                <th class="col-10">Área de atuação</th>
+                                <th class="col-2"></th>
                             </tr>
-                        }
+                        </thead>
+                        <tbody id="lista-areas-atuacao">
+                            @if (possuiAreaAtuacao)
+                            {
+                                foreach (var area in Model.AreasAtuacao)
+                                {
+                                    var index = Model.AreasAtuacao.IndexOf(area);
+
+                                    <tr class="row item-area-atuacao">
+                                        <td class="col-10">
+                                            <input type="hidden" class="dados-item-area-atuacao" name="AreasAtuacao[@index].Id" value="@area.Id" />
+                                            <input type="hidden" class="dados-item-area-atuacao" name="AreasAtuacao[@index].Nome" value="@area.Nome" />
+
+                                            @area.Nome
+                                        </td>
+
+                                        <td class="col-2 text-end">
+                                            <button type="button" class="btn btn-sm btn-danger btn-remover-area-atuacao" data-id-area-atuacao="@area.Id"><i class="bi bi-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card text-bg-light mb-3">
+        <div class="card-header">
+            <h6 class="mt-2">Programa de desenvolvimento individual</h6>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label asp-for="PDIs" class="control-label"></label>
+                        <select asp-items="@ViewBag.PDIs" class="form-select pdi">
+                            <option>-- Selecione um PDI --</option>
+                        </select>
+                        <span asp-validation-for="PDIs" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-6">
+                    <div class="form-group">
+                        <button type="button" class="btn btn-light mt-4 btn-adicionar-pdi"><i class="bi bi-plus-circle me-1"></i>Adicionar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 mt-2">
+                    @{
+                        var possuiPDIs = Model.PDIs.Any();
                     }
-                </tbody>
-            </table>
+
+                    <div class="alert alert-info text-center cooperado-sem-pdi @(possuiPDIs ? "d-none" : "")">
+                        O cooperado ainda não possui nenhum plano de desenvolvimento individual!
+                    </div>
+
+                    <table class="table table-striped cooperado-com-pdi @(possuiPDIs ? "" : "d-none")">
+                        <thead>
+                            <tr class="row">
+                                <th class="col-10">PDI</th>
+                                <th class="col-2"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="lista-pdi">
+                            @if (possuiPDIs)
+                            {
+                                foreach (var area in Model.PDIs)
+                                {
+                                    var index = Model.PDIs.IndexOf(area);
+
+                                    <tr class="row item-pdi">
+                                        <td class="col-10">
+                                            <input type="hidden" class="dados-item-pdi" name="PDIs[@index].Id" value="@area.Id" />
+                                            <input type="hidden" class="dados-item-pdi" name="PDIs[@index].Nome" value="@area.Nome" />
+
+                                            @area.Nome
+                                        </td>
+
+                                        <td class="col-2 text-end">
+                                            <button type="button" class="btn btn-sm btn-danger btn-remover-pdi" data-id-pdi="@area.Id"><i class="bi bi-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card text-bg-light mb-3">
+        <div class="card-header">
+            <h6 class="mt-2">Formações</h6>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-4">
+                    <div class="form-group">
+                        <label asp-for="Formacoes" class="control-label"></label>
+                        <select asp-items="ViewBag.TiposFormacao" class="form-select tipo-formacao">
+                            <option value="">-- Selecione um tipo de formação --</option>
+                        </select>
+                        <span asp-validation-for="Formacoes" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-6">
+                    <div class="form-group">
+                        <label class="control-label">Descrição</label>
+                        <input class="form-control formacao" />
+                    </div>
+                </div>
+
+                <div class="col-2">
+                    <div class="form-group">
+                        <button type="button" class="btn btn-light mt-4 btn-adicionar-formacao"><i class="bi bi-plus-circle me-1"></i>Adicionar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 mt-2">
+                    @{
+                        var possuiFormacoes = Model.Formacoes != null && Model.Formacoes.Any();
+                    }
+
+                    <div class="alert alert-info text-center cooperado-sem-formacao @(possuiFormacoes ? "d-none" : "")">
+                        O cooperado ainda não possui nenhuma formação
+                    </div>
+
+                    <table class="table table-striped cooperado-com-formacao @(possuiFormacoes ? "" : "d-none")">
+                        <thead>
+                            <tr class="row">
+                                <th class="col-4">Formação</th>
+                                <th class="col-6">Descrição</th>
+                                <th class="col-2"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="lista-formacoes">
+                            @if (possuiAreaAtuacao)
+                            {
+                                foreach (var formacao in Model.Formacoes)
+                                {
+                                    var index = Model.Formacoes.IndexOf(formacao);
+
+                                    <tr class="row item-formacao">
+                                        <td class="col-4">
+                                            <input type="hidden" class="dados-item-formacao" name="Formacoes[@index].Nome" value="@formacao.Nome" />
+                                            <input type="hidden" class="dados-item-formacao" name="Formacoes[@index].Tipo" value="@formacao.Tipo" />
+
+                                            @formacao.Tipo
+                                        </td>
+
+                                        <td class="col-6">
+                                            @formacao.Nome
+                                        </td>
+
+                                        <td class="col-2 text-end">
+                                            <button type="button" class="btn btn-sm btn-danger btn-remover-formacao"><i class="bi bi-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -227,4 +333,5 @@
 
     <script src="~/js/area-atuacao.js" asp-append-version="true"></script>
     <script src="~/js/pdi.js"></script>
+    <script src="~/js/formacoes.js" asp-append-version="true"></script>
 }
