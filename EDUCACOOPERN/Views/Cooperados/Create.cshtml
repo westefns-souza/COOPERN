@@ -194,7 +194,7 @@
             <div class="row">
                 <div class="col-12 mt-2">
                     @{
-                        var possuiPDIs = Model.PDIs.Any();
+                        var possuiPDIs = Model.PDIs != null && Model.PDIs.Any();
                     }
 
                     <div class="alert alert-info text-center cooperado-sem-pdi @(possuiPDIs ? "d-none" : "")">
