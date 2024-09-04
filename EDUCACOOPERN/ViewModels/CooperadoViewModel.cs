@@ -74,11 +74,11 @@ public class CooperadoViewModel
     public List<PDI>? PDIs { get; set; }
 
     [Display(Name = "Celular alternativo")]
-    [Required(ErrorMessage = "O {0} é obrigatório!")]
+    //[Required(ErrorMessage = "O {0} é obrigatório!")]
     public string? CelularAlternativo { get; set; }
 
     [Display(Name = "Nome para contato")]
-    [Required(ErrorMessage = "O {0} é obrigatório!")]
+    //[Required(ErrorMessage = "O {0} é obrigatório!")]
     public string? NomeAlternativo { get; set; }
 
     [Display(Name = "Ativo")]
@@ -88,6 +88,6 @@ public class CooperadoViewModel
     public bool Professor { get; set; }
 
     [Display(Name = "Formações")]
-    [Required(ErrorMessage = "O {0} é obrigatório!")]
+    //[Required(ErrorMessage = "O {0} é obrigatório!")]
     public List<Formacao>? Formacoes { get; set; }
 }

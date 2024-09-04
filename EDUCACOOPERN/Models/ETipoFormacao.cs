@@ -9,4 +9,6 @@ public enum ETipoFormacao
     Doutorado,
     [Display(Name = "Especialização")]
     Especializacao,
+    [Display(Name = "Técnico")]
+    Tecnico,
 }
