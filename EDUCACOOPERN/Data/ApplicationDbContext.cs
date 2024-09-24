@@ -25,4 +25,5 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<Matricula> Matricula { get; set; } = default!;
     public DbSet<Formacao> Formacoes { get; set; } = default!;
     public DbSet<Certificado> Certificado { get; set; } = default!;
+    public DbSet<Servicos> Servicos { get; set; } = default!;
 }
