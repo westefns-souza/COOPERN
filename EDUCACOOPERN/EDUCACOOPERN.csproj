@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\js\area-atuacao-servicos.js" />
     <Content Remove="wwwroot\js\area-atuacao.js" />
     <Content Remove="wwwroot\js\curso.js" />
     <Content Remove="wwwroot\js\custos.js" />
@@ -39,6 +40,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\js\area-atuacao-servicos.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="wwwroot\js\formacoes.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

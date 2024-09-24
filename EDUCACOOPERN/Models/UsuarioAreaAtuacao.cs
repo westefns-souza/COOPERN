@@ -19,4 +19,9 @@ public class UsuarioAreaAtuacao
 
     [ForeignKey("AreaAtuacaoId")]
     public AreaAtuacao? AreaAtuacao { get; set; }
+
+    public int? ServicosId { get; set; }
+
+    [ForeignKey("ServicosId")]
+    public Servicos? Servicos { get; set; }
 }

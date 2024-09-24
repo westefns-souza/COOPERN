@@ -106,7 +106,7 @@
         <div class="card-body">
 
             <div class="row">
-                <div class="col-6">
+                <div class="col-5">
                     <div class="form-group">
                         <label asp-for="AreasAtuacao" class="control-label"></label>
                         <select asp-items="@ViewBag.AreaAtuacao" class="form-select areas-atuacoes">
@@ -116,7 +116,16 @@
                     </div>
                 </div>
 
-                <div class="col-6">
+                <div class="col-5">
+                    <div class="form-group">
+                        <label class="control-label">Serviços</label>
+                        <select asp-items="@ViewBag.Servicos" class="form-select servicos">
+                            <option>-- Selecione um serviço de saúde --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-2">
                     <div class="form-group">
                         <button type="button" class="btn btn-light mt-4 btn-adicionar-area-atuacao"><i class="bi bi-plus-circle me-1"></i>Adicionar</button>
                     </div>
@@ -136,7 +145,8 @@
                     <table class="table table-striped cooperado-com-area-atuacao @(possuiAreaAtuacao ? "" : "d-none")">
                         <thead>
                             <tr class="row">
-                                <th class="col-10">Área de atuação</th>
+                                <th class="col-5">Área de atuação</th>
+                                <th class="col-5">Serviços</th>
                                 <th class="col-2"></th>
                             </tr>
                         </thead>
@@ -148,11 +158,17 @@
                                     var index = Model.AreasAtuacao.IndexOf(area);
 
                                     <tr class="row item-area-atuacao">
-                                        <td class="col-10">
+                                        <td class="col-5">
                                             <input type="hidden" class="dados-item-area-atuacao" name="AreasAtuacao[@index].Id" value="@area.Id" />
                                             <input type="hidden" class="dados-item-area-atuacao" name="AreasAtuacao[@index].Nome" value="@area.Nome" />
+                                            <input type="hidden" class="dados-item-area-atuacao" name="AreasAtuacao[@index].ServicosId" value="@area.ServicosId" />
+                                            <input type="hidden" class="dados-item-area-atuacao" name="AreasAtuacao[@index].ServicosNome" value="@area.ServicosNome" />
 
                                             @area.Nome
+                                        </td>
+
+                                        <td>
+                                            @area.ServicosNome
                                         </td>
 
                                         <td class="col-2 text-end">
@@ -216,7 +232,7 @@
                                     var index = Model.PDIs.IndexOf(area);
 
                                     <tr class="row item-pdi">
-                                        <td class="col-10">
+                                        <td class="col-5">
                                             <input type="hidden" class="dados-item-pdi" name="PDIs[@index].Id" value="@area.Id" />
                                             <input type="hidden" class="dados-item-pdi" name="PDIs[@index].Nome" value="@area.Nome" />
 
@@ -331,7 +347,7 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 
-    <script src="~/js/area-atuacao.js" asp-append-version="true"></script>
+    <script src="~/js/area-atuacao-servicos.js" asp-append-version="true"></script>
     <script src="~/js/pdi.js"></script>
     <script src="~/js/formacoes.js" asp-append-version="true"></script>
 }

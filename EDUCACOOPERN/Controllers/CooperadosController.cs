@@ -76,6 +76,7 @@ public class CooperadosController : Controller
 
         PreencherPDIs();
         PreencherAreasDeAtuacao();
+        PreencherServicos();
         PreencherTiposFormacao();
         return View(viewModel);
     }
@@ -87,6 +88,7 @@ public class CooperadosController : Controller
         {
             PreencherPDIs();
             PreencherAreasDeAtuacao();
+            PreencherServicos();
             PreencherTiposFormacao();
             viewModel.AreasAtuacao ??= [];
             viewModel.PDIs ??= [];
@@ -118,7 +120,7 @@ public class CooperadosController : Controller
                 await _userManager.AddToRoleAsync(user, "Professor");
             }
 
-            await _context.AddRangeAsync(viewModel.AreasAtuacao.Select(x => new UsuarioAreaAtuacao { UsuarioId = user.Id, AreaAtuacaoId = x.Id }).ToList());
+            await _context.AddRangeAsync(viewModel.AreasAtuacao.Select(x => new UsuarioAreaAtuacao { UsuarioId = user.Id, AreaAtuacaoId = x.Id, ServicosId = x.ServicosId }).ToList());
             if (viewModel.PDIs != null && viewModel.PDIs.Any())
             {
                 await _context.AddRangeAsync(viewModel.PDIs.Select(x => new UsuarioPDI { UsuarioId = user.Id, PDIId = x.Id }).ToList());
@@ -150,8 +152,14 @@ public class CooperadosController : Controller
         }
 
         var areasAtuacao = _context.UsuarioAreaAtuacao
+            .Include(x => x.Servicos)
             .Where(x => x.UsuarioId.Equals(id))
-            .Select(x => x.AreaAtuacao)
+            .Select(x => new AreaAtuacaoViewModel{ 
+                Id = x.AreaAtuacao.Id,
+                Nome = x.AreaAtuacao.Nome,
+                ServicosId = x.ServicosId,
+                ServicosNome = x.Servicos != null ? x.Servicos.Nome : ""
+            })
             .ToList();
 
         var pdis = _context.UsuarioPDIs
@@ -176,6 +184,7 @@ public class CooperadosController : Controller
 
         PreencherPDIs();
         PreencherAreasDeAtuacao();
+        PreencherServicos();
         PreencherTiposFormacao();
         return View(viewModel);
     }
@@ -189,6 +198,7 @@ public class CooperadosController : Controller
             viewModel.PDIs ??= [];
             PreencherPDIs();
             PreencherAreasDeAtuacao();
+            PreencherServicos();
             PreencherTiposFormacao();
             return View(viewModel);
         }
@@ -213,7 +223,7 @@ public class CooperadosController : Controller
             _context.RemoveRange(await _context.UsuarioPDIs.Where(x => x.UsuarioId.Equals(user.Id)).ToListAsync());
             _context.RemoveRange(user.Formacoes);
 
-            await _context.AddRangeAsync(viewModel.AreasAtuacao.Select(x => new UsuarioAreaAtuacao { UsuarioId = user.Id, AreaAtuacaoId = x.Id }).ToList());
+            await _context.AddRangeAsync(viewModel.AreasAtuacao.Select(x => new UsuarioAreaAtuacao { UsuarioId = user.Id, AreaAtuacaoId = x.Id, ServicosId = x.ServicosId }).ToList());
             await _context.AddRangeAsync(viewModel.Formacoes.Select(x => new Formacao { UsuarioId = user.Id, Tipo = x.Tipo, Nome = x.Nome }).ToList());
 
             if (!viewModel.Professor && _context.UserRoles
@@ -262,9 +272,16 @@ public class CooperadosController : Controller
         }
 
         var areasAtuacao = _context.UsuarioAreaAtuacao
-            .Where(x => x.UsuarioId.Equals(id))
-            .Select(x => x.AreaAtuacao)
-            .ToList();
+           .Include(x => x.Servicos)
+           .Where(x => x.UsuarioId.Equals(id))
+           .Select(x => new AreaAtuacaoViewModel
+           {
+               Id = x.AreaAtuacao.Id,
+               Nome = x.AreaAtuacao.Nome,
+               ServicosId = x.ServicosId,
+               ServicosNome = x.Servicos != null ? x.Servicos.Nome : ""
+           })
+           .ToList();
 
         var pdis = _context.UsuarioPDIs
             .Where(x => x.UsuarioId.Equals(id))
@@ -306,9 +323,16 @@ public class CooperadosController : Controller
         }
 
         var areasAtuacao = _context.UsuarioAreaAtuacao
-            .Where(x => x.UsuarioId.Equals(id))
-            .Select(x => x.AreaAtuacao)
-            .ToList();
+           .Include(x => x.Servicos)
+           .Where(x => x.UsuarioId.Equals(id))
+           .Select(x => new AreaAtuacaoViewModel
+           {
+               Id = x.AreaAtuacao.Id,
+               Nome = x.AreaAtuacao.Nome,
+               ServicosId = x.ServicosId,
+               ServicosNome = x.Servicos != null ? x.Servicos.Nome : ""
+           })
+           .ToList();
 
         var pdis = _context.UsuarioPDIs
             .Where(x => x.UsuarioId.Equals(id))
@@ -371,6 +395,17 @@ public class CooperadosController : Controller
             .ToList();
 
         ViewBag.AreaAtuacao = areasDeAtuacao;
+    }
+
+    private void PreencherServicos()
+    {
+        var servicos = _context.Servicos
+            .Where(x => x.Ativo)
+            .OrderBy(x => x.Nome)
+            .Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Nome })
+            .ToList();
+
+        ViewBag.Servicos = servicos;
     }
 
     private void PreencherPDIs()
