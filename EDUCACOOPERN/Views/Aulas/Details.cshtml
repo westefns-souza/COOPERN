@@ -133,6 +133,11 @@
                             {
                                 <a asp-action="Delete" asp-controller="Matriculas" asp-route-id="@matricula.Id" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
                             }
+
+                            @if (matricula.Status == EStatusMatricula.Aprovado)
+                            {
+                                <a asp-action="GerarCertificado" target="_blank" asp-controller="Certificados" asp-route-id="@matricula.Aluno.Id" asp-route-nome="@matricula.Aluno.FullName" asp-route-curso="@Model.Curso.Nome" class="btn btn-sm btn-info"><i class="bi bi-card-text"></i></a>
+                            }
                         </td>
                     </tr>
                 }
