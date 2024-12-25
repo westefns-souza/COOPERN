@@ -1,0 +1,81 @@
+﻿@model List<EDUCACOOPERN.DTOs.PDISintetico>
+
+
+@{
+    ViewData["Title"] = "Relatório - Acompanhamento de PDIs Analitíco";
+}
+
+<div class="row">
+    <div class="col">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+</div>
+
+<hr />
+
+@if (Model != null && Model.Any())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr class="row">
+                <th class="col-3">
+                    PDI
+                </th>
+                <th class="col-4">
+                    Curso
+                </th>
+                <th class="col-4">
+                    Aluno
+                </th>
+                <th class="col-1">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.GroupBy(x => new { x.NomePDI, x.NomeCurso, x.NomeUsuario }).ToList())
+            {
+                var realizado = item.Sum(x => x.Realizado) > 0 ? "Realizado" : "";
+                var matriculado = item.Sum(x => x.Matriculado) > 0 ? "Matriculado" : "";
+                var naoRealizado = item.Sum(x => x.NaoRealizado) > 0 ? "Pendente" : "";
+
+                <tr class="row">
+                    <td class="col-3">
+                        @Html.DisplayFor(modelItem => item.Key.NomePDI)
+                    </td>
+
+                    <td class="col-4">
+                        @Html.DisplayFor(modelItem => item.Key.NomeCurso)
+                    </td>
+
+                    <td class="col-4">
+                        @Html.DisplayFor(modelItem => item.Key.NomeUsuario)
+                    </td>
+
+                    <td class="col-1">
+                        @if (!string.IsNullOrEmpty(naoRealizado))
+                        {
+                            <span>@naoRealizado</span>
+                        }else if (!string.IsNullOrEmpty(matriculado))
+                        {
+                            <span>@matriculado</span>
+                        }
+                        else if (!string.IsNullOrEmpty(realizado))
+                        {
+                            <span>@realizado</span>
+                        }
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="row">
+        <div class="col">
+            <div class="alert alert-info text-center">
+                Ainda não há nenhum cooperado com PDI!
+            </div>
+        </div>
+    </div>
+}

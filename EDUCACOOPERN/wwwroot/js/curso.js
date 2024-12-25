@@ -1,8 +1,8 @@
 $(function () {
-    $(document).on("click", ".btn-adicionar-curso", adicionarAreaAtuacao)
-    $(document).on("click", ".btn-remover-curso", removerAreasAtuacao)
+    $(document).on("click", ".btn-adicionar-curso", adicionarCurso)
+    $(document).on("click", ".btn-remover-curso", removerCurso)
 
-    function adicionarAreaAtuacao() {
+    function adicionarCurso() {
         let idAreaAtuacao = $(".curso").val();
         let textAreaAtuacao = $(".curso option:selected").text();
 
@@ -22,16 +22,16 @@ $(function () {
                 `)
 
         enumeracao();
-        mostrarAreasAtuacao();
+        mostrarCursos();
     }
 
-    function removerAreasAtuacao() {
+    function removerCurso() {
         var linha = $(this).closest("tr");
 
         $(linha).remove();
 
         enumeracao();
-        mostrarAreasAtuacao();
+        mostrarCursos();
     }
 
     function enumeracao() {
@@ -50,7 +50,7 @@ $(function () {
         });
     }
 
-    function mostrarAreasAtuacao() {
+    function mostrarCursos() {
         var itensAreaAtuacao = $(".item-curso");
 
         if (itensAreaAtuacao.length != 0) {

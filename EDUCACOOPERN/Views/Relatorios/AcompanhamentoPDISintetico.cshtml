@@ -1,0 +1,86 @@
+﻿@model List<EDUCACOOPERN.DTOs.PDISintetico>
+
+
+@{
+    ViewData["Title"] = "Relatório - Acompanhamento de PDIs Sintético";
+}
+
+<div class="row">
+    <div class="col">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+</div>
+
+<hr />
+
+@if (Model != null && Model.Any())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr class="row">
+                <th class="col-3">
+                    PDI
+                </th>
+                <th class="col-4">
+                    Curso
+                </th>
+                <th class="col-1">Não Realizados</th>
+                <th class="col-1">Matri.</th>
+                <th class="col-1">Realizados</th>
+                <th class="col-1">Total</th>
+                <th class="col-1">%</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.GroupBy(x => new { x.NomePDI, x.NomeCurso, x.TotalPdi }).ToList())
+            {
+                var matriculados = item.Sum(x => x.Matriculado);
+                double realizados = item.Sum(x => x.Realizado);
+                
+                var naoRealizados = item.Key.TotalPdi - realizados;
+
+                var porcentagem = (100 * realizados) / item.Key.TotalPdi;
+
+                <tr class="row">
+                    <td class="col-3">
+                        @Html.DisplayFor(modelItem => item.Key.NomePDI)
+                    </td>
+
+                    <td class="col-4">
+                        @Html.DisplayFor(modelItem => item.Key.NomeCurso)
+                    </td>
+
+                    <td class="col-1 text-center">
+                        @naoRealizados
+                    </td>
+
+                    <td class="col-1 text-center">
+                        @matriculados
+                    </td>
+
+                    <td class="col-1 text-center">
+                        @realizados
+                    </td>
+
+                    <td class="col-1 text-center">
+                        @Html.DisplayFor(modelItem => item.Key.TotalPdi)
+                    </td>
+
+                    <td class="col-1 text-center">
+                        @(Math.Round(porcentagem, 2))%
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="row">
+        <div class="col">
+            <div class="alert alert-info text-center">
+                Ainda não há nenhum cooperado com PDI!
+            </div>
+        </div>
+    </div>
+}
