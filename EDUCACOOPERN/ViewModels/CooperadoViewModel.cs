@@ -22,6 +22,7 @@ public class AdministradorViewModel
 {
     public Dictionary<string?, int>? QuantidadeDeInscritosPorAreaDeAtuacao { get; set; }
     public Dictionary<string?, int>? QuantidadeDeInscritosPorCurso { get; set; }
+    public IList<Aula>? CurosDoMes { get; set; }
 }
 
 public class CooperadoHomeViewModel

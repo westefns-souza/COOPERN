@@ -54,28 +54,24 @@ public class HomeController : Controller
                 .Include(p => p.Curso)
                 .Where(p => p.DataInicio.Month == DateTime.Now.Month && p.DataInicio.Year == DateTime.Now.Year)
                 .ToList();
-        } 
-        
-        if (User.IsInRole("Coordenador")) {
-            var administrador = new AdministradorViewModel();
-
-            administrador.QuantidadeDeInscritosPorAreaDeAtuacao = _context.Matricula
-                            .Include(p => p.Aula.Matriculas)
-                            .Include(p => p.Aula.Curso.CursoAreaAtuacoes)
-                            .GroupBy(p => p.Aula.Curso.CursoAreaAtuacoes.Select(x => x.AreaAtuacao.Nome).FirstOrDefault())
-                            .Select(p => new { AreaAtuacao = p.Key, Quantidade = p.Count() })
-                            .ToDictionary(p => p.AreaAtuacao, p => p.Quantidade);
-
-            administrador.QuantidadeDeInscritosPorCurso = _context.Matricula
-                            .Include(p => p.Aula.Matriculas)
-                            .Include(p => p.Aula.Curso)
-                            .GroupBy(p => p.Aula.Curso.Nome)
-                            .Select(p => new { Curso = p.Key, Quantidade = p.Count() })
-                            .ToDictionary(p => p.Curso, p => p.Quantidade);
-
-            home.AdministradorHome = administrador;
         }
-        
+
+        if (User.IsInRole("Coordenador"))
+        {
+            home.AdministradorHome = new AdministradorViewModel
+            {
+                CurosDoMes = _context.Aulas
+                        .Include(p => p.Curso)
+                        .Where(p =>
+                            p.ProfessorId.Equals(userId)
+                            && p.Status != EStatusAula.Cancelada
+                            && p.DataInicio.Month == DateTime.Now.Month
+                            && p.DataInicio.Year == DateTime.Now.Year)
+                        .OrderByDescending(p => p.DataInicio)
+                        .ToList()
+            };
+        }
+
         if (User.IsInRole("Professor"))
         {
             home.ProfessorHome = new ProfessorHomeViewModel

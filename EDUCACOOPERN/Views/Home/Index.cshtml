@@ -59,19 +59,25 @@
                     <div class="row">
                         <div class="col">
                             <div class="card">
-                                <ul class="list-group list-group-flush">
-                                    @if (Model.CooperadoHome.CurosDoMes != null)
-                                    {
-                                        foreach (var curso in Model.CooperadoHome.CurosDoMes)
+                                @if (Model.CooperadoHome.CurosDoMes != null && Model.CooperadoHome.CurosDoMes.Any())
+                                {
+                                    <ul class="list-group list-group-flush">
+                                        @foreach (var curso in Model.CooperadoHome.CurosDoMes)
                                         {
                                             <a asp-action="Details" asp-controller="Aulas" asp-route-id="@curso.Id">
-                                                <li class="list-group-item">
-                                                        @curso.Curso.Nome
-                                                </li>
+                                            <li class="list-group-item">
+                                                    @curso.Curso.Nome
+                                            </li>
                                             </a>
                                         }
-                                    }
-                                </ul>
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <div class="alert alert-info">
+                                        Não há nenhum curso esse mês!
+                                    </div>
+                                }
                             </div>
                         </div>
                     </div>
@@ -84,30 +90,35 @@
 @if (Model.AdministradorHome != null)
 {
     <div class="row">
-        <div class="col-12">
+        <div class="col">
             <div class="card">
                 <div class="card-header">
-                    Matriculados Por Área de Atuação
+                    Cursos do Mês
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col">
-                            <canvas id="myChartQuantidadePorAreaDeAtuacao"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    Matriculados Por Curso
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col">
-                            <canvas id="myChartQuantidadePorCurso"></canvas>
+                            <div class="card">
+                                @if (Model.AdministradorHome.CurosDoMes != null && Model.AdministradorHome.CurosDoMes.Any())
+                                {
+                                    <ul class="list-group list-group-flush">
+                                        @foreach (var curso in Model.AdministradorHome.CurosDoMes)
+                                        {
+                                            <a asp-action="Details" asp-controller="Aulas" asp-route-id="@curso.Id">
+                                            <li class="list-group-item">
+                                                    @curso.Curso.Nome
+                                            </li>
+                                            </a>
+                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <div class="alert alert-info">
+                                        Não há nenhum curso esse mês!
+                                    </div>
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -147,7 +158,6 @@
     </div>
 }
 
-
 @section scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -169,26 +179,5 @@
             });
         </script>
     }
-    else if (User.IsInRole("Coordenador"))
-    {
-        <script>
-            const ctx = document.getElementById('myChartQuantidadePorAreaDeAtuacao');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: @Html.Raw(Json.Serialize(Model.AdministradorHome.QuantidadeDeInscritosPorAreaDeAtuacao.Select(x => x.Key))),
-                    datasets: @Html.Raw(Json.Serialize(Model.AdministradorHome.QuantidadeDeInscritosPorAreaDeAtuacao.Select(x => new { label = x.Key, data = new int[] { x.Value } })))
-                                                                            }
-            });
 
-            const ctxCurso = document.getElementById('myChartQuantidadePorCurso');
-            new Chart(ctxCurso, {
-                type: 'bar',
-                data: {
-                    labels: @Html.Raw(Json.Serialize(Model.AdministradorHome.QuantidadeDeInscritosPorCurso.Select(x => x.Key))),
-                    datasets: @Html.Raw(Json.Serialize(Model.AdministradorHome.QuantidadeDeInscritosPorCurso.Select(x => new { label = x.Key, data = new int[] { x.Value } })))
-                                                                }
-            });
-        </script>
-    }
 }
