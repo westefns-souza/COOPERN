@@ -237,7 +237,7 @@ public class MatriculasController : Controller
         var aulas = await _context.Aulas
             .Include(x => x.Curso)
             .Include(x => x.Professor)
-            .Where(x => x.Status.Equals(EStatusAula.Aberta))
+            .Where(x => x.Status.Equals(EStatusAula.Aberta) || x.Status.Equals(EStatusAula.Realizada))
             .Select(x => new
             {
                 Id = x.Id,
