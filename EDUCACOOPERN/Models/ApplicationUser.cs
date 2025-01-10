@@ -50,4 +50,5 @@ public class ApplicationUser : IdentityUser
 
     public IList<Formacao> Formacoes { get; set; } = [];
     public IList<Matricula> Matriculas { get; set; } = [];
+    public IList<UsuarioAreaAtuacao> UsuarioAreaDeAtuacao { get; set; } = [];
 }

@@ -4,6 +4,7 @@ using EDUCACOOPERN.DTOs;
 using EDUCACOOPERN.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace EDUCACOOPERN.Controllers;
@@ -18,13 +19,18 @@ public class RelatoriosController : Controller
         _context = context;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string? nome = null)
     {
         List<IGrouping<string?, UsuarioPDI>> PDIs = await _context.UsuarioPDIs
             .Include(p => p.PDI.PDICursos)
             .Include(p => p.Usuario.Matriculas)
             .GroupBy(p => p.Usuario.FullName)
             .ToListAsync();
+
+        if (!string.IsNullOrEmpty(nome))
+        {
+            PDIs = PDIs.Where(x => x.Key != null && x.Key.ToUpper().StartsWith(nome.ToUpper())).ToList();
+        }
 
         return View(PDIs);
     }
@@ -102,7 +108,7 @@ public class RelatoriosController : Controller
         return View(sintetico);
     }
 
-    public async Task<IActionResult> AcompanhamentoPDIAnalitico()
+    public async Task<IActionResult> AcompanhamentoPDIAnalitico(string? nome = null, int? servico = null)
     {
         var pdis = _context.PDIs
             .Include(x => x.PDICursos)
@@ -119,9 +125,26 @@ public class RelatoriosController : Controller
                 var usuarioPDI = _context.UsuarioPDIs
                     .Include(x => x.Usuario.Matriculas)
                     .ThenInclude(x => x.Aula)
+                    .Include(x => x.Usuario.UsuarioAreaDeAtuacao)
                     .Include(x => x.PDI)
                     .Where(x => x.PDIId == pdi.Id)
+                    .OrderBy(x => x.Usuario.FullName)
+                    .ThenBy(x => x.PDI.Nome)
                     .ToList();
+
+                if (!string.IsNullOrEmpty(nome))
+                {
+                    usuarioPDI = usuarioPDI
+                        .Where(x => x.Usuario.FullName != null && x.Usuario.FullName.ToUpper().StartsWith(nome.ToUpper()))
+                        .ToList();
+                }
+
+                if (servico != null && servico != 0)
+                {
+                    usuarioPDI = usuarioPDI
+                        .Where(x => x.Usuario.UsuarioAreaDeAtuacao.Any(x => x.ServicosId == servico))
+                        .ToList();
+                }
 
                 var totalPDI = usuarioPDI
                     .Where(x => x.PDIId == pdi.Id)
@@ -169,6 +192,18 @@ public class RelatoriosController : Controller
             }
         }
 
+        PreencherServicos();
         return View(sintetico);
+    }
+
+    private void PreencherServicos()
+    {
+        var servicos = _context.Servicos
+            .Where(x => x.Ativo)
+            .OrderBy(x => x.Nome)
+            .Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Nome })
+            .ToList();
+
+        ViewBag.Servicos = servicos;
     }
 }

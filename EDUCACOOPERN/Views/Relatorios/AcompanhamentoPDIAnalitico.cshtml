@@ -13,61 +13,92 @@
 
 <hr />
 
+<div class="card text-bg-light mb-3">
+    <div class="card-body">
+        <form method="get" class="mb-2">
+            <div class="row">
+                <div class="col">
+                    <label class="control-label">Nome</label>
+                    <input class="form-control" name="nome" />
+                </div>
+                <div class="col-5">
+                    <div class="form-group">
+                        <label class="control-label">Serviços</label>
+                        <select asp-items="@ViewBag.Servicos" name="servico" class="form-select servicos">
+                            <option>-- Selecione um serviço de saúde --</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <button class="btn btn-primary mt-4">
+                        <i class="bi bi-search"></i>
+                        Procurar
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
 @if (Model != null && Model.Any())
 {
-    <table class="table table-striped">
-        <thead>
-            <tr class="row">
-                <th class="col-3">
-                    PDI
-                </th>
-                <th class="col-4">
-                    Curso
-                </th>
-                <th class="col-4">
-                    Aluno
-                </th>
-                <th class="col-1">Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.GroupBy(x => new { x.NomePDI, x.NomeCurso, x.NomeUsuario }).ToList())
-            {
-                var realizado = item.Sum(x => x.Realizado) > 0 ? "Realizado" : "";
-                var matriculado = item.Sum(x => x.Matriculado) > 0 ? "Matriculado" : "";
-                var naoRealizado = item.Sum(x => x.NaoRealizado) > 0 ? "Pendente" : "";
+    <div class="accordion" id="accordionExample">
+        @{
+            var agrupamento = Model.GroupBy(x => new { x.NomePDI, x.NomeUsuario }).ToList();
+        }
+        @foreach (var usuario in agrupamento)
+        {
+            var index = agrupamento.IndexOf(usuario);
 
-                <tr class="row">
-                    <td class="col-3">
-                        @Html.DisplayFor(modelItem => item.Key.NomePDI)
-                    </td>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@index" aria-expanded="true" aria-controls="#collapse-@index">
+                        @usuario.Key.NomeUsuario.ToUpper() - PDI: @usuario.Key.NomePDI.ToUpper()
+                    </button>
+                </h2>
+                <div id="collapse-@index" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
 
-                    <td class="col-4">
-                        @Html.DisplayFor(modelItem => item.Key.NomeCurso)
-                    </td>
+                        <table class="table">
+                            <thead>
+                                <tr class="row">
+                                    <th class="col-10">Curso</th>
+                                    <th class="col-2">Situação</th>
+                                </tr>
+                            </thead>
+                            @foreach (var curso in usuario)
+                            {
+                                var realizado = curso.Realizado > 0 ? "Realizado" : "";
+                                var matriculado = curso.Matriculado > 0 ? "Matriculado" : "";
+                                var naoRealizado = curso.NaoRealizado > 0 ? "Pendente" : "";
 
-                    <td class="col-4">
-                        @Html.DisplayFor(modelItem => item.Key.NomeUsuario)
-                    </td>
+                                <tr class="row">
+                                    <td class="col-10">@curso.NomeCurso</td>
+                                    <td class="col-2">
+                                        @if (!string.IsNullOrEmpty(naoRealizado))
+                                        {
+                                            <span class="text-danger">@naoRealizado</span>
+                                        }
+                                        else if (!string.IsNullOrEmpty(matriculado))
+                                        {
+                                            <span>@matriculado</span>
+                                        }
+                                        else if (!string.IsNullOrEmpty(realizado))
+                                        {
+                                            <span>@realizado</span>
+                                        }
+                                    </td>
+                                </tr>
 
-                    <td class="col-1">
-                        @if (!string.IsNullOrEmpty(naoRealizado))
-                        {
-                            <span>@naoRealizado</span>
-                        }else if (!string.IsNullOrEmpty(matriculado))
-                        {
-                            <span>@matriculado</span>
-                        }
-                        else if (!string.IsNullOrEmpty(realizado))
-                        {
-                            <span>@realizado</span>
-                        }
-                    </td>
+                            }
+                        </table>
 
-                </tr>
-            }
-        </tbody>
-    </table>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 }
 else
 {
