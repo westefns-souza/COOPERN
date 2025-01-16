@@ -110,7 +110,7 @@
                     <div class="form-group">
                         <label asp-for="AreasAtuacao" class="control-label"></label>
                         <select asp-items="@ViewBag.AreaAtuacao" class="form-select areas-atuacoes">
-                            <option>-- Selecione uma área de atuação --</option>
+                            <option value="">-- Selecione uma área de atuação --</option>
                         </select>
                         <span asp-validation-for="AreasAtuacao" class="text-danger"></span>
                     </div>
@@ -120,7 +120,7 @@
                     <div class="form-group">
                         <label class="control-label">Serviços</label>
                         <select asp-items="@ViewBag.Servicos" class="form-select servicos">
-                            <option>-- Selecione um serviço de saúde --</option>
+                            <option value="">-- Selecione um serviço de saúde --</option>
                         </select>
                     </div>
                 </div>
@@ -194,7 +194,7 @@
                     <div class="form-group">
                         <label asp-for="PDIs" class="control-label"></label>
                         <select asp-items="@ViewBag.PDIs" class="form-select pdi">
-                            <option>-- Selecione um PDI --</option>
+                            <option value="">-- Selecione um PDI --</option>
                         </select>
                         <span asp-validation-for="PDIs" class="text-danger"></span>
                     </div>

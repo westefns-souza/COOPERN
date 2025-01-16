@@ -98,8 +98,8 @@ public class AreaAtuacaoViewModel
     [Key]
     public int Id { get; set; }
 
-    [Required(ErrorMessage = "O {0} da área de atuação é obrigatória!")]
-    [StringLength(24, MinimumLength = 3, ErrorMessage = "O {0} da área de atuação deve ter entre 3 e 24 caracteres!")]
+    //[Required(ErrorMessage = "O {0} da área de atuação é obrigatória!")]
+    //[StringLength(24, MinimumLength = 3, ErrorMessage = "O {0} da área de atuação deve ter entre 3 e 24 caracteres!")]
     public string? Nome { get; set; }
 
     public int? ServicosId { get; set; }

@@ -12,8 +12,8 @@ public class Formacao
     [ForeignKey("UsuarioId")]
     public ApplicationUser? Usuario { get; set; }
 
-    [Required]
-    [StringLength(100)]
+    //[Required]
+    //[StringLength(100)]
     public string? Nome { get; set; }
 
     [Required]
