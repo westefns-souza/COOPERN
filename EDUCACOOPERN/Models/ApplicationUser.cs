@@ -15,25 +15,25 @@ public class ApplicationUser : IdentityUser
     public string? Registro { get; set; }
 
     [Display(Name = "Celular alternativo")]
-    [Required(ErrorMessage = "O {0} é obrigatório!")]
+    //[Required(ErrorMessage = "O {0} é obrigatório!")]
     [StringLength(24, ErrorMessage = "O {0} do usuário deve ter até 24 caracteres!")]
     public string? CelularAlternativo { get; set; }
 
     [Display(Name = "Nome para contato")]
-    [Required(ErrorMessage = "O {0} é obrigatório!")]
+    //[Required(ErrorMessage = "O {0} é obrigatório!")]
     [StringLength(100, ErrorMessage = "O {0} do usuário deve ter até 100 caracteres!")]
     public string? NomeAlternativo { get; set; }
 
     [Display(Name = "Conselho")]
-    [StringLength(24, ErrorMessage = "O {0} do usuário deve ter até 24 caracteres!")]
+    //[StringLength(24, ErrorMessage = "O {0} do usuário deve ter até 24 caracteres!")]
     public string? Conselho { get; set; }
 
     [Display(Name = "UF do conselho")]
-    [StringLength(2, ErrorMessage = "O {0} do usuário deve ter até 2 caracteres!")]
+    //[StringLength(2, ErrorMessage = "O {0} do usuário deve ter até 2 caracteres!")]
     public string? UFConselho { get; set; }
 
     [Display(Name = "Número do conselho")]
-    [StringLength(11, ErrorMessage = "O {0} do usuário deve ter até 11 caracteres!")]
+    //[StringLength(11, ErrorMessage = "O {0} do usuário deve ter até 11 caracteres!")]
     public string? NumeroConselho { get; set; }
 
     [Display(Name = "CPF")]
@@ -42,7 +42,7 @@ public class ApplicationUser : IdentityUser
     public string? CPF { get; set; }
 
     [Display(Name = "Profissão")]
-    [StringLength(100, ErrorMessage = "A {0} do usuário deve ter até 100 caracteres!")]
+    //[StringLength(100, ErrorMessage = "A {0} do usuário deve ter até 100 caracteres!")]
     public string? Profissao { get; set; }
 
     [Display(Name = "Data de Nascimento")]
