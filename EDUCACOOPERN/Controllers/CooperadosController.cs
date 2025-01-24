@@ -96,6 +96,20 @@ public class CooperadosController : Controller
             return View(viewModel);
         }
 
+        if (_context.Usuario.Any(x => x.Email.ToUpper().Equals(viewModel.Email.ToUpper())))
+        {
+            ModelState.AddModelError("Email", "E-mail já cadastrado na base de dados!");
+
+            PreencherPDIs();
+            PreencherAreasDeAtuacao();
+            PreencherServicos();
+            PreencherTiposFormacao();
+            viewModel.AreasAtuacao ??= [];
+            viewModel.PDIs ??= [];
+            viewModel.Formacoes ??= [];
+            return View(viewModel);
+        }
+
         var user = Activator.CreateInstance<ApplicationUser>();
 
         user.PhoneNumber = viewModel.Celular;
@@ -120,7 +134,12 @@ public class CooperadosController : Controller
                 await _userManager.AddToRoleAsync(user, "Professor");
             }
 
-            await _context.AddRangeAsync(viewModel.AreasAtuacao.Select(x => new UsuarioAreaAtuacao { UsuarioId = user.Id, AreaAtuacaoId = x.Id, ServicosId = x.ServicosId }).ToList());
+            if (viewModel.AreasAtuacao != null && viewModel.AreasAtuacao.Any())
+            {
+                await _context.AddRangeAsync(viewModel.AreasAtuacao.Select(x => new UsuarioAreaAtuacao { UsuarioId = user.Id, AreaAtuacaoId = x.Id, ServicosId = x.ServicosId }).ToList());
+            }
+
+
             if (viewModel.PDIs != null && viewModel.PDIs.Any())
             {
                 await _context.AddRangeAsync(viewModel.PDIs.Select(x => new UsuarioPDI { UsuarioId = user.Id, PDIId = x.Id }).ToList());
@@ -154,7 +173,8 @@ public class CooperadosController : Controller
         var areasAtuacao = _context.UsuarioAreaAtuacao
             .Include(x => x.Servicos)
             .Where(x => x.UsuarioId.Equals(id))
-            .Select(x => new AreaAtuacaoViewModel{ 
+            .Select(x => new AreaAtuacaoViewModel
+            {
                 Id = x.AreaAtuacao.Id,
                 Nome = x.AreaAtuacao.Nome,
                 ServicosId = x.ServicosId,
@@ -223,8 +243,15 @@ public class CooperadosController : Controller
             _context.RemoveRange(await _context.UsuarioPDIs.Where(x => x.UsuarioId.Equals(user.Id)).ToListAsync());
             _context.RemoveRange(user.Formacoes);
 
-            await _context.AddRangeAsync(viewModel.AreasAtuacao.Select(x => new UsuarioAreaAtuacao { UsuarioId = user.Id, AreaAtuacaoId = x.Id, ServicosId = x.ServicosId }).ToList());
-            await _context.AddRangeAsync(viewModel.Formacoes.Select(x => new Formacao { UsuarioId = user.Id, Tipo = x.Tipo, Nome = x.Nome }).ToList());
+            if (viewModel.AreasAtuacao != null && viewModel.AreasAtuacao.Any())
+            {
+                await _context.AddRangeAsync(viewModel.AreasAtuacao.Select(x => new UsuarioAreaAtuacao { UsuarioId = user.Id, AreaAtuacaoId = x.Id, ServicosId = x.ServicosId }).ToList());
+            }
+
+            if (viewModel.Formacoes != null && viewModel.Formacoes.Any())
+            {
+                await _context.AddRangeAsync(viewModel.Formacoes.Select(x => new Formacao { UsuarioId = user.Id, Tipo = x.Tipo, Nome = x.Nome }).ToList());
+            }
 
             if (!viewModel.Professor && _context.UserRoles
                 .Where(x => x.UserId.Equals(user.Id) && x.RoleId.Equals("2"))

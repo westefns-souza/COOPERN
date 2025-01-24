@@ -67,7 +67,7 @@ public class CooperadoViewModel
     public string? Registro { get; set; }
 
     [Display(Name = "Áreas de atuação")]
-    [Required(ErrorMessage = "O {0} é obrigatório!")]
+    //[Required(ErrorMessage = "O {0} é obrigatório!")]
     public List<AreaAtuacaoViewModel>? AreasAtuacao { get; set; }
 
     [Display(Name = "PDI")]
