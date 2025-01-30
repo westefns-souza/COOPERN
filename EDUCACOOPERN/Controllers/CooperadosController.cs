@@ -43,12 +43,12 @@ public class CooperadosController : Controller
             .Select(x => x.UserId)
             .ToList();
 
-        if (!viewModel.Nome.IsNullOrEmpty())
+        if (!viewModel.Nome.IsNullOrEmpty() || !viewModel.Email.IsNullOrEmpty())
         {
             viewModel.Usuario = await _userManager.Users
                 .Where(x => idusuarios.Contains(x.Id))
                 .OrderBy(x => x.Email)
-                .Where(x => x.FullName.ToUpper().StartsWith(viewModel.Nome.ToUpper()))
+                .Where(x => (string.IsNullOrEmpty(viewModel.Nome) || x.FullName.ToUpper().StartsWith(viewModel.Nome.ToUpper())) && (string.IsNullOrEmpty(viewModel.Email) || x.Email.ToUpper().StartsWith(viewModel.Email.ToUpper())))
                 .OrderBy(x => x.FullName)
                 .ToPagedListAsync(viewModel.Pagina ?? 1, 20);
         }
