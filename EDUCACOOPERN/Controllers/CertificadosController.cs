@@ -190,6 +190,12 @@ public class CertificadosController : Controller
         cbNome.ShowTextAligned(Element.ALIGN_CENTER, usuario.FullName.ToUpper(), 420, 150, 0);
         cbNome.BeginText();
         cbNome.EndText();
+        
+        var cbLinha = stamper.GetOverContent(1);
+
+        cbLinha.MoveTo(200, 145); // Ajuste as coordenadas conforme necessário
+        cbLinha.LineTo(600, 145);
+        cbLinha.Stroke();
 
         stamper.Close();
 
