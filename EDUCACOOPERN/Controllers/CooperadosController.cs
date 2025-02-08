@@ -200,6 +200,9 @@ public class CooperadosController : Controller
             CelularAlternativo = usuario.CelularAlternativo,
             NomeAlternativo = usuario.NomeAlternativo,
             Formacoes = usuario.Formacoes.ToList(),
+            Professor = _context.UserRoles
+                .Where(x => x.UserId.Equals(id) && x.RoleId.Equals("2"))
+                .Any()
         };
 
         PreencherPDIs();
