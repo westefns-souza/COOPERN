@@ -92,6 +92,8 @@ public class CooperadoViewModel
     [Display(Name = "Formações")]
     //[Required(ErrorMessage = "O {0} é obrigatório!")]
     public List<Formacao>? Formacoes { get; set; }
+
+    public bool? SenhaResetada { get; set; }
 }
 
 public class AreaAtuacaoViewModel

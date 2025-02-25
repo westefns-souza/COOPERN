@@ -16,6 +16,13 @@
 
 <hr />
 
+@if (Model.SenhaResetada.HasValue && Model.SenhaResetada.Value)
+{
+    <div class="alert alert-info">
+        <p>Senha Resetada com Sucesso!</p>
+    </div>
+}
+
 <dl class="row">
     <dt class="col-sm-2">
         @Html.DisplayNameFor(model => model.Nome)
@@ -159,6 +166,7 @@
     <div class="col">
         <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary"><i class="bi bi-pencil me-1"></i>Editar</a>
         <a asp-action="Delete" asp-route-id="@Model?.Id" class="btn btn-danger"><i class="bi bi-trash"></i>Deletar</a>
+        <a asp-action="ResetarSenha" asp-route-id="@Model?.Id" class="btn btn-light"><i class="bi bi-arrow-clockwise"></i>Resetar Senha</a>
         <a asp-action="Index" class="btn btn-light"><i class="bi bi-arrow-left-circle me-1"></i>Voltar</a>
     </div>
 </div>

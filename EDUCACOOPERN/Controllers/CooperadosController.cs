@@ -1,7 +1,6 @@
 ﻿using EDUCACOOPERN.Data;
 using EDUCACOOPERN.Models;
 using EDUCACOOPERN.ViewModels;
-using Humanizer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -412,6 +411,57 @@ public class CooperadosController : Controller
         }
 
         return RedirectToAction(nameof(Index));
+    }
+
+
+    [HttpGet]
+    public async Task<IActionResult> ResetarSenhaAsync(string? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var usuario = await _userManager.Users
+            .Include(x => x.Formacoes)
+            .FirstOrDefaultAsync(x => x.Id.Equals(id));
+        var token = await _userManager.GeneratePasswordResetTokenAsync(usuario);
+        var t = await _userManager.ResetPasswordAsync(usuario, token, "EducaCOOPERN$2024");
+
+        var areasAtuacao = _context.UsuarioAreaAtuacao
+           .Include(x => x.Servicos)
+           .Where(x => x.UsuarioId.Equals(id))
+           .Select(x => new AreaAtuacaoViewModel
+           {
+               Id = x.AreaAtuacao.Id,
+               Nome = x.AreaAtuacao.Nome,
+               ServicosId = x.ServicosId,
+               ServicosNome = x.Servicos != null ? x.Servicos.Nome : ""
+           })
+           .ToList();
+
+        var pdis = _context.UsuarioPDIs
+            .Where(x => x.UsuarioId.Equals(id))
+            .Select(x => x.PDI)
+            .ToList();
+
+        var viewModel = new CooperadoViewModel()
+        {
+            Id = id,
+            Nome = usuario.FullName,
+            Celular = usuario.PhoneNumber,
+            Email = usuario.Email,
+            Registro = usuario.Registro,
+            Ativo = usuario.LockoutEnabled,
+            AreasAtuacao = areasAtuacao,
+            PDIs = pdis,
+            CelularAlternativo = usuario.CelularAlternativo,
+            NomeAlternativo = usuario.NomeAlternativo,
+            Formacoes = usuario.Formacoes.ToList(),
+            SenhaResetada = true            
+        };
+
+        return View("Details", viewModel);
     }
 
     #region ViewBag
