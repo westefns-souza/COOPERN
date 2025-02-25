@@ -226,8 +226,8 @@ public class CertificadosController : Controller
         
         var cbLinha = stamper.GetOverContent(1);
 
-        cbLinha.MoveTo(200, 145); // Ajuste as coordenadas conforme necessário
-        cbLinha.LineTo(600, 145);
+        cbLinha.MoveTo(150, 145); // Ajuste as coordenadas conforme necessário
+        cbLinha.LineTo(700, 145);
         cbLinha.Stroke();
 
         stamper.Close();
