@@ -7,6 +7,8 @@ using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using EDUCACOOPERN.Data.Migrations;
+using System.Linq;
 
 namespace EDUCACOOPERN.Controllers;
 
@@ -26,10 +28,39 @@ public class CertificadosController : Controller
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+        var cursosAprovados = _context.Matricula
+            .Include(x => x.Aula)
+            .ThenInclude(x => x.Curso)
+            .Where(x => x.AlunoId.Equals(userId) && x.Status == EStatusMatricula.Aprovado)
+            .Select(x => x.Aula.Curso.Nome.ToUpper())
+            .ToList();
+
         var certificados = await _context.Certificado
             .Include(c => c.Usuario)
             .Where(x => x.UsuarioId.Equals(userId))
             .ToListAsync();
+
+        var cursosSemCertificados = cursosAprovados.Where(x => !certificados.Any(y => y.Descricao.Equals(x.ToUpper()))).ToList();
+
+        if (cursosSemCertificados.Any())
+        {
+            var cursosParaGerarCertificados = _context.Matricula
+                .Include(x => x.Aula)
+                .ThenInclude(x => x.Curso)
+                .Where(x => x.AlunoId.Equals(userId) && x.Status == EStatusMatricula.Aprovado && cursosSemCertificados.Contains(x.Aula.Curso.Nome.ToUpper()))
+                .Select(x => x.AulaId)
+                .ToList();
+
+            foreach(var aulaid in cursosParaGerarCertificados)
+            {
+                _ = GerarCertificado(userId, aulaid);
+            }
+
+            certificados = await _context.Certificado
+                .Include(c => c.Usuario)
+                .Where(x => x.UsuarioId.Equals(userId))
+                .ToListAsync();
+        }
 
         return View(certificados);
     }
@@ -103,6 +134,7 @@ public class CertificadosController : Controller
         var certificado = await _context.Certificado
             .Include(c => c.Usuario)
             .FirstOrDefaultAsync(m => m.Id == id);
+
         if (certificado == null)
         {
             return NotFound();
@@ -131,6 +163,7 @@ public class CertificadosController : Controller
         var aula = _context.Aulas
             .Include(x => x.Curso)
             .FirstOrDefault(x => x.Id == idaula);
+
         var usuario = _context.Usuario.FirstOrDefault(x => x.Id.Equals(id));
 
         var certificadoExisteste = _context.Certificado
