@@ -45,7 +45,7 @@
                             <input type="hidden" name="Matriculas[@index].Id" value="@matricula.Id" />
                             <input type="hidden" name="Matriculas[@index].AlunoId" value="@matricula.AlunoId" />
                             <input type="hidden" name="Matriculas[@index].AulaId" value="@matricula.AulaId" />
-                            @matricula.Aluno.FullName
+                            @matricula.Aluno.FullName.ToUpper()
                         </td>
                         <td>
                             <div class="form-group form-check">
