@@ -116,40 +116,39 @@ public class CooperadosController : Controller
         user.UserName = viewModel.Email;
         user.EmailConfirmed = true;
         user.LockoutEnabled = false;
-        user.FullName = viewModel.Nome;
+        user.FullName = viewModel.Nome?.ToUpper();
         user.Registro = viewModel.Registro;
-        user.NomeAlternativo = viewModel.NomeAlternativo;
+        user.NomeAlternativo = viewModel.NomeAlternativo?.ToUpper();
         user.CelularAlternativo = viewModel.CelularAlternativo;
-        user.Formacoes = viewModel.Formacoes;
+        user.Formacoes = viewModel.Formacoes ?? [];
 
         var result = await _userManager.CreateAsync(user, "EducaCOOPERN$2024");
 
-        if (result.Succeeded)
+        if (!result.Succeeded)
         {
-            await _userManager.AddToRoleAsync(user, "Cooperado");
+            return View(viewModel);
+        }
+        
+        await _userManager.AddToRoleAsync(user, "Cooperado");
 
-            if (viewModel.Professor)
-            {
-                await _userManager.AddToRoleAsync(user, "Professor");
-            }
-
-            if (viewModel.AreasAtuacao != null && viewModel.AreasAtuacao.Any())
-            {
-                await _context.AddRangeAsync(viewModel.AreasAtuacao.Select(x => new UsuarioAreaAtuacao { UsuarioId = user.Id, AreaAtuacaoId = x.Id, ServicosId = x.ServicosId }).ToList());
-            }
-
-
-            if (viewModel.PDIs != null && viewModel.PDIs.Any())
-            {
-                await _context.AddRangeAsync(viewModel.PDIs.Select(x => new UsuarioPDI { UsuarioId = user.Id, PDIId = x.Id }).ToList());
-            }
-
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction("Index");
+        if (viewModel.Professor)
+        {
+            await _userManager.AddToRoleAsync(user, "Professor");
         }
 
-        return View(viewModel);
+        if (viewModel.AreasAtuacao != null && viewModel.AreasAtuacao.Any())
+        {
+            await _context.AddRangeAsync(viewModel.AreasAtuacao.Select(x => new UsuarioAreaAtuacao { UsuarioId = user.Id, AreaAtuacaoId = x.Id, ServicosId = x.ServicosId }).ToList());
+        }
+        
+        if (viewModel.PDIs != null && viewModel.PDIs.Any())
+        {
+            await _context.AddRangeAsync(viewModel.PDIs.Select(x => new UsuarioPDI { UsuarioId = user.Id, PDIId = x.Id }).ToList());
+        }
+
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction("Index");
     }
 
     [HttpGet]
@@ -189,7 +188,7 @@ public class CooperadosController : Controller
         var viewModel = new CooperadoViewModel()
         {
             Id = id,
-            Nome = usuario.FullName,
+            Nome = usuario.FullName?.ToUpper(),
             Celular = usuario.PhoneNumber,
             Email = usuario.Email,
             Registro = usuario.Registro,

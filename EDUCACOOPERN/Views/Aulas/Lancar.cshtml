@@ -36,7 +36,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var matricula in Model.Matriculas)
+                @foreach (var matricula in Model.Matriculas.OrderBy(x => x.Aluno.FullName))
                 {
                     var index = Model.Matriculas.IndexOf(matricula);
 
