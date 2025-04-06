@@ -95,8 +95,17 @@ public class PDIController : Controller
 
         await _context.AddAsync(pdi);
         await _context.SaveChangesAsync();
-        await _context.AddRangeAsync(viewModel.AreasAtuacao.Select(x => new PDIAreaAtuacao { PDIId = pdi.Id, AreaAtuacaoId = x.Id }).ToList());
-        await _context.AddRangeAsync(viewModel.Cursos.Select(x => new PDICurso { PDId = pdi.Id, CursoId = x.Id }).ToList());
+        
+        if (viewModel.AreasAtuacao != null && viewModel.AreasAtuacao.Any())
+        {
+            await _context.AddRangeAsync(viewModel.AreasAtuacao.Select(x => new PDIAreaAtuacao { PDIId = pdi.Id, AreaAtuacaoId = x.Id }).ToList());
+        }
+
+        if (viewModel.Cursos != null && viewModel.Cursos.Any())
+        {
+            await _context.AddRangeAsync(viewModel.Cursos.Select(x => new PDICurso { PDId = pdi.Id, CursoId = x.Id }).ToList());
+        }
+        
         await _context.SaveChangesAsync();
 
         return RedirectToAction(nameof(Index));
@@ -171,8 +180,16 @@ public class PDIController : Controller
             _context.RemoveRange(await _context.PDICursos.Where(x => x.PDId.Equals(pdi.Id)).ToListAsync());
             await _context.SaveChangesAsync();
 
-            await _context.AddRangeAsync(viewModel.AreasAtuacao.Select(x => new PDIAreaAtuacao { PDIId = pdi.Id, AreaAtuacaoId = x.Id }).ToList());
-            await _context.AddRangeAsync(viewModel.Cursos.Select(x => new PDICurso { PDId = pdi.Id, CursoId = x.Id }).ToList());
+            if (viewModel.AreasAtuacao != null && viewModel.AreasAtuacao.Any())
+            {
+                await _context.AddRangeAsync(viewModel.AreasAtuacao.Select(x => new PDIAreaAtuacao { PDIId = pdi.Id, AreaAtuacaoId = x.Id }).ToList());
+            }
+
+            if (viewModel.Cursos != null && viewModel.Cursos.Any())
+            {
+                await _context.AddRangeAsync(viewModel.Cursos.Select(x => new PDICurso { PDId = pdi.Id, CursoId = x.Id }).ToList());
+            }
+            
             await _context.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
