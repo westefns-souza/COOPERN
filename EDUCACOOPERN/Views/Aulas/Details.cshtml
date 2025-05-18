@@ -110,7 +110,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var matricula in Model.Matriculas)
+                @foreach (var matricula in Model.Matriculas.OrderBy(x => x.Aluno.FullName))
                 {
                     <tr>
                         <td>
