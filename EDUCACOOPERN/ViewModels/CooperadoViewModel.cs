@@ -44,6 +44,7 @@ public class IndexCooperados
     public int? Pagina { get; set; } = 1;
 
     public IPagedList<ApplicationUser>? Usuario { get; set; }
+    public IList<CooperadoViewModel>? Cooperados { get; set; }
 }
 
 public class CooperadoViewModel
@@ -64,7 +65,7 @@ public class CooperadoViewModel
     public string? Celular { get; set; }
 
     [Display(Name = "Registro")]
-    [Required(ErrorMessage = "O {0} é obrigatório!")]
+    //[Required(ErrorMessage = "O {0} é obrigatório!")]
     public string? Registro { get; set; }
 
     [Display(Name = "Áreas de atuação")]
@@ -88,6 +89,9 @@ public class CooperadoViewModel
 
     [Display(Name = "Professor(a)")]
     public bool Professor { get; set; }
+
+    [Display(Name = "Externo(a)")]
+    public bool Externo { get; set; }
 
     [Display(Name = "Formações")]
     //[Required(ErrorMessage = "O {0} é obrigatório!")]

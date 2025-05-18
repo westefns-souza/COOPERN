@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using X.PagedList;
+using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
 
 namespace EDUCACOOPERN.Controllers;
 
@@ -60,6 +61,23 @@ public class CooperadosController : Controller
                 .ToPagedListAsync(viewModel.Pagina ?? 1, 20);
         }
 
+        List<CooperadoViewModel> cooperados = [];
+
+        foreach(var usuario in viewModel.Usuario)
+        {
+            cooperados.Add(new CooperadoViewModel
+            {
+                Id = usuario.Id,
+                Nome = usuario.FullName,
+                Email = usuario.Email,
+                Ativo = usuario.LockoutEnabled,
+                Professor = _context.UserRoles.Any(x => x.UserId.Equals(usuario.Id) && x.RoleId.Equals("2")),
+                Externo = _context.UserRoles.Any(x => x.UserId.Equals(usuario.Id) && x.RoleId.Equals("4"))
+            });
+        }
+
+        viewModel.Cooperados = cooperados;
+
         return View(viewModel);
     }
 
@@ -84,6 +102,11 @@ public class CooperadosController : Controller
     [HttpPost]
     public async Task<IActionResult> CreateAsync(CooperadoViewModel viewModel)
     {
+        if (!viewModel.Externo && string.IsNullOrEmpty(viewModel.Registro))
+        {
+            ModelState.AddModelError("Registro", "O registro é obrigatório!");
+        }
+
         if (!ModelState.IsValid)
         {
             PreencherPDIs();
@@ -135,6 +158,11 @@ public class CooperadosController : Controller
         if (viewModel.Professor)
         {
             await _userManager.AddToRoleAsync(user, "Professor");
+        }
+
+        if (viewModel.Externo)
+        {
+            await _userManager.AddToRoleAsync(user, "Externo");
         }
 
         if (viewModel.AreasAtuacao != null && viewModel.AreasAtuacao.Any())
@@ -203,6 +231,9 @@ public class CooperadosController : Controller
             Formacoes = usuario.Formacoes.ToList(),
             Professor = _context.UserRoles
                 .Where(x => x.UserId.Equals(id) && x.RoleId.Equals("2"))
+                .Any(),
+            Externo = _context.UserRoles
+                .Where(x => x.UserId.Equals(id) && x.RoleId.Equals("4"))
                 .Any()
         };
 
@@ -216,6 +247,11 @@ public class CooperadosController : Controller
     [HttpPost]
     public async Task<IActionResult> EditAsync(CooperadoViewModel viewModel)
     {
+        if (!viewModel.Externo && string.IsNullOrEmpty(viewModel.Registro))
+        {
+            ModelState.AddModelError("Registro", "O registro é obrigatório!");
+        }
+
         if (!ModelState.IsValid)
         {
             viewModel.AreasAtuacao ??= [];
@@ -257,6 +293,12 @@ public class CooperadosController : Controller
                 await _context.AddRangeAsync(viewModel.Formacoes.Select(x => new Formacao { UsuarioId = user.Id, Tipo = x.Tipo, Nome = x.Nome }).ToList());
             }
 
+            if (viewModel.PDIs != null && viewModel.PDIs.Any())
+            {
+                await _context.AddRangeAsync(viewModel.PDIs.Select(x => new UsuarioPDI { UsuarioId = user.Id, PDIId = x.Id }).ToList());
+            }
+
+
             if (!viewModel.Professor && _context.UserRoles
                 .Where(x => x.UserId.Equals(user.Id) && x.RoleId.Equals("2"))
                 .Any()
@@ -273,9 +315,20 @@ public class CooperadosController : Controller
                 await _userManager.AddToRoleAsync(user, "Professor");
             }
 
-            if (viewModel.PDIs != null && viewModel.PDIs.Any())
+            if (!viewModel.Externo && _context.UserRoles
+                .Where(x => x.UserId.Equals(user.Id) && x.RoleId.Equals("4"))
+                .Any()
+            )
             {
-                await _context.AddRangeAsync(viewModel.PDIs.Select(x => new UsuarioPDI { UsuarioId = user.Id, PDIId = x.Id }).ToList());
+                await _userManager.RemoveFromRoleAsync(user, "Externo");
+            }
+
+            if (viewModel.Externo && !_context.UserRoles
+                .Where(x => x.UserId.Equals(user.Id) && x.RoleId.Equals("4"))
+                .Any()
+            )
+            {
+                await _userManager.AddToRoleAsync(user, "Externo");
             }
 
             await _context.SaveChangesAsync();
@@ -333,7 +386,13 @@ public class CooperadosController : Controller
             PDIs = pdis,
             CelularAlternativo = usuario.CelularAlternativo,
             NomeAlternativo = usuario.NomeAlternativo,
-            Formacoes = usuario.Formacoes.ToList()
+            Formacoes = usuario.Formacoes.ToList(),
+            Professor = _context.UserRoles
+                .Where(x => x.UserId.Equals(id) && x.RoleId.Equals("2"))
+                .Any(),
+            Externo = _context.UserRoles
+                .Where(x => x.UserId.Equals(id) && x.RoleId.Equals("4"))
+                .Any()
         };
 
         return View(viewModel);

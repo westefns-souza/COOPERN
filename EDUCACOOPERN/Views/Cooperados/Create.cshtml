@@ -40,10 +40,10 @@
                     </div>
                 </div>
                 <div class="col-2">
-                    <div class="form-group form-check">
-                        <label class="form-check-label mt-4">
-                            <input class="form-check-input" asp-for="Professor" /> @Html.DisplayNameFor(model => model.Professor)
-                        </label>
+                    <div class="form-group">
+                        <label asp-for="Registro" class="control-label"></label>
+                        <input asp-for="Registro" class="form-control" />
+                        <span asp-validation-for="Registro" class="text-danger"></span>
                     </div>
                 </div>
             </div>
@@ -56,11 +56,18 @@
                         <span asp-validation-for="Celular" class="text-danger"></span>
                     </div>
                 </div>
-                <div class="col-4">
-                    <div class="form-group">
-                        <label asp-for="Registro" class="control-label"></label>
-                        <input asp-for="Registro" class="form-control" />
-                        <span asp-validation-for="Registro" class="text-danger"></span>
+                <div class="col-2">
+                    <div class="form-group form-check">
+                        <label class="form-check-label mt-4">
+                            <input class="form-check-input" asp-for="Professor" /> @Html.DisplayNameFor(model => model.Professor)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="form-group form-check">
+                        <label class="form-check-label mt-4">
+                            <input class="form-check-input" asp-for="Externo" /> @Html.DisplayNameFor(model => model.Externo)
+                        </label>
                     </div>
                 </div>
                 <div class="col-2">
