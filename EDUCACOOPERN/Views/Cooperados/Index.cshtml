@@ -17,7 +17,14 @@
     </div>
 </div>
 
-<hr /> 
+<hr />
+
+@if (TempData["MensagemCooperado"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["MensagemCooperado"]
+    </div>
+}
 
 <div class="card text-bg-light mb-3">
     <div class="card-body">

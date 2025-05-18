@@ -149,6 +149,8 @@ public class CooperadosController : Controller
 
         await _context.SaveChangesAsync();
 
+        TempData["MensagemCooperado"] = "Cooperado(a) cadastrado(a) com sucesso!";
+
         return RedirectToAction("Index");
     }
 
@@ -277,6 +279,8 @@ public class CooperadosController : Controller
             }
 
             await _context.SaveChangesAsync();
+            
+            TempData["MensagemCooperado"] = "Cooperado(a) editado(a) com sucesso!";
 
             return RedirectToAction("Index");
         }
@@ -409,6 +413,8 @@ public class CooperadosController : Controller
             await _userManager.DeleteAsync(usuario);
             await _context.SaveChangesAsync();
         }
+
+        TempData["MensagemCooperado"] = "Cooperado(a) exluído(a) com sucesso!";
 
         return RedirectToAction(nameof(Index));
     }
