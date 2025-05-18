@@ -1,4 +1,5 @@
 ﻿using EDUCACOOPERN.Data;
+using EDUCACOOPERN.Helpers;
 using EDUCACOOPERN.Models;
 using EDUCACOOPERN.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -281,7 +282,7 @@ public class ProfessoresController : Controller
     {
         var tiposFormacao = Enum.GetValues(typeof(ETipoFormacao))
             .Cast<ETipoFormacao>()
-            .Select(x => new SelectListItem { Value = ((int)x).ToString(), Text = x.ToString() })
+            .Select(x => new SelectListItem { Value = ((int)x).ToString(), Text = x.GetDisplayName() })
             .ToList();
 
         ViewBag.TiposFormacao = tiposFormacao;
