@@ -20,26 +20,30 @@
 
 <hr />
 
-<form>
-    <div class="row g-3 align-items-center">
-        <div class="col-auto">
-            <label>Ano</label>
-        </div>
-        <div class="col-auto">
-            <select asp-items="ViewBag.Anos" name="ano" class="form-select"></select>
-        </div>
+<div class="card text-bg-light mb-3">
+    <div class="card-body">
+        <form>
+            <div class="row g-3 align-items-center">
+                <div class="col-auto">
+                    <label>Ano</label>
+                </div>
+                <div class="col-auto">
+                    <select asp-items="ViewBag.Anos" name="ano" class="form-select"></select>
+                </div>
 
-        <div class="col-auto">
-            <label>Mês</label>
-        </div>
-        <div class="col-auto">
-            <select asp-items="ViewBag.Meses" name="mes" class="form-select"></select>
-        </div>
-        <div class="col-auto">
-            <button class="btn btn-primary">Pesquisar</button>
-        </div>
+                <div class="col-auto">
+                    <label>Mês</label>
+                </div>
+                <div class="col-auto">
+                    <select asp-items="ViewBag.Meses" name="mes" class="form-select"></select>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-primary">Pesquisar</button>
+                </div>
+            </div>
+        </form>
     </div>
-</form>
+</div>
 
 @if (Model != null && Model.Any())
 {

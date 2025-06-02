@@ -103,7 +103,7 @@
                 <tr>
                     <th>Nome</th>
                     <th>Compareceu?</th>
-                    <th>Pré teste</th>
+                    @* <th>Pré teste</th> *@
                     <th>Pós teste</th>
                     <th>Situação</th>
                     <th></th>
@@ -119,9 +119,9 @@
                         <td>
                             @(matricula.Compareceu ? "Sim" : "Não")
                         </td>
-                        <td>
+                       @*  <td>
                             @matricula.NotaPre
-                        </td>
+                        </td> *@
                         <td>
                             @matricula.NotaPos
                         </td>

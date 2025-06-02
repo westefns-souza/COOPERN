@@ -132,11 +132,12 @@ public class AulasController : Controller
             }
             else if (matricula.Compareceu && matricula.NotaPos <= 6)
             {
+
                 matricula.Status = EStatusMatricula.Reprovado;
             }
             else
             {
-                matricula.NotaPre = 0;
+                //matricula.NotaPre = 0;
                 matricula.NotaPos = 0;
                 matricula.Status = EStatusMatricula.Reprovado;
             }

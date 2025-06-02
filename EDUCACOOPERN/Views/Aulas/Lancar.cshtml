@@ -31,7 +31,7 @@
                 <tr>
                     <th>Nome</th>
                     <th>Compareceu?</th>
-                    <th>Pré teste</th>
+                   @*  <th>Pré teste</th> *@
                     <th>Pós teste</th>
                 </tr>
             </thead>
@@ -52,9 +52,9 @@
                                 <input class="form-check-input" name="Matriculas[@index].Compareceu" type="checkbox" checked value="true" />
                             </div>
                         </td>
-                        <td>
+                        @* <td>
                             <input class="form-control" name="Matriculas[@index].NotaPre" value="@matricula.NotaPre" />
-                        </td>
+                        </td> *@
                         <td>
                             <input class="form-control" name="Matriculas[@index].NotaPos" value="@matricula.NotaPos" />
                         </td>
