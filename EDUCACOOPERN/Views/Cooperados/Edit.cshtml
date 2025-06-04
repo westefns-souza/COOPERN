@@ -1,4 +1,5 @@
-﻿@model EDUCACOOPERN.ViewModels.CooperadoViewModel
+﻿@using EDUCACOOPERN.Helpers
+@model EDUCACOOPERN.ViewModels.CooperadoViewModel
 
 @{
     ViewData["Title"] = "Cooperados";
@@ -318,9 +319,9 @@
                                     <tr class="row item-formacao">
                                         <td class="col-4">
                                             <input type="hidden" class="dados-item-formacao" name="Formacoes[@index].Nome" value="@formacao.Nome" />
-                                            <input type="hidden" class="dados-item-formacao" name="Formacoes[@index].Tipo" value="@formacao.Tipo" />
+                                            <input type="hidden" class="dados-item-formacao" name="Formacoes[@index].Tipo" value="@((int)formacao.Tipo)" />
 
-                                            @formacao.Tipo
+                                            @formacao.Tipo.GetDisplayName()
                                         </td>
 
                                         <td class="col-6">

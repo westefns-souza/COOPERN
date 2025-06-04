@@ -4,13 +4,14 @@ $(function () {
 
     function adicionarFormacao() {
         let tipo = $(".tipo-formacao option:selected").text();
+        let tipoVal = $(".tipo-formacao option:selected").val();
         let textFormacao = $(".formacao").val();
 
         $("#lista-formacoes").append(`
                     <tr class="row item-formacao">
                         <td class="col-4">
                             <input type="hidden" class="dados-item-formacao" name="Formacoes[0].Nome" value="${textFormacao}" />
-                            <input type="hidden" class="dados-item-formacao" name="Formacoes[0].Tipo" value="${tipo}" />
+                            <input type="hidden" class="dados-item-formacao" name="Formacoes[0].Tipo" value="${tipoVal}" />
 
                             ${tipo}
                         </td>

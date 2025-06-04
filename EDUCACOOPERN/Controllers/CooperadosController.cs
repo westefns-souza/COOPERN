@@ -281,6 +281,7 @@ public class CooperadosController : Controller
         {
             _context.RemoveRange(await _context.UsuarioAreaAtuacao.Where(x => x.UsuarioId.Equals(user.Id)).ToListAsync());
             _context.RemoveRange(await _context.UsuarioPDIs.Where(x => x.UsuarioId.Equals(user.Id)).ToListAsync());
+            _context.RemoveRange(await _context.Formacoes.Where(x => x.UsuarioId.Equals(user.Id)).ToListAsync());
             _context.RemoveRange(user.Formacoes);
 
             if (viewModel.AreasAtuacao != null && viewModel.AreasAtuacao.Any())
