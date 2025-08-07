@@ -105,6 +105,7 @@
                     <th>Compareceu?</th>
                     @* <th>Pré teste</th> *@
                     <th>Pós teste</th>
+                    <th>Aproveitamento</th>
                     <th>Situação</th>
                     <th></th>
                 </tr>
@@ -126,6 +127,9 @@
                             @matricula.NotaPos
                         </td>
                         <td>
+                            @matricula.Aproveitamento
+                        </td>
+                        <td>
                             @matricula.Status
                         </td>
                         <td>
@@ -136,7 +140,7 @@
 
                             @if (matricula.Status == EStatusMatricula.Aprovado)
                             {
-                                <a asp-action="GerarCertificado" target="_blank" asp-controller="Certificados" asp-route-id="@matricula.Aluno.Id" asp-route-idaula="@Model.Id" class="btn btn-sm btn-info"><i class="bi bi-card-text"></i></a>
+                                <a asp-action="GerarCertificadoUTI" target="_blank" asp-controller="Certificados" asp-route-id="@matricula.Aluno.Id" asp-route-idaula="@Model.Id" class="btn btn-sm btn-info"><i class="bi bi-card-text"></i></a>
                             }
                         </td>
                     </tr>

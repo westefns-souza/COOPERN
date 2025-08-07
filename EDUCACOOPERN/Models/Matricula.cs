@@ -26,6 +26,9 @@ public class Matricula
     [Display(Name = "Nota pós teste")]
     public decimal NotaPos { get; set; }
 
+    [Display(Name = "Aproveitamento")]
+    public decimal Aproveitamento { get; set; }
+
     [Display(Name = "Compareceu")]
     public bool Compareceu { get; set; }
 

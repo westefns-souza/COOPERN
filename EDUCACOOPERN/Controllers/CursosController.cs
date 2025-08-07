@@ -48,6 +48,8 @@ public class CursosController : Controller
             Descricao = curso.Descricao,
             AreasAtuacao = areasAtuacao,
             Ativo = curso.Ativo,
+            CargaHorariaPratica = curso.CargaHorariaPratica,
+            CargaHorariaTeorica = curso.CargaHorariaTeorica,
         };
 
         return View(viewModel);
@@ -82,6 +84,8 @@ public class CursosController : Controller
             Nome = viewModel.Nome,
             Descricao = viewModel.Descricao,
             Ativo = viewModel.Ativo,
+            CargaHorariaPratica = viewModel.CargaHorariaPratica,
+            CargaHorariaTeorica = viewModel.CargaHorariaTeorica
         };
 
         await _context.AddAsync(curso);
@@ -118,6 +122,8 @@ public class CursosController : Controller
             Descricao = curso.Descricao,
             AreasAtuacao = areasAtuacao,
             Ativo = curso.Ativo,
+            CargaHorariaPratica = curso.CargaHorariaPratica,
+            CargaHorariaTeorica = curso.CargaHorariaTeorica,
         };
 
         PreencherAreasDeAtuacao();
@@ -147,6 +153,8 @@ public class CursosController : Controller
             curso.Nome = viewModel.Nome;
             curso.Ativo = viewModel.Ativo;
             curso.Descricao = viewModel.Descricao;
+            curso.CargaHorariaPratica = viewModel.CargaHorariaPratica;
+            curso.CargaHorariaTeorica = viewModel.CargaHorariaTeorica;
 
             _context.Update(curso);
             _context.RemoveRange(await _context.CursoAreaAtuacoes.Where(x => x.CursoId.Equals(curso.Id)).ToListAsync());
@@ -193,7 +201,9 @@ public class CursosController : Controller
             Id = curso.Id,
             Nome = curso.Nome,
             Descricao = curso.Descricao,
-            AreasAtuacao = areasAtuacao
+            AreasAtuacao = areasAtuacao,
+            CargaHorariaPratica = curso.CargaHorariaPratica,
+            CargaHorariaTeorica = curso.CargaHorariaTeorica
         };
 
         return View(viewModel);

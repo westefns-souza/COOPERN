@@ -33,6 +33,7 @@
                     <th>Compareceu?</th>
                    @*  <th>Pré teste</th> *@
                     <th>Pós teste</th>
+                    <th>Aproveitamento</th>
                 </tr>
             </thead>
             <tbody>
@@ -57,6 +58,9 @@
                         </td> *@
                         <td>
                             <input class="form-control" name="Matriculas[@index].NotaPos" value="@matricula.NotaPos" />
+                        </td>
+                        <td>
+                            <input class="form-control" name="Matriculas[@index].Aproveitamento" value="@matricula.Aproveitamento" />
                         </td>
                     </tr>
                 }

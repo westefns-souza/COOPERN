@@ -1,14 +1,10 @@
 ﻿using EDUCACOOPERN.Data;
 using EDUCACOOPERN.Models;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using iTextSharp.text;
-using iTextSharp.text.pdf;
-using System;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using EDUCACOOPERN.Data.Migrations;
-using System.Linq;
 
 namespace EDUCACOOPERN.Controllers;
 
@@ -54,6 +50,7 @@ public class CertificadosController : Controller
             foreach(var aulaid in cursosParaGerarCertificados)
             {
                 _ = GerarCertificado(userId, aulaid);
+                //_ = GerarCertificadoUTI(userId, aulaid);
             }
 
             certificados = await _context.Certificado
@@ -248,6 +245,129 @@ public class CertificadosController : Controller
         System.IO.File.Delete(caminhoPdfSaida);
 
         return RedirectToAction("Details", new { id = certificado.Id});
+    }
+
+    public IActionResult GerarCertificadoUTI(string id, int idaula)
+    {
+        var aula = _context.Aulas
+            .Include(x => x.Curso)
+            .FirstOrDefault(x => x.Id == idaula);
+
+        var matricula = _context.Matricula.FirstOrDefault(x => x.AulaId == idaula && x.AlunoId.Equals(id) && x.Status == EStatusMatricula.Aprovado);
+
+        var usuario = _context.Usuario.FirstOrDefault(x => x.Id.Equals(id));
+
+        var certificadoExisteste = _context.Certificado
+            .Where(x => x.UsuarioId.Equals(id) && x.Descricao.Equals(aula.Curso.Nome.ToUpper()))
+            .FirstOrDefault();
+
+        if (certificadoExisteste != null)
+        {
+            return RedirectToAction("Details", new { id = certificadoExisteste.Id });
+        }
+
+        var nomeSaida = id + DateTime.Now.ToString("yyyyMMddhhmmss") + ".pdf";
+
+        var caminhoPdfTemplate = Path.Combine(_env.WebRootPath, "pdf", "modelo_certificado_3.pdf");
+        var caminhoPdfSaida = Path.Combine(_env.WebRootPath, "pdf", nomeSaida);
+
+        using var reader = new PdfReader(caminhoPdfTemplate);
+        using var stream = new FileStream(caminhoPdfSaida, FileMode.Create);
+        using var stamper = new PdfStamper(reader, stream);
+
+        var bf = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+        var bfBold = BaseFont.CreateFont(BaseFont.HELVETICA_BOLD, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+
+        var cb = stamper.GetOverContent(1); // Assumindo que o nome deve ser inserido na primeira página
+        var cbCurso = stamper.GetOverContent(1);
+        var cbNome = stamper.GetOverContent(1);
+
+        var texto1 = "A COOPERN - COOPERATIVA DE TRABALHO E DE SERVIÇOS DE ENFERMAGEM";
+        var texto2 = "DO RIO GRANDE DO NORTE CNPJ 11.601.777/0001-28,";
+        var texto3 = "CONFERE A CERTIFICAÇÃO RELATIVA AO CURSO DE";
+        var texto4 = $"CONCLUÍDO EM {aula.DataFim.ToString("M").ToUpper()} DE {aula.DataFim:yyyy}";
+
+        var tempo = (aula.DataFim - aula.DataInicio).Hours;
+        var texto5 = $"COM CARGA HORÁRIA DE {tempo} HORAS.";
+
+        cb.BeginText();
+        cb.SetFontAndSize(bf, 16);
+
+        var coluna = 440;
+
+        cb.ShowTextAligned(Element.ALIGN_CENTER, texto1, coluna, 310, 0);
+        cb.ShowTextAligned(Element.ALIGN_CENTER, texto2, coluna, 290, 0);
+        cb.ShowTextAligned(Element.ALIGN_CENTER, texto3, coluna, 270, 0);
+        cb.EndText();
+
+        cbCurso.BeginText();
+        cbCurso.SetFontAndSize(bfBold, 16);
+        cbCurso.ShowTextAligned(Element.ALIGN_CENTER, aula.Curso.Nome.ToUpper(), coluna, 250, 0);
+        cbCurso.EndText();
+
+        cb.BeginText();
+        cb.SetFontAndSize(bf, 16);
+        cb.ShowTextAligned(Element.ALIGN_CENTER, texto4, coluna, 230, 0);
+        cb.ShowTextAligned(Element.ALIGN_CENTER, texto5, coluna, 210, 0);
+        cb.EndText();
+
+        cbNome.SetFontAndSize(bfBold, 24);
+        cbNome.SetRGBColorFill(63, 156, 147);
+        cbNome.ShowTextAligned(Element.ALIGN_CENTER, usuario.FullName.ToUpper(), coluna, 150, 0);
+        cbNome.BeginText();
+        cbNome.EndText();
+
+        var cbLinha = stamper.GetOverContent(1);
+
+        cbLinha.MoveTo(160, 145); // Ajuste as coordenadas conforme necessário
+        cbLinha.LineTo(720, 145);
+        cbLinha.Stroke();
+
+        var cbVerso = stamper.GetOverContent(2);
+
+        var coluna1 = 100;
+
+
+        cbVerso.SetFontAndSize(bfBold, 16);
+        cbVerso.ShowTextAligned(Element.ALIGN_LEFT, aula.Curso.Nome.ToUpper(), coluna1, 510, 0);
+
+        cbVerso.SetFontAndSize(bfBold, 16);
+        cbVerso.ShowTextAligned(Element.ALIGN_LEFT, "CONTEÚDO PROGRAMÁTICO TEÓRICO E PRÁTICO:", coluna1, 410, 0);
+
+        cbVerso.SetFontAndSize(bf, 16);
+
+        cbVerso.ShowTextAligned(Element.ALIGN_LEFT, "Atuação do Técnico de Enfermagem na UTI Pediátrica", coluna1, 350, 0);
+        cbVerso.ShowTextAligned(Element.ALIGN_LEFT, "Ética no cuidado de enfermagem", coluna1, 325, 0);
+        cbVerso.ShowTextAligned(Element.ALIGN_LEFT, "Manejo com cateteres: APV, CVC, PICC, dissecção, CTI", coluna1, 300, 0);
+        cbVerso.ShowTextAligned(Element.ALIGN_LEFT, "Reconhecimento de crises convulsivas", coluna1, 275, 0);
+
+ 
+        cbVerso.SetFontAndSize(bfBold, 16);
+        cbVerso.ShowTextAligned(Element.ALIGN_LEFT, $"CARGA HORÁRIA TOTAL: {aula.Curso.CargaHorariaTeorica}H TEÓRICAS + {aula.Curso.CargaHorariaPratica}H PRÁTICAS = {aula.Curso.CargaHorariaTeorica + aula.Curso.CargaHorariaPratica}H TOTAIS", coluna1, 110, 0);
+
+        cbVerso.SetFontAndSize(bf, 15);
+        cbVerso.ShowTextAligned(Element.ALIGN_LEFT, $"APROVEITAMENTO: {matricula.Aproveitamento}%", coluna1, 90, 0);
+        cbVerso.ShowTextAligned(Element.ALIGN_LEFT, $"NOTA FINAL: {matricula.NotaPos}", 400, 90, 0);
+
+
+        stamper.Close();
+
+        var bytes = System.IO.File.ReadAllBytes(caminhoPdfSaida);
+
+        var certificado = new Certificado
+        {
+            Arquivo = Convert.ToBase64String(bytes),
+            UsuarioId = id,
+            Descricao = aula.Curso.Nome.ToUpper(),
+            Extencao = "pdf"
+        };
+
+        _context.Add(certificado);
+        _context.SaveChanges();
+
+        System.IO.File.Delete(caminhoPdfSaida);
+
+        return RedirectToAction("Details", new { id = certificado.Id });
     }
 
     private bool CertificadoExists(int id)
