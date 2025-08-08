@@ -31,4 +31,7 @@ public class CursoViewModel
 
     [Display(Name = "Ativo")]
     public bool Ativo { get; set; }
+
+    [Display(Name = "Ementas")]
+    public List<Ementa>? Ementas { get; set; }
 }

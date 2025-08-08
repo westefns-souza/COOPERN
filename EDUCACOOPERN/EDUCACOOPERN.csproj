@@ -14,6 +14,7 @@
     <Content Remove="wwwroot\js\area-atuacao.js" />
     <Content Remove="wwwroot\js\curso.js" />
     <Content Remove="wwwroot\js\custos.js" />
+    <Content Remove="wwwroot\js\ementa.js" />
     <Content Remove="wwwroot\js\formacoes.js" />
     <Content Remove="wwwroot\js\pdi.js" />
   </ItemGroup>
@@ -42,6 +43,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\js\ementa.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="wwwroot\js\area-atuacao-servicos.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

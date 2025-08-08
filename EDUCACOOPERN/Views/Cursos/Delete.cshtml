@@ -64,6 +64,22 @@
 
         <span>@areasAtuacao</span>
     </dd>
+
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Ementas)
+    </dt>
+
+    <dd class="col-sm-10">
+        @{
+            var ementas = string.Join("; ", Model.Ementas
+            .Select(x => x.Descricao)
+            .OrderBy(x => x)
+            .ToList()
+            );
+        }
+
+        <span>@ementas</span>
+    </dd>
 </dl>
 
 <form asp-action="Delete">

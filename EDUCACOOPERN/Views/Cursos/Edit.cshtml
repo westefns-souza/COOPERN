@@ -121,6 +121,66 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-6">
+            <div class="form-group">
+                <label asp-for="Ementas" class="control-label"></label>
+                <input class="form-control descricao-ementa" />
+                <span asp-validation-for="Ementas" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-6">
+            <div class="form-group">
+                <button type="button" class="btn btn-light mt-4 btn-adicionar-ementa"><i class="bi bi-plus-circle me-1"></i>Adicionar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 mt-2">
+            @{
+                var possuiEmenta = Model.Ementas.Any();
+            }
+
+            <div class="alert alert-info text-center curso-sem-ementa @(possuiEmenta ? "d-none" : "")">
+                O curso ainda não possui nenhuma ementa!
+            </div>
+
+            <table class="table table-striped curso-com-ementa @(possuiEmenta ? "" : "d-none")">
+                <thead>
+                    <tr class="row">
+                        <th class="col-10">Ementa</th>
+                        <th class="col-2"></th>
+                    </tr>
+                </thead>
+                <tbody id="lista-ementa">
+                    @if (possuiEmenta)
+                    {
+                        foreach (var ementa in Model.Ementas)
+                        {
+                            var index = Model.Ementas.IndexOf(ementa);
+
+                            <tr class="row item-ementa">
+                                <td class="col-10">
+                                    <input type="hidden" class="dados-item-ementa" name="Ementas[@index].Id" value="@ementa.Id" />
+                                    <input type="hidden" class="dados-item-ementa" name="Ementas[@index].CursoId" value="@ementa.CursoId" />
+                                    <input type="hidden" class="dados-item-ementa" name="Ementas[@index].Descricao" value="@ementa.Descricao" />
+
+                                    @ementa.Descricao
+                                </td>
+
+                                <td class="col-2 text-end">
+                                    <button type="button" class="btn btn-sm btn-danger btn-remover-ementa" data-id-ementa="@ementa.Id"><i class="bi bi-trash"></i></button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <div class="row mt-2">
         <div class="col">
             <div class="form-group form-check">
@@ -147,5 +207,6 @@
     }
 
     <script src="~/js/area-atuacao.js" asp-append-version="true"></script>
+    <script src="~/js/ementa.js" asp-append-version="true"></script>
 }
 

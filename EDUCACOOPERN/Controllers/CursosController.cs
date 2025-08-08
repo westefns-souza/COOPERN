@@ -28,7 +28,9 @@ public class CursosController : Controller
             return NotFound();
         }
 
-        var curso = await _context.Cursos.FirstOrDefaultAsync(m => m.Id == id);
+        var curso = await _context.Cursos
+            .Include(x => x.Ementas)
+            .FirstOrDefaultAsync(m => m.Id == id);
 
         if (curso == null)
         {
@@ -41,6 +43,7 @@ public class CursosController : Controller
             .Select(x => x.AreaAtuacao)
             .ToList();
 
+
         var viewModel = new CursoViewModel()
         {
             Id = curso.Id,
@@ -50,6 +53,7 @@ public class CursosController : Controller
             Ativo = curso.Ativo,
             CargaHorariaPratica = curso.CargaHorariaPratica,
             CargaHorariaTeorica = curso.CargaHorariaTeorica,
+            Ementas = curso.Ementas
         };
 
         return View(viewModel);
@@ -63,6 +67,7 @@ public class CursosController : Controller
         };
 
         viewModel.AreasAtuacao ??= [];
+        viewModel.Ementas ??= [];
 
         PreencherAreasDeAtuacao();
         return View(viewModel);
@@ -75,6 +80,7 @@ public class CursosController : Controller
         if (!ModelState.IsValid)
         {
             viewModel.AreasAtuacao ??= [];
+            viewModel.Ementas ??= [];
             PreencherAreasDeAtuacao();
             return View(viewModel);
         }
@@ -91,6 +97,7 @@ public class CursosController : Controller
         await _context.AddAsync(curso);
         await _context.SaveChangesAsync();
         await _context.AddRangeAsync(viewModel.AreasAtuacao.Select(x => new CursoAreaAtuacao { CursoId = curso.Id, AreaAtuacaoId = x.Id }).ToList());
+        await _context.AddRangeAsync(viewModel.Ementas.Select(x => new Ementa { CursoId = curso.Id, Descricao = x.Descricao }).ToList());
         await _context.SaveChangesAsync();
 
         return RedirectToAction(nameof(Index));
@@ -103,7 +110,10 @@ public class CursosController : Controller
             return NotFound();
         }
 
-        var curso = await _context.Cursos.FindAsync(id);
+        var curso = await _context.Cursos
+            .Include(x => x.Ementas)
+            .FirstOrDefaultAsync(x => x.Id == id);
+        
         if (curso == null)
         {
             return NotFound();
@@ -124,6 +134,7 @@ public class CursosController : Controller
             Ativo = curso.Ativo,
             CargaHorariaPratica = curso.CargaHorariaPratica,
             CargaHorariaTeorica = curso.CargaHorariaTeorica,
+            Ementas = curso.Ementas,
         };
 
         PreencherAreasDeAtuacao();
@@ -142,6 +153,7 @@ public class CursosController : Controller
         if (!ModelState.IsValid)
         {
             viewModel.AreasAtuacao ??= [];
+            viewModel.Ementas ??= [];
             PreencherAreasDeAtuacao();
             return View(viewModel);
         }
@@ -155,11 +167,14 @@ public class CursosController : Controller
             curso.Descricao = viewModel.Descricao;
             curso.CargaHorariaPratica = viewModel.CargaHorariaPratica;
             curso.CargaHorariaTeorica = viewModel.CargaHorariaTeorica;
+           
 
             _context.Update(curso);
             _context.RemoveRange(await _context.CursoAreaAtuacoes.Where(x => x.CursoId.Equals(curso.Id)).ToListAsync());
+            _context.RemoveRange(await _context.Ementas.Where(x => x.CursoId.Equals(curso.Id)).ToListAsync());
 
             await _context.AddRangeAsync(viewModel.AreasAtuacao.Select(x => new CursoAreaAtuacao { CursoId = curso.Id, AreaAtuacaoId = x.Id }).ToList());
+            await _context.AddRangeAsync(viewModel.Ementas.Select(x => new Ementa { CursoId = curso.Id, Descricao = x.Descricao }).ToList());
             await _context.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
@@ -184,7 +199,9 @@ public class CursosController : Controller
             return NotFound();
         }
 
-        var curso = await _context.Cursos.FirstOrDefaultAsync(m => m.Id == id);
+        var curso = await _context.Cursos
+            .Include(x => x.Ementas)
+            .FirstOrDefaultAsync(m => m.Id == id);
         if (curso == null)
         {
             return NotFound();
@@ -203,7 +220,8 @@ public class CursosController : Controller
             Descricao = curso.Descricao,
             AreasAtuacao = areasAtuacao,
             CargaHorariaPratica = curso.CargaHorariaPratica,
-            CargaHorariaTeorica = curso.CargaHorariaTeorica
+            CargaHorariaTeorica = curso.CargaHorariaTeorica,
+            Ementas = curso.Ementas
         };
 
         return View(viewModel);

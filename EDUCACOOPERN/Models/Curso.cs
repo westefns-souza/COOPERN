@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EDUCACOOPERN.Models;
 
@@ -28,4 +29,22 @@ public class Curso
     public bool Ativo { get; set; }
 
     public List<CursoAreaAtuacao> CursoAreaAtuacoes { get; set; }
+    public List<Ementa> Ementas { get; set; }
+}
+
+public class Ementa
+{
+    [Key]
+    public int Id { get; set; }
+
+    [Required]
+    public int? CursoId { get; set; }
+
+    [ForeignKey("CursoId")]
+    public Curso? Curso { get; set; }
+
+    [Display(Name = "Descrição")]
+    [Required(ErrorMessage = "A {0} do curso é obrigatória!")]
+    [StringLength(256, MinimumLength = 3, ErrorMessage = "A {0} do curso deve ter entre 3 e 256 caracteres!")]
+    public string? Descricao { get; set; }
 }
