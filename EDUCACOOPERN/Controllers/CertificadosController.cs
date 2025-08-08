@@ -50,7 +50,6 @@ public class CertificadosController : Controller
             foreach(var aulaid in cursosParaGerarCertificados)
             {
                 _ = GerarCertificado(userId, aulaid);
-                //_ = GerarCertificadoUTI(userId, aulaid);
             }
 
             certificados = await _context.Certificado
@@ -159,7 +158,13 @@ public class CertificadosController : Controller
     {
         var aula = _context.Aulas
             .Include(x => x.Curso)
+            .ThenInclude(x => x.Ementas)
             .FirstOrDefault(x => x.Id == idaula);
+
+        if (aula != null && aula.Curso.Ementas != null && aula.Curso.Ementas.Any())
+        {
+            return GerarCertificadoUTI(id, idaula);
+        }
 
         var usuario = _context.Usuario.FirstOrDefault(x => x.Id.Equals(id));
 
@@ -251,6 +256,7 @@ public class CertificadosController : Controller
     {
         var aula = _context.Aulas
             .Include(x => x.Curso)
+            .ThenInclude(x => x.Ementas)
             .FirstOrDefault(x => x.Id == idaula);
 
         var matricula = _context.Matricula.FirstOrDefault(x => x.AulaId == idaula && x.AlunoId.Equals(id) && x.Status == EStatusMatricula.Aprovado);
@@ -336,11 +342,13 @@ public class CertificadosController : Controller
 
         cbVerso.SetFontAndSize(bf, 16);
 
-        cbVerso.ShowTextAligned(Element.ALIGN_LEFT, "Atuação do Técnico de Enfermagem na UTI Pediátrica", coluna1, 350, 0);
-        cbVerso.ShowTextAligned(Element.ALIGN_LEFT, "Ética no cuidado de enfermagem", coluna1, 325, 0);
-        cbVerso.ShowTextAligned(Element.ALIGN_LEFT, "Manejo com cateteres: APV, CVC, PICC, dissecção, CTI", coluna1, 300, 0);
-        cbVerso.ShowTextAligned(Element.ALIGN_LEFT, "Reconhecimento de crises convulsivas", coluna1, 275, 0);
+        var linha = 350;
 
+        foreach( var ementa in aula.Curso.Ementas)
+        {
+            cbVerso.ShowTextAligned(Element.ALIGN_LEFT, ementa.Descricao, coluna1, linha, 0);
+            linha -= 25;
+        }
  
         cbVerso.SetFontAndSize(bfBold, 16);
         cbVerso.ShowTextAligned(Element.ALIGN_LEFT, $"CARGA HORÁRIA TOTAL: {aula.Curso.CargaHorariaTeorica}H TEÓRICAS + {aula.Curso.CargaHorariaPratica}H PRÁTICAS = {aula.Curso.CargaHorariaTeorica + aula.Curso.CargaHorariaPratica}H TOTAIS", coluna1, 110, 0);
