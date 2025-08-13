@@ -331,34 +331,33 @@ public class CertificadosController : Controller
 
         var cbVerso = stamper.GetOverContent(2);
 
-        var coluna1 = 100;
+        var coluna1 = 50;
 
 
         cbVerso.SetFontAndSize(bfBold, 16);
-        cbVerso.ShowTextAligned(Element.ALIGN_LEFT, aula.Curso.Nome.ToUpper(), coluna1, 510, 0);
+        cbVerso.ShowTextAligned(Element.ALIGN_LEFT, aula.Curso.Nome.ToUpper(), coluna1, 550, 0);
 
         cbVerso.SetFontAndSize(bfBold, 16);
-        cbVerso.ShowTextAligned(Element.ALIGN_LEFT, "CONTEÚDO PROGRAMÁTICO TEÓRICO E PRÁTICO:", coluna1, 410, 0);
+        cbVerso.ShowTextAligned(Element.ALIGN_LEFT, "CONTEÚDO PROGRAMÁTICO TEÓRICO E PRÁTICO:", coluna1, 480, 0);
 
-        cbVerso.SetFontAndSize(bf, 16);
+        cbVerso.SetFontAndSize(bf, 10);
 
-        var linha = 350;
+        var linha = 450;
 
         foreach( var ementa in aula.Curso.Ementas)
         {
             cbVerso.ShowTextAligned(Element.ALIGN_LEFT, ementa.Descricao, coluna1, linha, 0);
-            linha -= 25;
+            linha -= 15;
         }
  
-        cbVerso.SetFontAndSize(bfBold, 16);
-        cbVerso.ShowTextAligned(Element.ALIGN_LEFT, $"CARGA HORÁRIA TOTAL: {aula.Curso.CargaHorariaTeorica}H TEÓRICAS + {aula.Curso.CargaHorariaPratica}H PRÁTICAS = {aula.Curso.CargaHorariaTeorica + aula.Curso.CargaHorariaPratica}H TOTAIS", coluna1, 110, 0);
+        cbVerso.SetFontAndSize(bfBold, 12);
+        cbVerso.ShowTextAligned(Element.ALIGN_LEFT, $"CARGA HORÁRIA TOTAL: {aula.Curso.CargaHorariaTeorica}H TEÓRICAS + {aula.Curso.CargaHorariaPratica}H PRÁTICAS = {aula.Curso.CargaHorariaTeorica + aula.Curso.CargaHorariaPratica}H TOTAIS", coluna1, 100, 0);
 
-        cbVerso.SetFontAndSize(bf, 15);
-        cbVerso.ShowTextAligned(Element.ALIGN_LEFT, $"APROVEITAMENTO: {matricula.Aproveitamento}%", coluna1, 90, 0);
-        cbVerso.ShowTextAligned(Element.ALIGN_LEFT, $"NOTA FINAL: {matricula.NotaPos}", 400, 90, 0);
+        cbVerso.SetFontAndSize(bf, 12);
+        cbVerso.ShowTextAligned(Element.ALIGN_LEFT, $"APROVEITAMENTO: {matricula.Aproveitamento}%", coluna1, 80, 0);
+        cbVerso.ShowTextAligned(Element.ALIGN_LEFT, $"NOTA FINAL: {matricula.NotaPos}", 380, 80, 0);
 
-
-        stamper.Close();
+        stamper?.Close();
 
         var bytes = System.IO.File.ReadAllBytes(caminhoPdfSaida);
 
