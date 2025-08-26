@@ -293,8 +293,8 @@ public class CertificadosController : Controller
         var texto3 = "CONFERE A CERTIFICAÇÃO RELATIVA AO CURSO DE";
         var texto4 = $"CONCLUÍDO EM {aula.DataFim.ToString("M").ToUpper()} DE {aula.DataFim:yyyy}";
 
-        var tempo = (aula.DataFim - aula.DataInicio).Hours;
-        var texto5 = $"COM CARGA HORÁRIA DE {tempo} HORAS.";
+        //var tempo = (aula.DataFim - aula.DataInicio).Hours;
+        //var texto5 = $"COM CARGA HORÁRIA DE {tempo} HORAS.";
 
         cb.BeginText();
         cb.SetFontAndSize(bf, 16);
@@ -314,7 +314,7 @@ public class CertificadosController : Controller
         cb.BeginText();
         cb.SetFontAndSize(bf, 16);
         cb.ShowTextAligned(Element.ALIGN_CENTER, texto4, coluna, 230, 0);
-        cb.ShowTextAligned(Element.ALIGN_CENTER, texto5, coluna, 210, 0);
+        //cb.ShowTextAligned(Element.ALIGN_CENTER, texto5, coluna, 210, 0);
         cb.EndText();
 
         cbNome.SetFontAndSize(bfBold, 24);
