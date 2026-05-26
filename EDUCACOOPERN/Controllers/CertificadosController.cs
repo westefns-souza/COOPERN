@@ -179,7 +179,7 @@ public class CertificadosController : Controller
 
         var nomeSaida = id + DateTime.Now.ToString("yyyyMMddhhmmss") + ".pdf";
 
-        var caminhoPdfTemplate = Path.Combine(_env.WebRootPath, "pdf", "modelo_certificado.pdf");
+        var caminhoPdfTemplate = Path.Combine(_env.WebRootPath, "pdf", "modelo_certificado_2026.pdf");
         var caminhoPdfSaida = Path.Combine(_env.WebRootPath, "pdf", nomeSaida);
 
         using var reader = new PdfReader(caminhoPdfTemplate);
