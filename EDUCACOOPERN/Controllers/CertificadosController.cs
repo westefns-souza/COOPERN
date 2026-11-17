@@ -31,12 +31,23 @@ public class CertificadosController : Controller
             .Select(x => x.Aula.Curso.Nome.ToUpper())
             .ToList();
 
+        var cursosComoProfessor = _context.Matricula
+            .Include(x => x.Aula)
+            .ThenInclude(x => x.Curso)
+            .Where(x => x.Aula.ProfessorId.Equals(userId) && (x.Aula.Status == EStatusAula.Finalizada || x.Aula.Status == EStatusAula.Realizada))
+            .Select(x => x.Aula.Curso.Nome.ToUpper())
+            .ToList();
+
         var certificados = await _context.Certificado
             .Include(c => c.Usuario)
             .Where(x => x.UsuarioId.Equals(userId))
             .ToListAsync();
 
-        var cursosSemCertificados = cursosAprovados.Where(x => !certificados.Any(y => y.Descricao.Equals(x.ToUpper()))).ToList();
+        var cursosSemCertificados = cursosAprovados
+            .Where(x => !certificados.Any(y => y.Descricao.Equals(x.ToUpper()))).ToList();
+
+        var cursosSemCertificadosComoProfessor = cursosComoProfessor
+            .Where(x => !certificados.Any(y => y.Descricao.Equals(x.ToUpper()))).ToList();
 
         if (cursosSemCertificados.Any())
         {
@@ -48,6 +59,26 @@ public class CertificadosController : Controller
                 .ToList();
 
             foreach(var aulaid in cursosParaGerarCertificados)
+            {
+                _ = GerarCertificado(userId, aulaid);
+            }
+
+            certificados = await _context.Certificado
+                .Include(c => c.Usuario)
+                .Where(x => x.UsuarioId.Equals(userId))
+                .ToListAsync();
+        }
+
+        if (cursosSemCertificadosComoProfessor.Any())
+        {
+            var cursosParaGerarCertificados = _context.Matricula
+                .Include(x => x.Aula)
+                .ThenInclude(x => x.Curso)
+                .Where(x => x.Aula.ProfessorId.Equals(userId) && (x.Aula.Status == EStatusAula.Finalizada || x.Aula.Status == EStatusAula.Realizada) && cursosSemCertificadosComoProfessor.Contains(x.Aula.Curso.Nome.ToUpper()))
+                .Select(x => x.AulaId)
+                .ToList();
+
+            foreach (var aulaid in cursosParaGerarCertificados)
             {
                 _ = GerarCertificado(userId, aulaid);
             }
@@ -160,6 +191,11 @@ public class CertificadosController : Controller
             .Include(x => x.Curso)
             .ThenInclude(x => x.Ementas)
             .FirstOrDefault(x => x.Id == idaula);
+
+        if (aula != null && aula.ProfessorId.Equals(id))
+        {
+            return GerarCertificadoProfessor(id, idaula);
+        }
 
         if (aula != null && aula.Curso.Ementas != null && aula.Curso.Ementas.Any())
         {
@@ -356,6 +392,103 @@ public class CertificadosController : Controller
         cbVerso.SetFontAndSize(bf, 12);
         cbVerso.ShowTextAligned(Element.ALIGN_LEFT, $"APROVEITAMENTO: {matricula.Aproveitamento}%", coluna1, 80, 0);
         cbVerso.ShowTextAligned(Element.ALIGN_LEFT, $"NOTA FINAL: {matricula.NotaPos}", 380, 80, 0);
+
+        stamper?.Close();
+
+        var bytes = System.IO.File.ReadAllBytes(caminhoPdfSaida);
+
+        var certificado = new Certificado
+        {
+            Arquivo = Convert.ToBase64String(bytes),
+            UsuarioId = id,
+            Descricao = aula.Curso.Nome.ToUpper(),
+            Extencao = "pdf"
+        };
+
+        _context.Add(certificado);
+        _context.SaveChanges();
+
+        System.IO.File.Delete(caminhoPdfSaida);
+
+        return RedirectToAction("Details", new { id = certificado.Id });
+    }
+
+    public IActionResult GerarCertificadoProfessor(string id, int idaula)
+    {
+        var aula = _context.Aulas
+            .Include(x => x.Curso)
+            .ThenInclude(x => x.Ementas)
+            .FirstOrDefault(x => x.Id == idaula);
+
+        var matricula = _context.Matricula.FirstOrDefault(x => x.AulaId == idaula && x.AlunoId.Equals(id) && x.Status == EStatusMatricula.Aprovado);
+
+        var usuario = _context.Usuario.FirstOrDefault(x => x.Id.Equals(id));
+
+        var certificadoExisteste = _context.Certificado
+            .Where(x => x.UsuarioId.Equals(id) && x.Descricao.Equals(aula.Curso.Nome.ToUpper()))
+            .FirstOrDefault();
+
+        if (certificadoExisteste != null)
+        {
+            return RedirectToAction("Details", new { id = certificadoExisteste.Id });
+        }
+
+        var nomeSaida = id + DateTime.Now.ToString("yyyyMMddhhmmss") + ".pdf";
+
+        var caminhoPdfTemplate = Path.Combine(_env.WebRootPath, "pdf", "modelo_certificado_2026.pdf");
+        var caminhoPdfSaida = Path.Combine(_env.WebRootPath, "pdf", nomeSaida);
+
+        using var reader = new PdfReader(caminhoPdfTemplate);
+        using var stream = new FileStream(caminhoPdfSaida, FileMode.Create);
+        using var stamper = new PdfStamper(reader, stream);
+
+        var bf = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+        var bfBold = BaseFont.CreateFont(BaseFont.HELVETICA_BOLD, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+
+        var cb = stamper.GetOverContent(1);
+        var cbCurso = stamper.GetOverContent(1);
+        var cbNome = stamper.GetOverContent(1);
+
+        var texto1 = "A COOPERN - COOPERATIVA DE TRABALHO E DE SERVIÇOS DE ENFERMAGEM";
+        var texto2 = "DO RIO GRANDE DO NORTE CNPJ 11.601.777/0001-28,";
+        var texto3 = "CONFERE A CERTIFICAÇÃO RELATIVA A MINISTRAÇÃO DO CURSO DE";
+        var texto4 = $"CONCLUÍDO EM {aula.DataFim.ToString("M").ToUpper()} DE {aula.DataFim:yyyy}";
+
+        var tempo = (aula.DataFim - aula.DataInicio).Hours;
+        var texto5 = $"COM CARGA HORÁRIA DE {tempo} HORAS.";
+
+        cb.BeginText();
+        cb.SetFontAndSize(bf, 16);
+
+        var coluna = 440;
+
+        cb.ShowTextAligned(Element.ALIGN_CENTER, texto1, coluna, 310, 0);
+        cb.ShowTextAligned(Element.ALIGN_CENTER, texto2, coluna, 290, 0);
+        cb.ShowTextAligned(Element.ALIGN_CENTER, texto3, coluna, 270, 0);
+        cb.EndText();
+
+        cbCurso.BeginText();
+        cbCurso.SetFontAndSize(bfBold, 16);
+        cbCurso.ShowTextAligned(Element.ALIGN_CENTER, aula.Curso.Nome.ToUpper(), coluna, 250, 0);
+        cbCurso.EndText();
+
+        cb.BeginText();
+        cb.SetFontAndSize(bf, 16);
+        cb.ShowTextAligned(Element.ALIGN_CENTER, texto4, coluna, 230, 0);
+        cb.ShowTextAligned(Element.ALIGN_CENTER, texto5, coluna, 210, 0);
+        cb.EndText();
+
+        cbNome.SetFontAndSize(bfBold, 24);
+        cbNome.SetRGBColorFill(63, 156, 147);
+        cbNome.ShowTextAligned(Element.ALIGN_CENTER, usuario.FullName.ToUpper(), coluna, 150, 0);
+        cbNome.BeginText();
+        cbNome.EndText();
+
+        var cbLinha = stamper.GetOverContent(1);
+
+        cbLinha.MoveTo(160, 145);
+        cbLinha.LineTo(720, 145);
+        cbLinha.Stroke();
 
         stamper?.Close();
 
